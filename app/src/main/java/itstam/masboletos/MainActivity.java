@@ -1,82 +1,96 @@
 package itstam.masboletos;
 
 import android.app.Fragment;
-import android.os.Handler;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import me.relex.circleindicator.CircleIndicator;
+public class MainActivity extends AppCompatActivity implements BoletosPrin.OnFragmentInteractionListener, Perfil_Fr.OnFragmentInteractionListener{
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-public class MainActivity extends AppCompatActivity {
+    }
+
     BottomNavigationView menunavegacion;
 
-    private static ViewPager mPager;
-    private static int currentPage = 0;
-    private static final Integer[] XMEN= {R.drawable.pulso,R.drawable.ic_inicio,R.drawable.ic_perfil};
-    private ArrayList<Integer> XMENArray = new ArrayList<Integer>();
+    BoletosPrin frboletos;
+    Perfil_Fr frperfil;
 
-
+   /* DrawerLayout drawerLayout;
+    LinearLayout LYmenu;
+    ListView ListaMenu;*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        iniciar_menu_lateral();
+        frboletos = new BoletosPrin();
+        getSupportFragmentManager().beginTransaction().add(R.id.contenedor,frboletos).commit();
 
         menunavegacion=(BottomNavigationView)findViewById(R.id.menu_navegacion);
 
         menunavegacion.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragmento = null;
                 switch (item.getItemId()){
                     case R.id.action_inicio:
-                        Toast.makeText(getApplicationContext(),"Inicio",Toast.LENGTH_LONG).show();
+                        frboletos = new BoletosPrin();
+                        FragmentTransaction trans1= getSupportFragmentManager().beginTransaction();
+                        trans1.replace(R.id.contenedor,frboletos);
+                        trans1.commit();
                         break;
                     case R.id.action_perfil:
-                        Toast.makeText(getApplicationContext(),"Perfil",Toast.LENGTH_LONG).show();
+                        frperfil = new Perfil_Fr();
+                        FragmentTransaction trans2= getSupportFragmentManager().beginTransaction();
+                        trans2.replace(R.id.contenedor,frperfil);
+                        trans2.commit();
                     break;
+                    case R.id.action_ubicacion:
+                        Intent i=new Intent(getApplicationContext() ,UbicacionAct.class);
+                        startActivity(i);
+                        frboletos = new BoletosPrin();
+                        FragmentTransaction trans3= getSupportFragmentManager().beginTransaction();
+                        trans3.replace(R.id.contenedor,frboletos);
+                        trans3.commit();
                 }
 
                 return true;
             }
         });
-        init();
     }
 
-    private void init() {
-        for(int i=0;i<XMEN.length;i++)
-            XMENArray.add(XMEN[i]);
+    void iniciar_menu_lateral(){
 
-        mPager = (ViewPager) findViewById(R.id.carrusel);
-        mPager.setAdapter(new MyAdapter(MainActivity.this,XMENArray));
-        CircleIndicator indicator = (CircleIndicator) findViewById(R.id.indicator);
-        indicator.setViewPager(mPager);
+        /*drawerLayout=(DrawerLayout) findViewById(R.id.DRWMenu);
+        LYmenu =(LinearLayout) findViewById(R.id.LYmenu);
+        ListaMenu=(ListView)findViewById(R.id.listamenu);
+        String[] opciones={"Opcion 1","Opción 2","Opción 3"};
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_expandable_list_item_1,opciones);
+        ListaMenu.setAdapter(adp);
 
-        // Auto start of viewpager
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-                if (currentPage == XMEN.length) {
-                    currentPage = 0;
-                }
-                mPager.setCurrentItem(currentPage++, true);
-            }
-        };
-        Timer swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
+        ListaMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void run() {
-                handler.post(Update);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String opSelecccionada = (String) ListaMenu.getAdapter().getItem(position);
+                Toast.makeText(getApplicationContext(),opSelecccionada, Toast.LENGTH_SHORT).show();
             }
-        }, 2500, 2500);
+        });*/
     }
 
 

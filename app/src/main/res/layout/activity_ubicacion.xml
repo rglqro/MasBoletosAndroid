@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UbicacionAct"
+    android:background="#fff"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/LYBarra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azulmboscuro"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@color/azulmboscuro"
+            android:cropToPadding="false"
+            android:onClick="regresar"
+            android:tint="@android:color/background_light"
+            app:srcCompat="@drawable/ic_regresar" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Regresar"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/azulmb">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccione la ciudad en donde quiera visualizar Eventos"
+            android:textColor="@android:color/background_light"
+            android:textSize="22sp"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Estado"
+        android:textColor="@color/azulmboscuro"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:id="@+id/spEstados"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:layout_marginTop="5dp"
+        android:entries="@array/EstadosRep"
+        android:backgroundTint="#000"
+        android:layout_marginLeft="10dp" />
+
+</LinearLayout>

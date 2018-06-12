@@ -1,5 +1,6 @@
 package itstam.masboletos;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -14,8 +15,6 @@ public class MyAdapter extends PagerAdapter {
     private ArrayList<Integer> images;
     private LayoutInflater inflater;
     private Context context;
-
-
 
     public MyAdapter(Context context, ArrayList<Integer> images) {
         this.context = context;

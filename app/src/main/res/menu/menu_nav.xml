@@ -5,7 +5,13 @@
         android:id="@+id/action_inicio"
         android:enabled="true"
         android:icon="@drawable/ic_inicio"
-        android:title="Boletos" />
+        android:title="Eventos" />
+
+    <item
+        android:id="@+id/action_ubicacion"
+        android:enabled="true"
+        android:icon="@drawable/ic_local"
+        android:title="Puntos de Venta" />
 
     <item
         android:id="@+id/action_perfil"

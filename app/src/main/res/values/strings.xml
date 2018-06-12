@@ -3,4 +3,36 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="Cat_Evento">
+        <item>...Categorias...</item>
+        <item>Deportivo</item>
+        <item>Teatro y Cultura</item>
+        <item>Conciertos</item>
+        <item>Familiares</item>
+        <item>Especiales</item>
+    </string-array>
+
+    <string-array name="EstadosRep">
+        <item>Aguascalientes</item>
+        <item>Baja California</item>
+        <item>CDMX</item>
+        <item>Guadalajara</item>
+        <item>Nuevo León</item>
+        <item>Querétaro</item>
+        <item>Veracruz</item>
+    </string-array>
+
+    <string-array name="organizadores">
+        <item>..Organizadores..</item>
+        <item>Corson Producciones</item>
+    </string-array>
+
 </resources>

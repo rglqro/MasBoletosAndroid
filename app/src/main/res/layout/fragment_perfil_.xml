@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context=".Perfil_Fr">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Perfil"
+        android:textSize="24sp"
+        android:textColor="#fff"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:background="@color/azulmboscuro"/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+       <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#99BD11"
+            android:orientation="vertical">
+
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="150dp"
+               android:background="@color/azulmboscuro">
+
+               <ImageView
+                   android:id="@+id/imageView3"
+                   android:layout_width="123dp"
+                   android:layout_height="50dp"
+                   android:layout_alignParentStart="true"
+                   android:layout_centerVertical="true"
+                   android:adjustViewBounds="true"
+                   android:cropToPadding="false"
+                   android:src="@drawable/mblogo" />
+
+               <TextView
+                   android:id="@+id/textView2"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentEnd="true"
+                   android:layout_alignTop="@+id/imageView3"
+                   android:layout_marginEnd="30dp"
+                   android:text="Nombre del Usuario"
+                   android:textColor="@android:color/background_light"
+                   android:textSize="18sp"
+                   android:layout_alignParentRight="true" />
+           </RelativeLayout>
+
+           <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#013C7E"
+                android:text="Mis Boletos" />
+
+       </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

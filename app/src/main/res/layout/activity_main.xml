@@ -8,36 +8,36 @@
     android:background="#ffff"
     >
 
+
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/menu_navegacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        app:itemBackground="@android:color/background_light"
-        app:itemIconTint="@android:color/black"
-        app:itemTextColor="@color/colorPrimaryDark"
-        app:menu="@menu/menu_nav">
+        android:visibility="visible"
+        app:itemBackground="@color/azulmb"
+        app:itemIconTint="#99BD11"
+        app:itemTextColor="#ffffffff"
+        app:menu="@menu/menu_nav"
+        android:layout_alignParentLeft="true">
 
     </android.support.design.widget.BottomNavigationView>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/carrusel"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="visible" />
+    <FrameLayout
 
-    <me.relex.circleindicator.CircleIndicator
-        android:id="@+id/indicator"
+        android:id="@+id/contenedor"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignBottom="@+id/carrusel"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:visibility="visible">
+        android:layout_alignParentTop="true"
+        android:visibility="visible"
+        android:layout_above="@id/menu_navegacion"
+        android:layout_alignParentLeft="true"
+        >
 
-    </me.relex.circleindicator.CircleIndicator>
+    </FrameLayout>
+
 
 </RelativeLayout>
