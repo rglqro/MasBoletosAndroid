@@ -2,23 +2,30 @@ package itstam.masboletos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class MyAdapter extends PagerAdapter {
 
-    private ArrayList<Integer> images;
+    private ArrayList<String> URLimagenes,listaImagBoton;
     private LayoutInflater inflater;
     private Context context;
 
-    public MyAdapter(Context context, ArrayList<Integer> images) {
+    public MyAdapter(Context context, ArrayList<String> URLimagenes, ArrayList<String> listaImagBoton) {
         this.context = context;
-        this.images=images;
+        this.URLimagenes=URLimagenes;
+        this.listaImagBoton=listaImagBoton;
         inflater = LayoutInflater.from(context);
     }
 
@@ -29,16 +36,35 @@ public class MyAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return images.size();
+        return URLimagenes.size();
     }
 
     @Override
-    public Object instantiateItem(ViewGroup view, int position) {
+    public Object instantiateItem(ViewGroup view, final int position) {
         View myImageLayout = inflater.inflate(R.layout.slide, view, false);
-        ImageView myImage = (ImageView) myImageLayout
-                .findViewById(R.id.image);
-        myImage.setImageResource(images.get(position));
+        ImageButton myImage = (ImageButton) myImageLayout.findViewById(R.id.image);
+        myImage.setAdjustViewBounds(true);
+        myImage.setScaleType(ImageView.ScaleType.FIT_XY);
+        Picasso.with(context)
+                .load(URLimagenes.get(position))
+                .error(R.drawable.ic_inicio)
+                .into(myImage);
         view.addView(myImageLayout, 0);
+        myImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i=0;i<URLimagenes.size();i++){
+                    if(position==i){
+                        Intent mainIntent = new Intent().setClass(
+                                context, DetallesEventos.class);
+                        mainIntent.putExtra("indiceimagen",listaImagBoton.get(i).toString());
+                        context.startActivity(mainIntent);
+                    }
+                }
+
+            }
+        });
+        //Log.d("URLIMAGEN Adaptador",URLimagenes[position]);
         return myImageLayout;
     }
 

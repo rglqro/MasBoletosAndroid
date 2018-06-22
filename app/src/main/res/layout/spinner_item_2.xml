@@ -7,4 +7,5 @@
     android:textColor="#000"
     android:textAlignment="textStart"
     android:gravity="start"
-    android:layout_marginLeft="10dp"/>
+    android:layout_marginLeft="10dp"
+    android:background="@drawable/shapes"/>

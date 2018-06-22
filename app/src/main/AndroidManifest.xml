@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="itstam.masboletos">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/mbiconor"
@@ -11,15 +14,22 @@
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".UbicacionAct"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Splash_Principal"
             android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".UbicacionAct" />
-        <activity android:name=".Splash_Principal">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".DetallesEventos"
+            android:label="@string/title_activity_detalles_eventos"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>

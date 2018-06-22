@@ -1,44 +1,57 @@
 package itstam.masboletos;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import in.goodiebag.carouselpicker.CarouselPicker;
 import me.relex.circleindicator.CircleIndicator;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BoletosPrin.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link BoletosPrin#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BoletosPrin extends Fragment {
+public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefreshListener{
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,16 +66,22 @@ public class BoletosPrin extends Fragment {
 
     private static ViewPager mPager;
 
-    Activity activity;
-    private static int currentPage = 0;
-    private static final Integer[] EventosImag= {R.drawable.rockshow,R.drawable.mixon,R.drawable.granjazita};
-    private ArrayList<Integer> EventosImagArray = new ArrayList<Integer>();
+    Activity activity=getActivity();
+    int currentPage = 0;
 
+    ArrayList<ImageButton> ImBotonEvento;
+    ArrayList<String> ListaImagCarrusel,ListaImagBoton;
     Spinner spcategorias, sporganizadores;
-    TableLayout tablaimagenes;
+    Handler handler;
+    Runnable Update;
+    TableLayout tabla_imagenes;
+    View vista;
+    TableRow row;
+    private SwipeRefreshLayout swipeContainer;
 
     public BoletosPrin() {
         // Required empty public constructor
+        handler = new Handler();
     }
 
     /**
@@ -96,22 +115,131 @@ public class BoletosPrin extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View vista = inflater.inflate(R.layout.fragment_boletos_prin, container, false);
-        iniciar_listas_spinner(vista);
-        tabla_imas(vista);
-
-
-        iniciar_carrusel(vista);
+        vista = inflater.inflate(R.layout.fragment_boletos_prin, container, false);
+        swipeContainer = (SwipeRefreshLayout) vista.findViewById(R.id.SWRLY);
+        tabla_imagenes = (TableLayout) vista.findViewById(R.id.tabla_imagenes);
+        Consulta_Imagen_Botones(vista);
+        swipeContainer.setOnRefreshListener(this);
         return vista;
     }
 
-    void tabla_imas(View vista){
-        tablaimagenes=(TableLayout) vista.findViewById(R.id.tabla_imagenes);
-        for (int i = 0; i < 2; i++) {
-            tablaimagenes.setColumnShrinkable(i, true);
-        }
 
-        tablaimagenes.setPadding(20,20,20,20);
+    void consulta_Imagenes_Carrusel(final View vista){
+        /*Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getImgCarrusel.php");  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            JSONArray Elementos = null;
+                            try {
+                                Elementos = new JSONArray(resultado);
+                                ListaImagCarrusel = new ArrayList<String>();
+                                ListaImagCarrusel.clear();
+                                Log.d("Total de Imagenes",String.valueOf(Elementos.length()));
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
+                                }
+                                iniciar_listas_spinner(vista);
+                                iniciar_Carrusel2(vista);
+                                Consulta_Imagen_Botones(vista);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });  //permite trabajar con la interfaz grafica
+            }
+        };
+        tr.start();*/
+    }
+
+    void Consulta_Imagen_Botones(final View vista){
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getEventosActivos.php");  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            JSONArray Elementos = null;
+                            try {
+                                Elementos = new JSONArray(resultado);
+                                ListaImagBoton = new ArrayList<String>();
+                                ListaImagBoton.clear();
+                                ListaImagCarrusel = new ArrayList<String>();
+                                ListaImagCarrusel.clear();
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    ListaImagBoton.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
+                                    ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
+                                }
+                                iniciar_listas_spinner(vista);
+                                iniciar_Carrusel2(vista);
+                                generarBotonesEvento(vista);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });  //permite trabajar con la interfaz grafica
+            }
+        };
+        tr.start();
+    }
+
+    void generarBotonesEvento(View vista){
+        int Tam_ListaImEve=ListaImagBoton.size();
+        if(ListaImagBoton.size()%2!=0){
+            Tam_ListaImEve++;}
+        ImBotonEvento= new ArrayList<ImageButton>();
+        ImBotonEvento.clear();
+
+        int pos_arr_ima=0;
+        Log.d("Tamaño ima boton",String.valueOf(Tam_ListaImEve));
+        for (int j=0;j<Tam_ListaImEve/2;j++){
+            row = new TableRow(getActivity());
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams lp2 = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            row.setLayoutParams(lp);
+
+            for (int i=0;i<2;i++){
+                if(pos_arr_ima==ListaImagBoton.size()) break;
+                ImBotonEvento.add(new ImageButton(getActivity()));
+                ImBotonEvento.get(i).setLayoutParams(lp2);
+                Picasso.with(getActivity())
+                        .load(ListaImagBoton.get(pos_arr_ima))
+                        .error(R.id.action_inicio)
+                        .into(ImBotonEvento.get(pos_arr_ima));
+                ImBotonEvento.get(pos_arr_ima).setBackgroundColor(Color.TRANSPARENT);
+                ImBotonEvento.get(pos_arr_ima).setScaleType(ImageView.ScaleType.FIT_CENTER);
+                ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
+                ImBotonEvento.get(pos_arr_ima).setTag(pos_arr_ima);
+                ImBotonEvento.get(pos_arr_ima).setId(pos_arr_ima);
+                ImBotonEvento.get(pos_arr_ima).setPadding(10,10,10,10);
+                ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
+                ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent mainIntent = new Intent().setClass(
+                                getActivity(), DetallesEventos.class);
+                        mainIntent.putExtra("indiceimagen",ListaImagBoton.get(v.getId()).toString());
+                        startActivity(mainIntent);
+                    }
+                });
+                row.addView(ImBotonEvento.get(pos_arr_ima));
+                pos_arr_ima++;
+            }
+            tabla_imagenes.setColumnShrinkable(j, true);
+            tabla_imagenes.addView(row,j);
+        }
+        Log.d("Total Botones",String.valueOf(ImBotonEvento.size()));
     }
 
     void iniciar_listas_spinner(View vista){
@@ -126,25 +254,16 @@ public class BoletosPrin extends Fragment {
         spcategorias.setAdapter(adapter);
     }
 
-    public void pagina(View view){
-        Toast.makeText(getActivity(),"Pulsado",Toast.LENGTH_SHORT ).show();
-    }
-
-    private void iniciar_carrusel(View vista) {
-        for(int i=0;i<EventosImag.length;i++)
-            EventosImagArray.add(EventosImag[i]);
-
+    void iniciar_Carrusel2(View vista){
         mPager = (ViewPager) vista.findViewById(R.id.pager);
         activity=getActivity();
-        mPager.setAdapter(new MyAdapter(activity,EventosImagArray));
+        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,ListaImagBoton));
         CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-
         // Auto start of viewpager
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
+        Update = new Runnable() {
             public void run() {
-                if (currentPage == EventosImag.length) {
+                if (currentPage == ListaImagCarrusel.size()) {
                     currentPage = 0;
                 }
                 mPager.setCurrentItem(currentPage++, true);
@@ -156,10 +275,45 @@ public class BoletosPrin extends Fragment {
             public void run() {
                 handler.post(Update);
             }
-        }, 1500, 3000);
+        }, 2500, 2500);
     }
 
+    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
 
+        URL url = null;
+        int respuesta = 0;
+        String linea = "",valor="";
+        StringBuilder resul = null;
+        try {
+            url = new URL(enlace);
+            HttpURLConnection conection;
+            conection = (HttpURLConnection) url.openConnection();
+            respuesta = conection.getResponseCode();
+            resul = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK) {
+                InputStream in = new BufferedInputStream(conection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                while ((linea = reader.readLine()) != null) {
+                    resul.append(linea);
+                }
+            }
+            if(resul!=null) {
+                valor = resul.toString();
+            }
+        } catch (Exception e) {
+            //resul.append("Error ----");
+        }
+        Log.d("Resultado pagina",valor);
+        return valor;
+    }
+
+    public int validadatos(String response){
+        int respuesta = 0;
+        if (response.length()>0){
+            respuesta=1;
+        }
+        return respuesta;
+    }
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -182,8 +336,24 @@ public class BoletosPrin extends Fragment {
 
     @Override
     public void onDetach() {
+        handler.removeCallbacks(Update);
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                handler.removeCallbacks(Update);
+                handler = new Handler();
+                ImBotonEvento.clear();
+                tabla_imagenes.removeAllViews();
+                Consulta_Imagen_Botones(vista);
+                swipeContainer.setRefreshing(false);
+            }
+        }, 3000);
     }
 
     /**
@@ -200,4 +370,28 @@ public class BoletosPrin extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacks(Update);
+        Log.d("Destroy","Destroy");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        handler.removeCallbacks(Update);
+        Log.d("Stop","Stop");
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        //handler.removeCallbacks(Update);
+        Log.d("Pause","Pause");
+        super.onPause();
+    }
+
+
+
 }

@@ -20,12 +20,13 @@
         android:orientation="horizontal"
         android:id="@+id/cabecera">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
+            android:background="@color/azulmboscuro"
             android:cropToPadding="false"
             android:scaleType="fitCenter"
             android:src="@drawable/mblogo" />
@@ -44,157 +45,72 @@
             android:backgroundTint="#fff" />
     </LinearLayout>
 
-    <ScrollView
+
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:id="@+id/scrvwcont"
-        android:background="#fff"
-        android:layout_marginTop="60dp">
+        android:id="@+id/SWRLY"
+        android:layout_below="@id/cabecera">
 
 
-        <RelativeLayout
-            android:id="@+id/layoutcarrusel"
+        <ScrollView
+            android:id="@+id/scrvwcont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:orientation="vertical">
+            android:layout_marginTop="60dp"
+            android:background="#fff">
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
 
-            <me.relex.circleindicator.CircleIndicator
-                android:id="@+id/indicator"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignBottom="@+id/pager"
-                android:layout_alignParentStart="true"></me.relex.circleindicator.CircleIndicator>
-
-            <Spinner
-                android:id="@+id/sp_organizadores"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/pager"
-                android:entries="@array/organizadores"
-                android:backgroundTint="#000"
-                android:layout_marginLeft="15dp"/>
-
-            <TableLayout
-                android:id="@+id/tabla_imagenes"
+            <RelativeLayout
+                android:id="@+id/layoutcarrusel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/sp_organizadores">
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical">
 
-                <TableRow
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="140dp"
+                    android:layout_alignParentTop="true" />
 
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/rb2" />
-
-                    <ImageView
-                        android:id="@+id/imageView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/rockshow2" />
-                </TableRow>
-
-                <TableRow
+                <me.relex.circleindicator.CircleIndicator
+                    android:id="@+id/indicator"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="40dp"
+                    android:layout_alignBottom="@+id/pager"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"></me.relex.circleindicator.CircleIndicator>
 
-                    <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/mixon2" />
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/charreada2" />
-                </TableRow>
-
-                <TableRow
+                <Spinner
+                    android:id="@+id/sp_organizadores"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/pager"
+                    android:layout_marginLeft="15dp"
+                    android:backgroundTint="#000"
+                    android:entries="@array/organizadores" />
 
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/rb2" />
-
-                    <ImageView
-                        android:id="@+id/imageView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/rockshow2" />
-                </TableRow>
-
-                <TableRow
+                <TableLayout
+                    android:id="@+id/tabla_imagenes"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/sp_organizadores">
 
-                    <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/mixon2"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"/>
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/charreada2"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"/>
-                </TableRow>
-
-            </TableLayout>
-        </RelativeLayout>
+                </TableLayout>
+            </RelativeLayout>
 
 
-    </ScrollView>
-
-
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>
