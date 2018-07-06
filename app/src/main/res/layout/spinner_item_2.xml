@@ -8,4 +8,5 @@
     android:textAlignment="textStart"
     android:gravity="start"
     android:layout_marginLeft="10dp"
-    android:background="@drawable/shapes"/>
+    android:background="@drawable/shapes"
+    android:paddingVertical="5dp"/>

@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Splash_Principal"
-    android:background="@color/azulmboscuro">
+    android:background="@color/verdemb"
+    >
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:adjustViewBounds="true"
-        app:srcCompat="@drawable/mblogo"
+        app:srcCompat="@mipmap/logo_masboletos"
         tools:layout_editor_absoluteX="39dp"
         tools:layout_editor_absoluteY="220dp" />
 
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Version 0.0.1"
-        android:textColor="@android:color/background_light"
+        android:text="Version 0.0.2"
+        android:textColor="@color/azulmboscuro"
         android:textSize="18sp" />
 </RelativeLayout>

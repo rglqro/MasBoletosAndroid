@@ -50,10 +50,11 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleccione la ciudad en donde quiera visualizar Eventos"
-            android:textColor="@android:color/background_light"
-            android:textSize="22sp"
-            android:textAlignment="center"/>
+            android:text="Seleccione la ciudad donde quires visualizar los puntos de venta"
+                   android:textSize="22sp"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            android:background="@android:color/transparent" />
 
     </LinearLayout>
 
@@ -70,9 +71,10 @@
         android:id="@+id/spEstados"
         android:layout_width="match_parent"
         android:layout_height="53dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:entries="@array/EstadosRep"
         android:backgroundTint="#000"
-        android:layout_marginLeft="10dp" />
+        android:entries="@array/EstadosRep"
+        android:spinnerMode="dialog" />
 
 </LinearLayout>

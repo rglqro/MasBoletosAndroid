@@ -2,14 +2,19 @@ package itstam.masboletos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +36,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -69,14 +75,16 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     Activity activity=getActivity();
     int currentPage = 0;
 
+    JSONArray Elementos = null;
     ArrayList<ImageButton> ImBotonEvento;
-    ArrayList<String> ListaImagCarrusel,ListaImagBoton;
+    ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos;
     Spinner spcategorias, sporganizadores;
     Handler handler;
     Runnable Update;
     TableLayout tabla_imagenes;
     View vista;
     TableRow row;
+    Timer swipeTimer;
     private SwipeRefreshLayout swipeContainer;
 
     public BoletosPrin() {
@@ -112,50 +120,16 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         vista = inflater.inflate(R.layout.fragment_boletos_prin, container, false);
         swipeContainer = (SwipeRefreshLayout) vista.findViewById(R.id.SWRLY);
         tabla_imagenes = (TableLayout) vista.findViewById(R.id.tabla_imagenes);
+
         Consulta_Imagen_Botones(vista);
+
         swipeContainer.setOnRefreshListener(this);
         return vista;
-    }
-
-
-    void consulta_Imagenes_Carrusel(final View vista){
-        /*Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getImgCarrusel.php");  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            JSONArray Elementos = null;
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                ListaImagCarrusel = new ArrayList<String>();
-                                ListaImagCarrusel.clear();
-                                Log.d("Total de Imagenes",String.valueOf(Elementos.length()));
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
-                                }
-                                iniciar_listas_spinner(vista);
-                                iniciar_Carrusel2(vista);
-                                Consulta_Imagen_Botones(vista);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();*/
     }
 
     void Consulta_Imagen_Botones(final View vista){
@@ -168,17 +142,19 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                     public void run() {
                         int r = validadatos(resultado); // checa si la pagina devolvio algo
                         if (r>0) {
-                            JSONArray Elementos = null;
                             try {
                                 Elementos = new JSONArray(resultado);
                                 ListaImagBoton = new ArrayList<String>();
                                 ListaImagBoton.clear();
                                 ListaImagCarrusel = new ArrayList<String>();
                                 ListaImagCarrusel.clear();
+                                IDEventos= new ArrayList<String>();
+                                IDEventos.clear();
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     ListaImagBoton.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
                                     ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
+                                    IDEventos.add(datos.getString("idevento"));
                                 }
                                 iniciar_listas_spinner(vista);
                                 iniciar_Carrusel2(vista);
@@ -230,6 +206,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                         Intent mainIntent = new Intent().setClass(
                                 getActivity(), DetallesEventos.class);
                         mainIntent.putExtra("indiceimagen",ListaImagBoton.get(v.getId()).toString());
+                        mainIntent.putExtra("idevento",IDEventos.get(v.getId()).toString());
                         startActivity(mainIntent);
                     }
                 });
@@ -257,7 +234,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void iniciar_Carrusel2(View vista){
         mPager = (ViewPager) vista.findViewById(R.id.pager);
         activity=getActivity();
-        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,ListaImagBoton));
+        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,ListaImagBoton,IDEventos));
         CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         // Auto start of viewpager
@@ -269,7 +246,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 mPager.setCurrentItem(currentPage++, true);
             }
         };
-        Timer swipeTimer = new Timer();
+        swipeTimer = new Timer();
         swipeTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -338,6 +315,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     public void onDetach() {
         handler.removeCallbacks(Update);
         super.onDetach();
+        if(swipeTimer != null){
+            swipeTimer.cancel();
+            //cancel timer task and assign null
+        }
         mListener = null;
     }
 
@@ -348,6 +329,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
             public void run() {
                 handler.removeCallbacks(Update);
                 handler = new Handler();
+                if(swipeTimer != null){
+                    swipeTimer.cancel();
+                    //cancel timer task and assign null
+                }
                 ImBotonEvento.clear();
                 tabla_imagenes.removeAllViews();
                 Consulta_Imagen_Botones(vista);
@@ -374,24 +359,37 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     @Override
     public void onDestroy() {
         handler.removeCallbacks(Update);
-        Log.d("Destroy","Destroy");
+        if(swipeTimer != null){
+            swipeTimer.cancel();
+            //cancel timer task and assign null
+        }
+        Log.d("Destroy BP","Destroy");
         super.onDestroy();
     }
 
     @Override
     public void onStop() {
         handler.removeCallbacks(Update);
-        Log.d("Stop","Stop");
+        if(swipeTimer != null){
+            swipeTimer.cancel();
+            swipeTimer= new Timer();
+            //cancel timer task and assign null
+        }
+        Log.d("Stop BP","Stop");
         super.onStop();
     }
 
     @Override
     public void onPause() {
         //handler.removeCallbacks(Update);
-        Log.d("Pause","Pause");
+        Log.d("Pause BP","Pause");
+        if(swipeTimer != null){
+            swipeTimer.cancel();
+            swipeTimer= new Timer();
+            //cancel timer task and assign null
+        }
         super.onPause();
     }
-
 
 
 }

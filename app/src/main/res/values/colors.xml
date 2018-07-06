@@ -3,7 +3,9 @@
     <color name="colorPrimary">#000A3D</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="verdemb">#99BD11</color>
+    <color name="verdemb">#A2BD30</color>
     <color name="azulmb">#013C7E</color>
     <color name="azulmboscuro">#000A3D</color>
+    <color name="negro">#000</color>
+    <color name="blanco">#fff</color>
 </resources>

@@ -14,63 +14,183 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Perfil"
-        android:textSize="24sp"
-        android:textColor="#fff"
+        android:background="@color/azulmboscuro"
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
-        android:background="@color/azulmboscuro"/>
+        android:text="Perfil"
+        android:textColor="#fff"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
 
-       <LinearLayout
+        <LinearLayout
+            android:id="@+id/LLPrincipal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#99BD11"
+            android:background="#fff"
             android:orientation="vertical">
 
-           <RelativeLayout
-               android:layout_width="match_parent"
-               android:layout_height="150dp"
-               android:background="@color/azulmboscuro">
+            <RelativeLayout
+                android:id="@+id/RLDatosPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/azulmboscuro">
 
-               <ImageView
-                   android:id="@+id/imageView3"
-                   android:layout_width="123dp"
-                   android:layout_height="50dp"
-                   android:layout_alignParentStart="true"
-                   android:layout_centerVertical="true"
-                   android:adjustViewBounds="true"
-                   android:cropToPadding="false"
-                   android:src="@drawable/mblogo" />
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="123dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="false"
+                    android:src="@drawable/mblogo" />
 
-               <TextView
-                   android:id="@+id/textView2"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentEnd="true"
-                   android:layout_alignTop="@+id/imageView3"
-                   android:layout_marginEnd="30dp"
-                   android:text="Nombre del Usuario"
-                   android:textColor="@android:color/background_light"
-                   android:textSize="18sp"
-                   android:layout_alignParentRight="true" />
-           </RelativeLayout>
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/imageView3"
+                    android:layout_marginEnd="30dp"
+                    android:text="Nombre del Usuario"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="18sp"
+                    android:layout_marginRight="30dp" />
+            </RelativeLayout>
 
-           <Button
-                android:id="@+id/button2"
+            <Button
+                android:id="@+id/BtMEventos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#013C7E"
-                android:text="Mis Boletos" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@android:color/transparent"
+                android:text="Mis Eventos"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"/>
 
-       </LinearLayout>
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:background="@android:color/transparent"
+                android:text="Boleto Electrónico"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"/>
 
-    </ScrollView>
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="Chat de ayuda"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="Aviso de privacidad"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/button6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="Historial de compras"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="¿Necesitas ayuda?"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/button8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="Ver Tutorial"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/button9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="Buzón de sugerencias"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/button10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:text="Acerca de"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 
 </LinearLayout>

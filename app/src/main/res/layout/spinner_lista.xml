@@ -9,4 +9,5 @@
     android:singleLine="true"
     android:textAlignment="textStart"
     android:textColor="#fff"
-    android:textSize="24sp" />
+    android:textSize="20sp"
+    android:paddingTop="10dp"/>

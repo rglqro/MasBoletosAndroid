@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 
 /**
@@ -27,6 +30,8 @@ public class InfoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     View vista;
+    String nombreEvento;
+    TextView TVXNEvento;
     private OnFragmentInteractionListener mListener;
 
     public InfoFragment() {
@@ -65,8 +70,13 @@ public class InfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         vista= inflater.inflate(R.layout.fragment_info, container, false);
+        nombreEvento=getArguments().getString("nombreEvento");
+        TVXNEvento=(TextView)vista.findViewById(R.id.txvNombreEve);
+        TVXNEvento.setText(nombreEvento);
+
         return vista;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

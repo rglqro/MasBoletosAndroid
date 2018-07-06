@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="#ffff"
-    >
-
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <FrameLayout
 
@@ -43,7 +37,7 @@
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:paddingVertical="5dp"
-                app:srcCompat="@drawable/ic_inicio" />
+                android:src="@drawable/ic_inicio" />
 
             <ImageButton
                 android:id="@+id/BTUbicacion"
@@ -52,7 +46,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:paddingVertical="5dp"
-                app:srcCompat="@drawable/ic_local" />
+                android:src="@drawable/ic_local" />
 
             <ImageButton
                 android:id="@+id/BTPerfil"
@@ -61,7 +55,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:paddingVertical="5dp"
-                app:srcCompat="@drawable/ic_perfil" />
+                android:src="@drawable/ic_perfil" />
         </LinearLayout>
 
         <LinearLayout
@@ -76,7 +70,8 @@
                 android:layout_weight="1"
                 android:text="Inicio"
                 android:textAlignment="center"
-                android:textColor="#fff" />
+                android:textColor="#fff"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textView12"
@@ -85,7 +80,8 @@
                 android:layout_weight="1"
                 android:text="Puntos de Venta"
                 android:textAlignment="center"
-                android:textColor="#fff" />
+                android:textColor="#fff"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -94,9 +90,9 @@
                 android:layout_weight="1"
                 android:text="Perfil"
                 android:textAlignment="center"
-                android:textColor="#fff" />
+                android:textColor="#fff"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
-
 
 </RelativeLayout>

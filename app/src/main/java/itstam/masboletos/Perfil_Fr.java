@@ -1,12 +1,19 @@
 package itstam.masboletos;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 /**
@@ -28,6 +35,8 @@ public class Perfil_Fr extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    View vista;
+    RelativeLayout RLDatosPerfil; TextView TXVMsj; LinearLayout LLPrincipal;
 
     public Perfil_Fr() {
         // Required empty public constructor
@@ -60,11 +69,37 @@ public class Perfil_Fr extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_perfil_, container, false);
+        vista=inflater.inflate(R.layout.fragment_perfil_, container, false);
+
+        RLDatosPerfil=(RelativeLayout) vista.findViewById(R.id.RLDatosPerfil);
+        LLPrincipal =(LinearLayout) vista.findViewById(R.id.LLPrincipal);
+        vista_no_sesion();
+
+        return vista;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void vista_no_sesion(){
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 350);
+        RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp2.addRule(RelativeLayout.CENTER_IN_PARENT);
+        RLDatosPerfil.removeAllViews();
+        lp.setMargins(0,0,0,dpToPx(5));
+        RLDatosPerfil.setLayoutParams(lp);
+        TXVMsj = new TextView(getActivity());
+        TXVMsj.setTextColor(Color.WHITE);
+        TXVMsj.setGravity(Gravity.CENTER);
+        TXVMsj.setTextSize(dpToPx(7));
+        TXVMsj.setPadding(dpToPx(10),0,dpToPx(10),0);
+        TXVMsj.setText("Únete a Mas Boletos y comienza a vivir la experiencia");
+        TXVMsj.setLayoutParams(lp2);
+        RLDatosPerfil.addView(TXVMsj);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -104,5 +139,12 @@ public class Perfil_Fr extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public int dpToPx(int dp) {
+        float density = getActivity().getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dp * density);
     }
 }
