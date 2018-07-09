@@ -49,9 +49,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import butterknife.ButterKnife;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,15 +70,15 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    TextView txvCantidad;
+    TextView txvCantidad,txvprecio;
     ImageButton BtMas,BtMenos;
-    int cantidadBoletos=0;
-    String idevento,eventogrupo;
+    int cantidadBoletos=0, indiceZona=0;
+    String idevento,eventogrupo,_zona;
     TextView TXVSFuncion,TXVEFuncion;
     ImageView IMVMapa; Spinner spfuncion,spseccion; LinearLayout LLYZonas;
     RadioButton[] RBZonas; RadioGroup RGZonas=null;
     View vista; JSONArray Elementos=null;
-    String [] funciones;
+    String [] funciones, zonas,colores, precios, disponibilidad, secciones;
     Button btCaptcha;
 
     private OnFragmentInteractionListener mListener;
@@ -115,10 +115,8 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     }
 
     private static final String TAG = ComprarBoletoFr.class.getSimpleName();
-
     // TODO - replace the SITE KEY with yours
     private static final String SAFETY_NET_API_SITE_KEY = "6LentGIUAAAAAKuqtOecg0H0TRdZikpyUj_39F0f";
-
     // TODO - replace the SERVER URL with yours
     private static final String URL_VERIFY_ON_SERVER = "http://www.masboletos.mx/appMasboletos/captchaVerificated.php";
 
@@ -135,6 +133,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         });
         ButterKnife.bind(getActivity());
         txvCantidad=(TextView)vista.findViewById(R.id.txvCantidad);
+        txvprecio=(TextView)vista.findViewById(R.id.txvPrecio);
         BtMas=(ImageButton)vista.findViewById(R.id.BtMas);
         BtMenos=(ImageButton)vista.findViewById(R.id.BtMenos);
         IMVMapa =(ImageView)vista.findViewById(R.id.IMVMapa);
@@ -161,7 +160,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 .into(IMVMapa);
         if(cantidadBoletos==0){ BtMenos.setClickable(false);}
         if(eventogrupo.equals("0")){
-            generar_zonas();
+            obtener_zonas();
             TXVSFuncion.setVisibility(View.GONE); TXVEFuncion.setVisibility(View.GONE);
             spfuncion.setVisibility(View.GONE);
         }else{
@@ -204,29 +203,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         tr.start();
     }
 
-    @SuppressLint("ResourceAsColor")
-    void generar_zonas(){
-        if (RGZonas!=null) {
-            RGZonas.removeAllViews();
-        }
-        RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        RBZonas = new RadioButton[3];
-        RGZonas = new RadioGroup(getActivity());
-        RGZonas.setLayoutParams(lp);
-        RGZonas.setPadding(10,0,10,15);
-        for (int i=0;i<RBZonas.length;i++){
-            RBZonas[i] = new RadioButton(getActivity());
-            RBZonas[i].setText("Zona "+i);
-            RBZonas[i].setTextSize(20);
-            RBZonas[i].setTextColor(Color.BLACK);
-            RBZonas[i].setId(i);
-            RGZonas.addView(RBZonas[i]);
-        }
-        LLYZonas.addView(RGZonas);
-        RBZonas[0].setChecked(true);
-        spinner_seccion();
-    }
-
     void spinner_funcion(){
         ArrayAdapter adapter2 = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,funciones);
         adapter2.setDropDownViewResource(R.layout.spinner_lista2);
@@ -235,33 +211,141 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
-                    generar_zonas();
+                    obtener_zonas();
                     BtMas.setVisibility(View.VISIBLE);
                     BtMenos.setVisibility(View.VISIBLE);
-                    }else{
-                        if (RGZonas!=null) {
-                            RGZonas.removeAllViews();
-                        }
-                        txvCantidad.setText("0");
-                        spseccion.setVisibility(View.INVISIBLE);
-                        BtMas.setVisibility(View.INVISIBLE);
-                        BtMenos.setVisibility(View.INVISIBLE);
+                }else{
+                    if (RGZonas!=null) {
+                        RGZonas.removeAllViews();
                     }
+                    txvCantidad.setText("0");
+                    spseccion.setVisibility(View.INVISIBLE);
+                    BtMas.setVisibility(View.INVISIBLE);
+                    BtMenos.setVisibility(View.INVISIBLE);
                 }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+    }
+
+    void obtener_zonas(){
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento);  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            try {
+                                Elementos = new JSONArray(resultado);
+                                zonas= new String[Elementos.length()];
+                                colores= new String[Elementos.length()];
+                                precios= new String[Elementos.length()];
+                                disponibilidad= new String[Elementos.length()];
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    zonas[i]=datos.getString("grupo");
+                                    colores[i]=datos.getString("color");
+                                    precios[i]=datos.getString("precio");
+                                    disponibilidad[i]=datos.getString("disponibilidad");
+                                }
+                                generar_zonas();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });  //permite trabajar con la interfaz grafica
+            }
+        };
+        tr.start();
+    }
+
+    @SuppressLint("ResourceAsColor")
+    void generar_zonas(){
+        if (RGZonas!=null) {
+            RGZonas.removeAllViews();
+        }
+        RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RBZonas = new RadioButton[zonas.length];
+        RGZonas = new RadioGroup(getActivity());
+        RGZonas.setLayoutParams(lp);
+        RGZonas.setPadding(10,0,10,15);
+        for (int i=0;i<RBZonas.length;i++){
+            RBZonas[i] = new RadioButton(getActivity());
+            RBZonas[i].setText(zonas[i]+" \nDisponbles: "+disponibilidad[i]);
+            RBZonas[i].setTextSize(20);
+            RBZonas[i].setTextColor(Color.BLACK);
+            RBZonas[i].setId(i);
+            RBZonas[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cantidadBoletos=0;
+                    txvCantidad.setText(String.valueOf(0));
+                    txvprecio.setText(" $ 0.0");
+                    BtMenos.setClickable(false);
+                    indiceZona=RGZonas.getCheckedRadioButtonId();
+                    _zona=zonas[indiceZona].replace(" ","%20");
+                    obtener_secciones();
                 }
             });
+            RGZonas.addView(RBZonas[i]);
+        }
+        LLYZonas.addView(RGZonas);
+        _zona=zonas[indiceZona].replace(" ","%20");
+        RBZonas[0].setChecked(true);
+        obtener_secciones();
+    }
 
+    void obtener_secciones(){
+        for (int i=0;i<RBZonas.length;i++){
+            if (i==indiceZona){
+                RBZonas[i].setClickable(false);
+            }else{
+                RBZonas[i].setClickable(true);
+            }
+        }
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            try {
+                                Elementos = new JSONArray(resultado);
+                                secciones= new String[Elementos.length()];
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    secciones[i]=datos.getString("nombre");
+                                }
+                                spinner_seccion();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });  //permite trabajar con la interfaz grafica
+            }
+        };
+        tr.start();
     }
 
     void spinner_seccion(){
         spseccion.setVisibility(View.INVISIBLE);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.secciones, R.layout.spinner_item_2);
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,secciones);
         adapter.setDropDownViewResource(R.layout.spinner_lista2);
         spseccion.setAdapter(adapter);
-
         spseccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -285,42 +369,41 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     public void validateCaptcha() {
         // Showing reCAPTCHA dialog
         SafetyNet.getClient(getActivity()).verifyWithRecaptcha(SAFETY_NET_API_SITE_KEY)
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<SafetyNetApi.RecaptchaTokenResponse>() {
-                    @Override
-                    public void onSuccess(SafetyNetApi.RecaptchaTokenResponse response) {
-                        Log.d(TAG, "onSuccess");
-
-                        if (!response.getTokenResult().isEmpty()) {
-
-                            // Received captcha token
-                            // This token still needs to be validated on the server
-                            // using the SECRET key
-                            verifyTokenOnServer(response.getTokenResult());
-                        }
-                    }
-                })
+                .addOnSuccessListener(getActivity(),
+                        new OnSuccessListener<SafetyNetApi.RecaptchaTokenResponse>() {
+                            @Override
+                            public void onSuccess(SafetyNetApi.RecaptchaTokenResponse response) {
+                                // Indicates communication with reCAPTCHA service was
+                                // successful.
+                                String userResponseToken = response.getTokenResult();
+                                if (!userResponseToken.isEmpty()) {
+                                    // Validate the user response token using the
+                                    // reCAPTCHA siteverify API.
+                                    verifyTokenOnServer(response.getTokenResult());
+                                }
+                            }
+                        })
                 .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof ApiException) {
+                            // An error occurred when communicating with the
+                            // reCAPTCHA service. Refer to the status code to
+                            // handle the error appropriately.
                             ApiException apiException = (ApiException) e;
-                            Log.d(TAG, "Error message: " +
-                                    CommonStatusCodes.getStatusCodeString(apiException.getStatusCode()));
+                            int statusCode = apiException.getStatusCode();
+                            Log.d(TAG, "Error: " + CommonStatusCodes
+                                    .getStatusCodeString(statusCode));
                         } else {
-                            Log.d(TAG, "Unknown type of error: " + e.getMessage());
+                            // A different, unknown type of error occurred.
+                            Log.d(TAG, "Error: " + e.getMessage());
                         }
                     }
                 });
     }
 
-    /**
-     * Verifying the captcha token on the server
-     * Post param: recaptcha-response
-     * Server makes call to https://www.google.com/recaptcha/api/siteverify
-     * with SECRET Key and Captcha token
-     */
     public void verifyTokenOnServer(final String token) {
-        Log.d(TAG, "Captcha Token" + token);
+        Log.d(TAG, "Captcha Token " + token);
 
         StringRequest strReq = new StringRequest(Request.Method.POST,
                 URL_VERIFY_ON_SERVER, new Response.Listener<String>() {
@@ -333,8 +416,10 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     String message = jsonObject.getString("message");
+
                     if (success) {
                         // Congrats! captcha verified successfully on server
+                        // TODO - submit the feedback to your server
 
                     } else {
                         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -355,7 +440,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("recaptcha-response", token);
-
                 return params;
             }
         };
@@ -381,6 +465,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     public String inserta(String enlace){ // metodo que inserta los parametros en la BD
 
         URL url = null;
+        Log.d("Enlace ",enlace);
         int respuesta = 0;
         String linea = "",valor="";
         StringBuilder resul = null;
@@ -465,6 +550,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             cantidadBoletos++;
             txvCantidad.setText(String.valueOf(cantidadBoletos));
+            txvprecio.setText(" $ "+String.valueOf(Double.parseDouble(precios[indiceZona])*cantidadBoletos));
             if(cantidadBoletos>0){
                 BtMenos.setClickable(true);
                 spseccion.setVisibility(View.VISIBLE);
@@ -475,6 +561,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             cantidadBoletos--;
             txvCantidad.setText(String.valueOf(cantidadBoletos));
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
+            txvprecio.setText(" $ "+String.valueOf(Double.parseDouble(precios[indiceZona])*cantidadBoletos));
             if (cantidadBoletos==0){
                 BtMenos.setClickable(false);
                 spseccion.setVisibility(View.INVISIBLE);

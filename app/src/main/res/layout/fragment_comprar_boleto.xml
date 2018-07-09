@@ -127,8 +127,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/shapes"
-            android:text="TextView"
-            android:textSize="24sp" />
+            android:text="$ 0.0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            tools:text="$ 0.0" />
 
         <TextView
             android:id="@+id/txvCantidad"
