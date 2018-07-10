@@ -63,7 +63,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="Estado"
         android:textColor="@color/azulmboscuro"
         android:textSize="16sp" />
 
@@ -76,5 +75,11 @@
         android:backgroundTint="#000"
         android:entries="@array/EstadosRep"
         android:spinnerMode="dialog" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/FRLYMapa">
+    </FrameLayout>
 
 </LinearLayout>

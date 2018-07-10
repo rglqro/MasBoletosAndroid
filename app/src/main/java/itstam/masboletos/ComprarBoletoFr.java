@@ -78,7 +78,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     ImageView IMVMapa; Spinner spfuncion,spseccion; LinearLayout LLYZonas;
     RadioButton[] RBZonas; RadioGroup RGZonas=null;
     View vista; JSONArray Elementos=null;
-    String [] funciones, zonas,colores, precios, disponibilidad, secciones;
+    String [] funciones, zonas,colores, precios, disponibilidad, secciones,idevento_funcion;
     Button btCaptcha;
 
     private OnFragmentInteractionListener mListener;
@@ -186,10 +186,12 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                             try {
                                 Elementos = new JSONArray(resultado);
                                 funciones= new String[Elementos.length()+1];
-                                funciones[0]="..Seleccione una función..";
+                                idevento_funcion= new String[Elementos.length()+1];
+                                funciones[0]="..Seleccione una función.."; idevento_funcion[0]="000";
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
+                                    idevento_funcion[i+1]=datos.getString("idevento_funcion");
                                 }
                                 spinner_funcion();
                             } catch (JSONException e) {
@@ -212,6 +214,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
                     obtener_zonas();
+                    idevento=idevento_funcion[position];
                     BtMas.setVisibility(View.VISIBLE);
                     BtMenos.setVisibility(View.VISIBLE);
                 }else{
