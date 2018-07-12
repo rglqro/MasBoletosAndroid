@@ -33,6 +33,7 @@ public class UbicacionAct extends AppCompatActivity {
     JSONArray Elementos=null;
     String [] Estados,IDEdo,latLngs;
     MAPSFR mapsfr= new MAPSFR();
+    String Edo_Sel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,7 @@ public class UbicacionAct extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Consulta_TiendaXedo(IDEdo[position]); //Obtiene el ID del estado de acuerdo a la opcion seleccionada
+                Edo_Sel=Estados[position];
             }
 
             @Override
@@ -124,7 +126,7 @@ public class UbicacionAct extends AppCompatActivity {
                                     llenardatosmapa();
                                 }else {
                                     getSupportFragmentManager().beginTransaction().detach(mapsfr).commit();
-                                    Toast.makeText(getApplicationContext(),"No hay tiendas disponibles en su estado por el momento",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(),"No hay tiendas disponibles en "+Edo_Sel+" por el momento",Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

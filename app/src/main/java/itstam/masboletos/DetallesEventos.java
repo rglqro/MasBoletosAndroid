@@ -1,7 +1,9 @@
 package itstam.masboletos;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
@@ -48,25 +50,31 @@ public class DetallesEventos extends AppCompatActivity implements InfoFragment.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-        collapsingToolbarLayout.setTitle(" Atrás");
+        collapsingToolbarLayout.setTitle(" Comprar Boletos");
         collapsingToolbarLayout.setExpandedTitleTextColor(ColorStateList.valueOf(Color.TRANSPARENT));
 
         Bundle bundle = getIntent().getExtras();
         indiceimagen=bundle.getString("indiceimagen");
+
+        SharedPreferences preferencias=getSharedPreferences("InfoEvento", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        editor.putString("URLIMCuadrada", indiceimagen);
+        editor.commit();
+
         idevento=bundle.getString("idevento");
         imEvento=(ImageView) findViewById(R.id.imEvento);
-        Picasso.with(getApplicationContext())
+        Picasso.get()
                 .load(indiceimagen)
-                .error(R.id.action_inicio)
+                .error(R.drawable.ic_inicio)
                 .into(imEvento);
         Consulta_Datos_Evento();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    void ControlBotones(){
+    void IniciarFragments(){
         TabLayout tabLayout = (TabLayout) findViewById(R.id.TabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Compra tus Boletos"));
-        tabLayout.addTab(tabLayout.newTab().setText("Información"));
+        tabLayout.addTab(tabLayout.newTab().setText("Cantidad de Boletos"));
+        tabLayout.addTab(tabLayout.newTab().setText("Selección de Zona"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pagerFragments);
@@ -136,7 +144,7 @@ public class DetallesEventos extends AppCompatActivity implements InfoFragment.O
                                         eventogrupo=datos.getString("eventogrupo");
                                     }
                                 }
-                                ControlBotones();
+                                IniciarFragments();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

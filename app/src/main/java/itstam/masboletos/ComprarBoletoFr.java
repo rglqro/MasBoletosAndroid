@@ -1,7 +1,11 @@
 package itstam.masboletos;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -9,13 +13,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +58,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -62,24 +74,21 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     TextView txvCantidad,txvprecio;
     ImageButton BtMas,BtMenos;
     int cantidadBoletos=0, indiceZona=0;
-    String idevento,eventogrupo,_zona;
+    String idevento,eventogrupo,_zona,id_seccionXevento,seccion_compra,costo_compra,asiento_compra;
     TextView TXVSFuncion,TXVEFuncion;
     ImageView IMVMapa; Spinner spfuncion,spseccion; LinearLayout LLYZonas;
     RadioButton[] RBZonas; RadioGroup RGZonas=null;
     View vista; JSONArray Elementos=null;
-    String [] funciones, zonas,colores, precios, disponibilidad, secciones,idevento_funcion;
-    Button btCaptcha;
+    String [] funciones, zonas,colores, precios, disponibilidad, subzonas,idevento_funcion,numerado,idsubzonas,comision;
+    Button btCaptcha,btmDisponible;
+    Dialog customDialog = null;
+    DecimalFormat df = new DecimalFormat("#.00");
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,31 +96,15 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ComprarBoletoFr.
-     */
     // TODO: Rename and change types and number of parameters
     public static ComprarBoletoFr newInstance(String param1, String param2) {
         ComprarBoletoFr fragment = new ComprarBoletoFr();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     private static final String TAG = ComprarBoletoFr.class.getSimpleName();
@@ -142,6 +135,8 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         TXVEFuncion=(TextView)vista.findViewById(R.id.TXVEFuncion);
         spfuncion=(Spinner) vista.findViewById(R.id.spFuncion);
         spseccion=(Spinner) vista.findViewById(R.id.spseccion);
+        btmDisponible=(Button)vista.findViewById(R.id.btmdisponible);
+        btmDisponible.setClickable(false);
 
         idevento=getArguments().getString("idevento");
         eventogrupo=getArguments().getString("eventogrupo");
@@ -154,9 +149,10 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     void inicio_interfaz(){
         BtMas.setOnClickListener(this);
         BtMenos.setOnClickListener(this);
-        Picasso.with(getActivity())
+        btmDisponible.setOnClickListener(this);
+        Picasso.get()
                 .load("http://www.masboletos.mx/sica/imgEventos/MAPA.NEW-CLR.jpg")
-                .error(R.drawable.mblogo)
+                .error(R.drawable.ic_inicio)
                 .into(IMVMapa);
         if(cantidadBoletos==0){ BtMenos.setClickable(false);}
         if(eventogrupo.equals("0")){
@@ -252,12 +248,16 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                                 colores= new String[Elementos.length()];
                                 precios= new String[Elementos.length()];
                                 disponibilidad= new String[Elementos.length()];
+                                numerado= new String[Elementos.length()];
+                                comision= new String[Elementos.length()];
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     zonas[i]=datos.getString("grupo");
                                     colores[i]=datos.getString("color");
                                     precios[i]=datos.getString("precio");
                                     disponibilidad[i]=datos.getString("disponibilidad");
+                                    numerado[i]=datos.getString("numerado");
+                                    comision[i]=datos.getString("comision");
                                 }
                                 generar_zonas();
                             } catch (JSONException e) {
@@ -283,7 +283,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         RGZonas.setPadding(10,0,10,15);
         for (int i=0;i<RBZonas.length;i++){
             RBZonas[i] = new RadioButton(getActivity());
-            RBZonas[i].setText(zonas[i]+" \nDisponbles: "+disponibilidad[i]);
+            RBZonas[i].setText(zonas[i]+" \nDisponibles: "+disponibilidad[i]);
             RBZonas[i].setTextSize(20);
             RBZonas[i].setTextColor(Color.BLACK);
             RBZonas[i].setId(i);
@@ -294,6 +294,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                     txvCantidad.setText(String.valueOf(0));
                     txvprecio.setText(" $ 0.0");
                     BtMenos.setClickable(false);
+                    btmDisponible.setClickable(false);
                     indiceZona=RGZonas.getCheckedRadioButtonId();
                     _zona=zonas[indiceZona].replace(" ","%20");
                     obtener_secciones();
@@ -327,10 +328,14 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                         if (r>0) {
                             try {
                                 Elementos = new JSONArray(resultado);
-                                secciones= new String[Elementos.length()];
+                                subzonas= new String[Elementos.length()+1];
+                                idsubzonas= new String[Elementos.length()+1];
+                                subzonas[0]="Mejor disponible";
+                                idsubzonas[0]="0";
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
-                                    secciones[i]=datos.getString("nombre");
+                                    subzonas[i+1]=datos.getString("nombre");
+                                    idsubzonas[i+1]=datos.getString("idzona");
                                 }
                                 spinner_seccion();
                             } catch (JSONException e) {
@@ -346,18 +351,108 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
     void spinner_seccion(){
         spseccion.setVisibility(View.INVISIBLE);
-        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,secciones);
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,subzonas);
         adapter.setDropDownViewResource(R.layout.spinner_lista2);
         spseccion.setAdapter(adapter);
         spseccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                id_seccionXevento=idsubzonas[position];
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+    }
+
+    String tipomsj="",msj="";
+    public void Mejor_Disponible(){
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+
+                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+txvCantidad.getText()+"&idzonaxgrupo="+id_seccionXevento);  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            try {
+                                Elementos = new JSONArray("["+resultado+"]");
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    seccion_compra=datos.getString("mensagesetDescripcion");
+                                    costo_compra=datos.getString("mensagesetImporteBoleto");
+                                    asiento_compra=datos.getString("mensagesetAsientos");
+                                    tipomsj=datos.getString("mensagesetTipo");
+                                    msj=datos.getString("mensagesetMensage");
+                                }
+                                if(tipomsj.equals("1")) {
+                                    DialogCompra();
+                                }else {
+                                    Toast.makeText(getActivity(),msj+"\nSolicite una cantidad diferente o verifique la zona",Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });  //permite trabajar con la interfaz grafica
+            }
+        };
+        tr.start();
+    }
+
+    private void DialogCompra() {
+        // cuadro de dialogo que se abre si no se envio ningun sms o no hubo respuesta del servidor para ingresar el numero de celular manualmente
+        // con este tema personalizado evitamos los bordes por defecto
+        customDialog = new Dialog(getActivity());
+        //deshabilitamos el título por defecto
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //obligamos al usuario a pulsar los botones para cerrarlo
+        customDialog.setCancelable(false);
+        //establecemos el contenido de nuestro dialog
+        customDialog.setContentView(R.layout.dialog_layout);
+        TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
+        Button btComprar;
+        ImageButton imbtClose=(ImageButton) customDialog.findViewById(R.id.imbtClose);
+        TXVSeccionComp=(TextView) customDialog.findViewById(R.id.txvSeccion);
+        TXVAsientos=(TextView)customDialog.findViewById(R.id.txvAsientos);
+        TXVInfoCompra=(TextView)customDialog.findViewById(R.id.txvInfo);
+        TXVTotal=(TextView)customDialog.findViewById(R.id.txvTotal);
+        btComprar=(Button)customDialog.findViewById(R.id.btComprar);
+        imbtClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customDialog.dismiss();
+            }
+        });
+        customDialog.show();
+        Window window = customDialog.getWindow();
+        window.setLayout(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        TXVSeccionComp.setText("Sección: "+zonas[indiceZona]+" , $ "+precios[indiceZona]+" c/u");
+        Double subtotal=0.00,total=0.00,cargoTC=0.00;
+        subtotal=cantidadBoletos*Double.parseDouble(precios[indiceZona]);
+        subtotal+=Double.parseDouble(comision[indiceZona])*cantidadBoletos;
+        cargoTC=subtotal*0.03;
+        TXVAsientos.setText("Asientos: "+asiento_compra);
+
+        String TxTotal="Total: $"+String.valueOf(df.format(subtotal+cargoTC));
+        TXVInfoCompra.setText("PRECIO: $"+precios[indiceZona]+" x "+cantidadBoletos+"\n"
+        +"CARGOS POR SERVICIO: $"+comision[indiceZona]+" x "+cantidadBoletos+"\n"
+        +"SUBTOTAL: $"+df.format(subtotal)+"\n"
+        +"CARGO POR TARJETA DE CREDITO: $"+String.valueOf(df.format(cargoTC)));
+        TXVTotal.setText(TxTotal);
+
+        btComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent().setClass(getActivity(), OrdenarBoleto.class);
+                startActivity(mainIntent);
             }
         });
     }
@@ -466,7 +561,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     }
 
     public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-
         URL url = null;
         Log.d("Enlace ",enlace);
         int respuesta = 0;
@@ -556,6 +650,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             txvprecio.setText(" $ "+String.valueOf(Double.parseDouble(precios[indiceZona])*cantidadBoletos));
             if(cantidadBoletos>0){
                 BtMenos.setClickable(true);
+                btmDisponible.setClickable(true);
                 spseccion.setVisibility(View.VISIBLE);
             }
         }
@@ -567,12 +662,18 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             txvprecio.setText(" $ "+String.valueOf(Double.parseDouble(precios[indiceZona])*cantidadBoletos));
             if (cantidadBoletos==0){
                 BtMenos.setClickable(false);
+                btmDisponible.setClickable(false);
                 spseccion.setVisibility(View.INVISIBLE);
             } else{
                 spseccion.setVisibility(View.VISIBLE);
                 BtMenos.setClickable(true);
+                btmDisponible.setClickable(true);
                 txvCantidad.setText(String.valueOf(cantidadBoletos));
             }
+        }
+        if(v==btmDisponible){
+            Log.d("BTMD","pulsado");
+            Mejor_Disponible();
         }
     }
 

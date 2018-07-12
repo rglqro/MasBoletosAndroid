@@ -189,9 +189,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 if(pos_arr_ima==ListaImagBoton.size()) break;
                 ImBotonEvento.add(new ImageButton(getActivity()));
                 ImBotonEvento.get(i).setLayoutParams(lp2);
-                Picasso.with(getActivity())
+                Picasso.get()
                         .load(ListaImagBoton.get(pos_arr_ima))
-                        .error(R.id.action_inicio)
+                        .error(R.drawable.ic_inicio)
                         .into(ImBotonEvento.get(pos_arr_ima));
                 ImBotonEvento.get(pos_arr_ima).setBackgroundColor(Color.TRANSPARENT);
                 ImBotonEvento.get(pos_arr_ima).setScaleType(ImageView.ScaleType.FIT_CENTER);

@@ -212,7 +212,8 @@
                 android:background="@color/azulmb"
                 android:text="No soy un Robot"
                 android:textAllCaps="false"
-                android:textColor="#fff" />
+                android:textColor="#fff"
+                android:visibility="invisible"/>
 
             <Button
                 android:id="@+id/btmdisponible"
