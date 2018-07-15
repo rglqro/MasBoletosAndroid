@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 
-public class FRPagerAdapter extends FragmentPagerAdapter {
+public class FRPagerAdapter extends FragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
     int mNumOfTabs; Context context; FragmentTransaction ft;
     String nombreEvento, eventogrupo, idevento;
 
@@ -20,9 +22,6 @@ public class FRPagerAdapter extends FragmentPagerAdapter {
         this.eventogrupo=eventogrupo;
         this.nombreEvento=nombreEvento;
         this.idevento=idevento;
-        ft=fm.beginTransaction();
-        ft.commit();
-        fm.beginTransaction().commit();
         this.mNumOfTabs = NumOfTabs;
     }
 
@@ -38,7 +37,7 @@ public class FRPagerAdapter extends FragmentPagerAdapter {
                 comprarBoletoFr.setArguments(bundle);
                 return comprarBoletoFr;
             case 1:
-                InfoFragment infoFragment= new InfoFragment();
+                SeleccionZonaFR infoFragment= new SeleccionZonaFR();
                 infoFragment.setArguments(bundle);
                 return infoFragment;
             default:
@@ -60,5 +59,20 @@ public class FRPagerAdapter extends FragmentPagerAdapter {
                 return "Información";
         }
         return null;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

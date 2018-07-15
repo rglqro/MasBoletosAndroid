@@ -3,231 +3,147 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#fff"
-    android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".ComprarBoletoFr">
+    tools:context=".ComprarBoletoFr"
+    android:fillViewport="true">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingVertical="5dp">
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/verdemb"
-        android:text="Mejor lugar disponible"
-        android:textAlignment="center"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginHorizontal="7dp"
-        android:paddingVertical="5dp"/>
-
-    <ImageView
-        android:id="@+id/IMVMapa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="#fff"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:layout_marginHorizontal="7dp"/>
-
-    <TextView
-        android:id="@+id/TXVSFuncion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/verdemb"
-        android:text="Sección Función"
-        android:textAlignment="center"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginHorizontal="7dp"
-        android:paddingVertical="5dp"/>
-
-    <TextView
-        android:id="@+id/TXVEFuncion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView8"
-        android:text="Función"
-        android:textColor="#000"
-        android:textSize="18sp"
-        android:layout_alignParentLeft="true"
-        android:paddingLeft="8dp"/>
-
-    <Spinner
-        android:id="@+id/spFuncion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView9"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:backgroundTint="#000"
-        android:entries="@array/funciones"
-        android:paddingHorizontal="7dp"
-        android:layout_marginBottom="5dp"/>
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/verdemb"
-        android:text="Sección Boletos"
-        android:textAlignment="center"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginHorizontal="7dp"
-        android:paddingVertical="5dp"/>
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Zonas"
-        android:textColor="#000"
-        android:textSize="18sp"
-        android:paddingLeft="8dp"/>
-
-    <LinearLayout
-        android:id="@+id/LLYZonas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cantidad"
-        android:textColor="#000"
-        android:textSize="18sp"
-        android:paddingLeft="8dp"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="7dp">
 
         <TextView
-            android:id="@+id/txvPrecio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/shapes"
-            android:text="$ 0.0"
-            android:textColor="#000"
-            android:textSize="24sp"
-            tools:text="$ 0.0" />
-
-        <TextView
-            android:id="@+id/txvCantidad"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/shapes"
-            android:paddingHorizontal="10dp"
-            android:text="0"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="24sp"
-            android:layout_marginHorizontal="15dp"/>
-
-
-        <ImageButton
-            android:id="@+id/BtMenos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/shape_ovalado"
-            android:src="@drawable/ic_menos" />
-
-        <ImageButton
-            android:id="@+id/BtMas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/shape_ovalado"
-            android:src="@drawable/ic_mas"
-            android:visibility="visible" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/verdemb"
-        android:text="Sección"
-        android:textAlignment="center"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="5dp"
-        android:layout_marginHorizontal="7dp"
-        android:paddingVertical="5dp"/>
-
-        <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/TXVSFuncion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleccione"
-            android:textColor="#000"
-            android:textSize="18sp"
-            android:paddingLeft="8dp"/>
+            android:layout_marginHorizontal="7dp"
+            android:paddingVertical="5dp"
+            android:text="¿Cuántos boletos desea comprar?"
+            android:textAlignment="center"
+            android:textColor="#f000"
+            android:textSize="18sp" />
 
-    <Spinner
-        android:id="@+id/spseccion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:backgroundTint="#000"
-        android:paddingHorizontal="7dp"/>
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="Seleccione la cantidad de Boletos que desee comprar"
+            android:textColor="@color/gris"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/TXVEFuncion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView8"
+            android:paddingLeft="8dp"
+            android:text="Seleccione una función"
+            android:textColor="#000"
+            android:textSize="13sp" />
+
+        <Spinner
+            android:id="@+id/spFuncion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView9"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="#000"
+            android:entries="@array/funciones"
+            android:paddingHorizontal="7dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gris" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:text="Cantidad"
+            android:textColor="#000"
+            android:textSize="13sp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp">
+            android:paddingLeft="7dp"
+            android:paddingVertical="10dp">
 
-            <Button
-                android:id="@+id/btCaptcha"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/txvCantidad"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_weight="4"
+                android:background="@drawable/shapes"
+                android:paddingHorizontal="10dp"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="24sp" />
+
+
+            <ImageButton
+                android:id="@+id/BtMenos"
+                android:layout_width="5dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:background="@color/azulmb"
-                android:text="No soy un Robot"
-                android:textAllCaps="false"
-                android:textColor="#fff"
-                android:visibility="invisible"/>
+                android:background="@drawable/shape_ovalado"
+                android:src="@drawable/ic_menos" />
+
+            <ImageButton
+                android:id="@+id/BtMas"
+                android:layout_width="5dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/shape_ovalado"
+                android:src="@drawable/ic_mas"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+
+            android:background="@color/gris" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <Button
                 android:id="@+id/btmdisponible"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="15dp"
                 android:background="@color/verdemb"
-                android:drawableRight="@drawable/ic_buscar"
-                android:text="Mejor Disponible"
+                android:text="Continuar"
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:textSize="18sp"
-                android:typeface="serif" />
-        </LinearLayout>
+                android:typeface="monospace" />
+        </RelativeLayout>
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

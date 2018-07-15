@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SeleccionZonaFR"
+    android:background="#fff"
+    android:orientation="vertical"
+    android:paddingVertical="5dp"
+    android:paddingHorizontal="7dp">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/IMVMapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@color/azulmb" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccione su Zona"
+            android:textColor="#000"
+            android:layout_marginBottom="5dp"/>
+
+        <Spinner
+            android:id="@+id/spzona"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/secciones"
+            android:backgroundTint="#f000"/>
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@color/gris"
+            android:layout_marginVertical="5dp"/>
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccione su sección"
+            android:textColor="#000"
+            android:layout_marginBottom="5dp"/>
+
+        <Spinner
+            android:id="@+id/spseccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/negro"/>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

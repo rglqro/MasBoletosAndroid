@@ -1,87 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".DetallesEventos">
+    tools:context=".DetallesEventos"
+    android:orientation="vertical">
 
 
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppBarOverlay">
+        android:background="@color/azulmboscuro">
 
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="Comprar Boletos"
+            android:textAlignment="center"
+            android:textSize="20sp" />
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <ImageButton
+            android:id="@+id/imBtRegresar"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:backgroundTint="#fff"
+            android:onClick="regresar"
+            android:paddingHorizontal="10dp"
+            app:layout_collapseMode="pin"
+            app:srcCompat="@drawable/ic_regresar" />
+
+        <ImageButton
+            android:id="@+id/IMBtCompartir"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="end|right"
+            android:background="@android:color/transparent"
+            android:onClick="intent_compartir"
+            android:paddingHorizontal="10dp"
+            app:layout_collapseMode="pin"
+            app:srcCompat="@drawable/ic_compartir" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="@color/azulmboscuro"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar"
-            >
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imEvento"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="280dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                app:layout_collapseMode="parallax"
-                android:background="@drawable/mblogo"/>
+                android:layout_height="130dp">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                <ImageView
+                    android:id="@+id/IMVFondo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="false"
+                    app:srcCompat="@mipmap/logo_masboletos" />
+
+                <ImageView
+                    android:id="@+id/IMVEvento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/mbiconor" />
+
+                <TextView
+                    android:id="@+id/txvNombreEve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/IMVEvento"
+                    android:layout_toRightOf="@+id/IMVEvento"
+                    android:paddingHorizontal="8dp"
+                    android:shadowColor="@color/negro"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="Nombre del Evento"
+                    android:textColor="#fff"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/TXVDireccion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txvNombreEve"
+                    android:layout_toEndOf="@+id/IMVEvento"
+                    android:layout_toRightOf="@+id/IMVEvento"
+                    android:paddingHorizontal="8dp"
+                    android:shadowColor="@color/negro"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="Dirección"
+                    android:textColor="#fff"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/TXVPoliticas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TXVDireccion"
+                    android:layout_toEndOf="@+id/IMVEvento"
+                    android:layout_toRightOf="@+id/IMVEvento"
+                    android:paddingHorizontal="8dp"
+                    android:shadowColor="@color/negro"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="Politicas"
+                    android:textColor="#fff" />
+
+                <TextView
+                    android:id="@+id/TXVDescripcion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TXVPoliticas"
+                    android:layout_toEndOf="@+id/IMVEvento"
+                    android:layout_toRightOf="@+id/IMVEvento"
+                    android:paddingHorizontal="8dp"
+                    android:shadowColor="@color/negro"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="Descripción del Evento"
+                    android:textColor="#fff" />
+
+            </RelativeLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/PopupOverlay"
-                android:textAlignment="center"
-                android:layout_marginLeft="50dp"/>
-
-            <ImageButton
-                android:id="@+id/imBtRegresar"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
-                android:background="@android:color/transparent"
-                android:onClick="regresar"
-                android:paddingHorizontal="10dp"
-                app:layout_collapseMode="pin"
-                app:srcCompat="@drawable/ic_regresar"
-                android:backgroundTint="#fff"/>
-
-            <ImageButton
-                android:id="@+id/IMBtCompartir"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
-                android:layout_gravity="end|right"
-                android:background="@android:color/transparent"
-                android:onClick="intent_compartir"
-                android:paddingHorizontal="10dp"
-                app:layout_collapseMode="pin"
-                app:srcCompat="@drawable/ic_compartir" />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
-        <android.support.design.widget.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/TabLayout"
-            android:background="@color/azulmboscuro"
-            app:tabSelectedTextColor="@color/verdemb"
-            app:tabTextColor="#fff"
-            app:tabMode="fixed"></android.support.design.widget.TabLayout>
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/TabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/IMVFondo"
+                    android:background="@color/azulmboscuro"
+                    android:clickable="false"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/verdemb"
+                    app:tabTextColor="#fff"></android.support.design.widget.TabLayout>
 
-    </android.support.design.widget.AppBarLayout>
+                <itstam.masboletos.NonSwipeableViewPager
+                    android:id="@+id/pagerFragments"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/TabLayout"
+                    android:background="#fff"
+                    android:fillViewport="true"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    tools:context=".DetallesEventos"
+                    tools:showIn="@layout/activity_detalles_eventos"></itstam.masboletos.NonSwipeableViewPager>
+            </LinearLayout>
 
-    <include layout="@layout/content_detalles_eventos" />
 
-</android.support.design.widget.CoordinatorLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
