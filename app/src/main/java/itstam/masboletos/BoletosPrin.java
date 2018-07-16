@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -58,7 +59,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     JSONArray Elementos = null;
     ArrayList<ImageButton> ImBotonEvento;
-    ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos;
+    ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos,NombresEvento,EventosGrupo;
     Spinner spcategorias, sporganizadores;
     Handler handler;
     Runnable Update;
@@ -102,13 +103,19 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                                 ListaImagBoton.clear();
                                 ListaImagCarrusel = new ArrayList<String>();
                                 ListaImagCarrusel.clear();
+                                NombresEvento= new ArrayList<String>();
+                                NombresEvento.clear();
                                 IDEventos= new ArrayList<String>();
                                 IDEventos.clear();
+                                EventosGrupo= new ArrayList<String>();
+                                EventosGrupo.clear();
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     ListaImagBoton.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
                                     ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
+                                    NombresEvento.add(datos.getString("evento"));
                                     IDEventos.add(datos.getString("idevento"));
+                                    EventosGrupo.add(datos.getString("eventogrupo"));
                                 }
                                 iniciar_listas_spinner(vista);
                                 iniciar_Carrusel2(vista);
@@ -160,7 +167,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                         Intent mainIntent = new Intent().setClass(
                                 getActivity(), DetallesEventos.class);
                         mainIntent.putExtra("indiceimagen",ListaImagBoton.get(v.getId()).toString());
-                        mainIntent.putExtra("idevento",IDEventos.get(v.getId()).toString());
+                        set_DatosCompra("idevento",IDEventos.get(v.getId()).toString());
+                        set_DatosCompra("NombreEvento",NombresEvento.get(v.getId()).toString());
+                        set_DatosCompra("eventogrupo",EventosGrupo.get(v.getId()).toString());
                         startActivity(mainIntent);
                     }
                 });
@@ -188,7 +197,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void iniciar_Carrusel2(View vista){
         mPager = (ViewPager) vista.findViewById(R.id.pager);
         activity=getActivity();
-        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,ListaImagBoton,IDEventos));
+        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo));
         CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         // Auto start of viewpager
@@ -246,7 +255,12 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         return respuesta;
     }
 
-
+    public void set_DatosCompra(String ndato,String dato){
+        SharedPreferences preferencias=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        editor.putString(ndato, dato);
+        editor.commit();
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

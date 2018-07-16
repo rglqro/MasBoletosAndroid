@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/aquamarina">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Más Boletos te recomienda"
+            android:textSize="20sp"
+            android:textAlignment="textEnd"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="10dp"
+            android:textColor="@android:color/background_light"
+            android:background="@color/azulmb"
+            android:gravity="end" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txvSeccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seccion: ,Costo "
+        android:textSize="20sp"
+        android:textColor="#000"
+        android:paddingVertical="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/txvAsientos"
+        android:text="Asientos: 1"
+        android:textSize="20sp"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:paddingVertical="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/azulmboscuro"
+        android:id="@+id/txvInfo"
+        android:text="PRECIO $450 x 1
+ \nCARGOS POR SERVICIO $.0000 x 1
+ \nSUBTOTAL $450
+ \nCARGO TARJETA DE CREDITO $13.50
+ \nTOTAL $463.50"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/txvTotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total: "
+        android:textColor="#ff0000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txvPesos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Precios en Pesos Mexicanos MX$"
+        android:textSize="16sp"
+        android:textColor="@color/azulmboscuro"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btComprar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/azulmb"
+            android:drawableRight="@drawable/ic_comprar"
+            android:paddingHorizontal="15dp"
+            android:text="Continuar con la compra"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

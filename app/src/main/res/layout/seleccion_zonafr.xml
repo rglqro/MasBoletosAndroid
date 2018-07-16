@@ -8,7 +8,8 @@
     android:background="#fff"
     android:orientation="vertical"
     android:paddingVertical="5dp"
-    android:paddingHorizontal="7dp">
+    android:paddingHorizontal="7dp"
+    android:fillViewport="true">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -36,13 +37,13 @@
             android:layout_height="wrap_content"
             android:entries="@array/secciones"
             android:backgroundTint="#f000"/>
+
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="@color/gris"
-            android:layout_marginVertical="5dp"/>
+            android:layout_marginVertical="5dp"
+            android:background="@color/gris" />
 
         <TextView
             android:id="@+id/textView15"
@@ -57,6 +58,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/negro"/>
+
+        <Button
+            android:id="@+id/btContinuar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginVertical="7dp"
+            android:background="@color/verdemb"
+            android:text="Continuar"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

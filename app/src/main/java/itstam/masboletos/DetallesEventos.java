@@ -5,10 +5,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,42 +15,31 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-
-public class DetallesEventos extends AppCompatActivity implements SeleccionZonaFR.OnFragmentInteractionListener, ComprarBoletoFr.OnFragmentInteractionListener, View.OnClickListener
-,ComprarBoletoFr.Funcion_NumBolListener{
+public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener
+,ComprarBoletoFr.Funcion_NumBolListener,SeleccionZonaFR.SelZonaList{
 
     ImageView IMVFondo,IMVEvento;
-    String indiceimagen,idevento,nombreEvento,eventogrupo;
+    String indiceimagen,nombreEvento,eventogrupo;
     JSONArray Elementos=null;
     ViewPager viewPager;
     FRPagerAdapter adapter;
     TabLayout tabLayout;
     DatosCompra datosCompra = new DatosCompra();
+    TextView TXVNEvento;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint({"ResourceAsColor", "ResourceType"})
@@ -61,21 +48,19 @@ public class DetallesEventos extends AppCompatActivity implements SeleccionZonaF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_eventos);
+        TXVNEvento=(TextView)findViewById(R.id.txvNombreEve);
 
         Bundle bundle = getIntent().getExtras();
         indiceimagen=bundle.getString("indiceimagen");
 
-        SharedPreferences preferencias=getSharedPreferences("InfoEvento", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=preferencias.edit();
-        editor.putString("URLIMCuadrada", indiceimagen);
-        editor.commit();
 
-        idevento=bundle.getString("idevento");
-        Log.e("idevento",idevento);
+        SharedPreferences prefe=this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        TXVNEvento.setText((prefe.getString("NombreEvento","")));
+
         IMVFondo=(ImageView)findViewById(R.id.IMVFondo);
         IMVEvento=(ImageView)findViewById(R.id.IMVEvento);
         difuminar_imagen();
-        Consulta_Datos_Evento();
+        IniciarFragments();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -83,13 +68,13 @@ public class DetallesEventos extends AppCompatActivity implements SeleccionZonaF
         tabLayout = (TabLayout) findViewById(R.id.TabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Cantidad de Boletos"));
         tabLayout.addTab(tabLayout.newTab().setText("Selección de Zona"));
+        tabLayout.addTab(tabLayout.newTab().setText("Mejor Disponible"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPager = (ViewPager) findViewById(R.id.pagerFragments);
-        adapter = new FRPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext(),nombreEvento,eventogrupo,idevento);
+        adapter = new FRPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext(),nombreEvento,eventogrupo);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        //tabLayout.setupWithViewPager(viewPager);
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
         for(int i = 0; i < tabStrip.getChildCount(); i++) {
             tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
@@ -102,16 +87,19 @@ public class DetallesEventos extends AppCompatActivity implements SeleccionZonaF
     }
 
     public void next_page(){
+        Log.e("VPActual",String.valueOf(viewPager.getCurrentItem()));
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+    }
+    public void pagina_anterior(){
+        if(viewPager.getCurrentItem()>0) {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+        }else{
+            finish();
+        }
     }
 
     public void regresar(View view){
         finish();
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
     @Override
@@ -128,76 +116,15 @@ public class DetallesEventos extends AppCompatActivity implements SeleccionZonaF
         startActivity(Intent.createChooser(compartir, "Compartir vía"));
     }
 
-    void Consulta_Datos_Evento(){
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getEventosActivos.php");  //para que la variable sea reconocida en todos los metodos
-                runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    if(idevento.equals(datos.getString("idevento"))){
-                                        nombreEvento=datos.getString("evento");
-                                        eventogrupo=datos.getString("eventogrupo");
-                                    }
-                                }
-                                IniciarFragments();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    void difuminar_imagen(){
+        Picasso.with(getApplicationContext())
+                .load(indiceimagen)
+                .error(R.drawable.ic_inicio)
+                .into(IMVEvento);
+        Bitmap resultBmp = BlurCreador.blur(this, BitmapFactory.decodeResource(getResources(),R.drawable.mblogo));
+        IMVFondo.setImageBitmap(resultBmp);
     }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-
-        URL url = null;
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
-    }
-
 
     @Override
     public void setFuncion_NumBol(String idevento, String Cant_Boletos) {
@@ -208,6 +135,17 @@ public class DetallesEventos extends AppCompatActivity implements SeleccionZonaF
         seleccionZonaFR.Recibir_Funcion_CBol();
     }
 
+    @Override
+    public void setSelZona(String numerado, String zona, String idzonaxgrupo, String precio, String comision) {
+        set_DatosCompra("numerado",numerado);
+        set_DatosCompra("zona",zona);
+        set_DatosCompra("idzonaxgrupo",idzonaxgrupo);
+        set_DatosCompra("precio",precio);
+        set_DatosCompra("comision",comision);
+        FRMejDisp frMejDisp =(FRMejDisp) getSupportFragmentManager().findFragmentById(R.id.pagerFragments);
+        frMejDisp.RecibirDatos();
+    }
+
     public void set_DatosCompra(String ndato,String dato){
         SharedPreferences preferencias=getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=preferencias.edit();
@@ -215,14 +153,9 @@ public class DetallesEventos extends AppCompatActivity implements SeleccionZonaF
         editor.commit();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    void difuminar_imagen(){
-        Picasso.with(getApplicationContext())
-                .load(indiceimagen)
-                .error(R.drawable.ic_inicio)
-                .into(IMVEvento);
-        Bitmap resultBmp = BlurCreador.blur(this, BitmapFactory.decodeResource(getResources(),R.drawable.mblogo));
-        IMVFondo.setImageBitmap(resultBmp);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public static class BlurCreador {

@@ -3,6 +3,7 @@ package itstam.masboletos;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,15 +19,16 @@ import java.util.ArrayList;
 
 public class MyAdapter extends PagerAdapter {
 
-    private ArrayList<String> URLimagenes,listaImagBoton,IDEvento;
+    private ArrayList<String> URLimagenes,IDEvento,nombresEvento,eventosGrupo;
     private LayoutInflater inflater;
     private Context context;
 
-    public MyAdapter(Context context, ArrayList<String> URLimagenes, ArrayList<String> listaImagBoton, ArrayList<String> IDEventos) {
+    public MyAdapter(Context context, ArrayList<String> URLimagenes, ArrayList<String> IDEventos, ArrayList<String> nombresEvento, ArrayList<String> eventosGrupo) {
         this.context = context;
         this.URLimagenes=URLimagenes;
-        this.listaImagBoton=listaImagBoton;
         this.IDEvento=IDEventos;
+        this.nombresEvento=nombresEvento;
+        this.eventosGrupo=eventosGrupo;
         inflater = LayoutInflater.from(context);
     }
 
@@ -58,8 +60,10 @@ public class MyAdapter extends PagerAdapter {
                     if(position==i){
                         Intent mainIntent = new Intent().setClass(
                                 context, DetallesEventos.class);
-                        mainIntent.putExtra("indiceimagen",listaImagBoton.get(i).toString());
-                        mainIntent.putExtra("idevento",IDEvento.get(i).toString());
+                        mainIntent.putExtra("indiceimagen",URLimagenes.get(i).toString());
+                        set_DatosCompra("idevento",IDEvento.get(i).toString());
+                        set_DatosCompra("NombreEvento",nombresEvento.get(i).toString());
+                        set_DatosCompra("eventogrupo",eventosGrupo.get(i).toString());
                         context.startActivity(mainIntent);
                     }
                 }
@@ -68,6 +72,13 @@ public class MyAdapter extends PagerAdapter {
         });
         //Log.d("URLIMAGEN Adaptador",URLimagenes[position]);
         return myImageLayout;
+    }
+
+    public void set_DatosCompra(String ndato,String dato){
+        SharedPreferences preferencias=context.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        editor.putString(ndato, dato);
+        editor.commit();
     }
 
     @Override

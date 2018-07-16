@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -72,7 +73,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     TextView txvCantidad,txvprecio;
     ImageButton BtMas,BtMenos;
     int cantidadBoletos=0, indiceZona=0;
-    String idevento,eventogrupo;
+    String idevento,eventogrupo,NombreEvento;
     TextView TXVSFuncion,TXVEFuncion;
     Spinner spfuncion; LinearLayout LLYZonas;
     View vista; JSONArray Elementos=null;
@@ -80,7 +81,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     Button btmDisponible;
     Funcion_NumBolListener funcion_numBolListener;
 
-    private OnFragmentInteractionListener mListener;
 
     public ComprarBoletoFr() {
         // Required empty public constructor
@@ -101,16 +101,20 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         TXVEFuncion=(TextView)vista.findViewById(R.id.TXVEFuncion);
         spfuncion=(Spinner) vista.findViewById(R.id.spFuncion);
         btmDisponible=(Button)vista.findViewById(R.id.btmdisponible);
+        btmDisponible.setClickable(false);
 
-        idevento=getArguments().getString("idevento");
-        eventogrupo=getArguments().getString("eventogrupo");
+        SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        idevento=(prefe.getString("idevento",""));
+        eventogrupo=(prefe.getString("eventogrupo",""));
         inicio_interfaz();
-
 
         return vista;
     }
 
     void inicio_interfaz(){
+        SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        idevento=(prefe.getString("idevento",""));
+        eventogrupo=prefe.getString("eventogrupo","");
         BtMas.setOnClickListener(this);
         BtMenos.setOnClickListener(this);
         btmDisponible.setOnClickListener(this);
@@ -185,13 +189,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -240,32 +237,23 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         try {
             funcion_numBolListener=(Funcion_NumBolListener)context;
         }catch (Exception e){}
-
-
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
-        Log.d("detach","detach");
+        Log.d("detachCB","detach");
         super.onDetach();
-        mListener = null;
     }
 
     @Override
     public void onDestroyView() {
-        Log.d("onDestroyView","onDestroyView");
+        Log.d("onDestroyViewCB","onDestroyView");
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("onDestroy","onDestroy");
+        Log.d("onDestroyCB","onDestroy");
         super.onDestroy();
     }
 
@@ -305,6 +293,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             ((DetallesEventos) getActivity()).next_page();
         }
     }
+
 
     public interface Funcion_NumBolListener{
         public void setFuncion_NumBol(String funcion,String Cant_Boletos);
