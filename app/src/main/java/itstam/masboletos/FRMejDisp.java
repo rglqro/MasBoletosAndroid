@@ -24,11 +24,10 @@ public class FRMejDisp extends Fragment {
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
     Button btComprar;
     DecimalFormat df = new DecimalFormat("#.00");
+    Continuar_compra continuar_compra;
     public FRMejDisp() {
         // Required empty public constructor
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,17 +63,30 @@ public class FRMejDisp extends Fragment {
                 +"SUBTOTAL: $"+df.format(subtotal)+"\n"
                 +"CARGO POR TARJETA DE CREDITO: $"+String.valueOf(df.format(cargoTC)));
         TXVTotal.setText(TxTotal);
+        btComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                continuar_compra.seguir_compra();
+            }
+        });
     }
 
 
     @Override
     public void onAttach(Context context) {
+        try {
+            continuar_compra=(Continuar_compra)context;
+        }catch (Exception e){}
         super.onAttach(context);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public interface Continuar_compra{
+        void seguir_compra();
     }
 
 }

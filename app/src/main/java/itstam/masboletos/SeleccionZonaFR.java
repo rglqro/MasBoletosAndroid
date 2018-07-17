@@ -224,8 +224,11 @@ public class SeleccionZonaFR extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            selZonaList=(SelZonaList)context;
-        }catch (Exception e){}
+            selZonaList = (SelZonaList) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
     @Override

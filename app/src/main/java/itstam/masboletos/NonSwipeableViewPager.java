@@ -26,4 +26,9 @@ public class NonSwipeableViewPager extends ViewPager {
         // Never allow swiping to switch between pages
         return false;
     }
+
+    @Override
+    public void setOffscreenPageLimit(int limit) {
+        super.setOffscreenPageLimit(limit);
+    }
 }

@@ -14,28 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingVertical="5dp">
+        android:paddingVertical="5dp"
+        android:paddingHorizontal="10dp">
 
         <TextView
-            android:id="@+id/TXVSFuncion"
+            android:id="@+id/TXVSFuncion2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="7dp"
+            android:gravity="start"
             android:paddingVertical="5dp"
-            android:text="¿Cuántos boletos desea comprar?"
-            android:textAlignment="center"
+            android:text="Selecciones un evento"
+            android:textAlignment="textStart"
             android:textColor="#f000"
             android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="5dp"
-            android:text="Seleccione la cantidad de Boletos que desee comprar"
-            android:textColor="@color/gris"
-            android:textSize="14sp" />
-
         <TextView
             android:id="@+id/TXVEFuncion"
             android:layout_width="match_parent"
@@ -43,10 +34,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView8"
-            android:paddingLeft="8dp"
-            android:text="Seleccione una función"
-            android:textColor="#000"
-            android:textSize="13sp" />
+            android:text="Seleccione el evento al que desee asistir"
+            android:textColor="@color/gris"
+            android:textSize="14sp" />
 
         <Spinner
             android:id="@+id/spFuncion"
@@ -60,16 +50,31 @@
             android:entries="@array/funciones"
             android:paddingHorizontal="7dp" />
 
-        <View
+        <TextView
+            android:id="@+id/TXVSFuncion"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gris" />
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingVertical="5dp"
+            android:text="¿Cuántos boletos desea comprar?"
+            android:textAlignment="textStart"
+            android:textColor="#f000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:text="Seleccione la cantidad de Boletos que desee comprar en este evento"
+            android:textColor="@color/gris"
+            android:textSize="14sp" />
+
 
         <TextView
             android:id="@+id/textView11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
             android:text="Cantidad"
             android:textColor="#000"
             android:textSize="13sp" />
@@ -83,12 +88,20 @@
             android:paddingLeft="7dp"
             android:paddingVertical="10dp">
 
+            <ImageButton
+                android:id="@+id/BtMenos"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bmenos" />
+
             <TextView
                 android:id="@+id/txvCantidad"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_weight="4"
+                android:layout_weight="7"
                 android:background="@drawable/shapes"
                 android:paddingHorizontal="10dp"
                 android:text="0"
@@ -98,22 +111,12 @@
 
 
             <ImageButton
-                android:id="@+id/BtMenos"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/shape_ovalado"
-                android:src="@drawable/ic_menos" />
-
-            <ImageButton
                 android:id="@+id/BtMas"
-                android:layout_width="5dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/shape_ovalado"
-                android:src="@drawable/ic_mas"
+                android:background="@drawable/bmas"
                 android:visibility="visible" />
 
         </LinearLayout>

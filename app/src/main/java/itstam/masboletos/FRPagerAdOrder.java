@@ -5,62 +5,37 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.util.SparseArray;
+import android.view.ViewGroup;
 
-public class FRPagerAdOrder extends FragmentPagerAdapter {
-    int mNumOfTabs; Context context; FragmentTransaction ft;
+public abstract class FRPagerAdOrder extends FragmentStatePagerAdapter {
+    Context context; FragmentTransaction ft;
 
-    public FRPagerAdOrder(FragmentManager fm, int tabCount, Context applicationContext) {
-        super(fm);
-        ft=fm.beginTransaction();
-        ft.commit();
-        fm.beginTransaction().commit();
-        this.mNumOfTabs = tabCount;
+    private SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
+    public FRPagerAdOrder(FragmentManager fragmentManager) {
+        super(fragmentManager);
     }
 
-    @Nullable
+    // Register the fragment when the item is instantiated
     @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "Forma de Pago";
-            case 1:
-                return "Forma de Entrega";
-            case 2:
-                return "Revisión";
-            case 3:
-                return "Usuario";
-            case 4:
-                return "Cuenta";
-        }
-        return null;
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        registeredFragments.put(position, fragment);
+        return fragment;
     }
 
+    // Unregister when the item is inactive
     @Override
-    public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                FPagoFR fPagoFR = new FPagoFR();
-                return fPagoFR;
-            case 1:
-                FEntregaFr fEntregaFr=new FEntregaFr();
-                return fEntregaFr;
-            case 2:
-                RevisionFR revisionFR=new RevisionFR();
-                return revisionFR;
-            case 3:
-                UsuarioFR usuarioFR=new UsuarioFR();
-                return usuarioFR;
-            case 4:
-                CuentaFR cuentaFR=new CuentaFR();
-                return cuentaFR;
-            default:
-                return null;
-        }
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        registeredFragments.remove(position);
+        super.destroyItem(container, position, object);
     }
 
-    @Override
-    public int getCount() {
-        return mNumOfTabs;
+    // Returns the fragment for the position (if instantiated)
+    public Fragment getRegisteredFragment(int position) {
+        return registeredFragments.get(position);
     }
 }

@@ -197,7 +197,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void iniciar_Carrusel2(View vista){
         mPager = (ViewPager) vista.findViewById(R.id.pager);
         activity=getActivity();
-        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo));
+        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo,ListaImagBoton));
         CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         // Auto start of viewpager

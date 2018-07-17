@@ -74,7 +74,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     ImageButton BtMas,BtMenos;
     int cantidadBoletos=0, indiceZona=0;
     String idevento,eventogrupo,NombreEvento;
-    TextView TXVSFuncion,TXVEFuncion;
+    TextView TXVSFuncion,TXVEFuncion,TXVSFuncion2;
     Spinner spfuncion; LinearLayout LLYZonas;
     View vista; JSONArray Elementos=null;
     String [] funciones,idevento_funcion;
@@ -98,6 +98,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         BtMas=(ImageButton)vista.findViewById(R.id.BtMas);
         BtMenos=(ImageButton)vista.findViewById(R.id.BtMenos);
         TXVSFuncion=(TextView)vista.findViewById(R.id.TXVSFuncion);
+        TXVSFuncion2=(TextView)vista.findViewById(R.id.TXVSFuncion2);
         TXVEFuncion=(TextView)vista.findViewById(R.id.TXVEFuncion);
         spfuncion=(Spinner) vista.findViewById(R.id.spFuncion);
         btmDisponible=(Button)vista.findViewById(R.id.btmdisponible);
@@ -118,15 +119,16 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         BtMas.setOnClickListener(this);
         BtMenos.setOnClickListener(this);
         btmDisponible.setOnClickListener(this);
+        btmDisponible.setClickable(false);
         if(cantidadBoletos==0){ BtMenos.setClickable(false);}
         if(eventogrupo.equals("0")){
+            TXVSFuncion2.setVisibility(View.GONE);
             TXVEFuncion.setVisibility(View.GONE);
             spfuncion.setVisibility(View.GONE);
         }else{
-            BtMas.setVisibility(View.INVISIBLE);
-            BtMenos.setVisibility(View.INVISIBLE);
-            Consulta_Funciones_Evento();
+            BtMas.setClickable(false);
             BtMenos.setClickable(false);
+            Consulta_Funciones_Evento();
         }
     }
 
@@ -145,7 +147,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                                 Elementos = new JSONArray(resultado);
                                 funciones= new String[Elementos.length()+1];
                                 idevento_funcion= new String[Elementos.length()+1];
-                                funciones[0]="..Seleccione una función.."; idevento_funcion[0]="000";
+                                funciones[0]="..Seleccione un evento.."; idevento_funcion[0]="000";
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
@@ -172,13 +174,13 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
                     idevento=idevento_funcion[position];
-                    BtMas.setVisibility(View.VISIBLE);
-                    BtMenos.setVisibility(View.VISIBLE);
+                    BtMas.setClickable(true);
+                    BtMenos.setClickable(true);
                 }else{
                     btmDisponible.setClickable(false);
                     txvCantidad.setText("0");
-                    BtMas.setVisibility(View.INVISIBLE);
-                    BtMenos.setVisibility(View.INVISIBLE);
+                    BtMas.setClickable(false);
+                    BtMenos.setClickable(false);
                 }
             }
             @Override
@@ -187,11 +189,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             }
         });
 
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     public String inserta(String enlace){ // metodo que inserta los parametros en la BD

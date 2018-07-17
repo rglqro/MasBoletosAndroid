@@ -19,16 +19,17 @@ import java.util.ArrayList;
 
 public class MyAdapter extends PagerAdapter {
 
-    private ArrayList<String> URLimagenes,IDEvento,nombresEvento,eventosGrupo;
+    private ArrayList<String> URLimagenes,IDEvento,nombresEvento,eventosGrupo,listaImagBoton;
     private LayoutInflater inflater;
     private Context context;
 
-    public MyAdapter(Context context, ArrayList<String> URLimagenes, ArrayList<String> IDEventos, ArrayList<String> nombresEvento, ArrayList<String> eventosGrupo) {
+    public MyAdapter(Context context, ArrayList<String> URLimagenes, ArrayList<String> IDEventos, ArrayList<String> nombresEvento, ArrayList<String> eventosGrupo, ArrayList<String> listaImagBoton) {
         this.context = context;
         this.URLimagenes=URLimagenes;
         this.IDEvento=IDEventos;
         this.nombresEvento=nombresEvento;
         this.eventosGrupo=eventosGrupo;
+        this.listaImagBoton=listaImagBoton;
         inflater = LayoutInflater.from(context);
     }
 
@@ -60,7 +61,7 @@ public class MyAdapter extends PagerAdapter {
                     if(position==i){
                         Intent mainIntent = new Intent().setClass(
                                 context, DetallesEventos.class);
-                        mainIntent.putExtra("indiceimagen",URLimagenes.get(i).toString());
+                        mainIntent.putExtra("indiceimagen",listaImagBoton.get(i).toString());
                         set_DatosCompra("idevento",IDEvento.get(i).toString());
                         set_DatosCompra("NombreEvento",nombresEvento.get(i).toString());
                         set_DatosCompra("eventogrupo",eventosGrupo.get(i).toString());

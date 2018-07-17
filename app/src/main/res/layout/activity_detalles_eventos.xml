@@ -71,12 +71,13 @@
 
                 <ImageView
                     android:id="@+id/IMVFondo"
-                    android:layout_width="match_parent"
+                    android:layout_width="245dp"
                     android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/IMVEvento"
                     android:adjustViewBounds="false"
-                    app:srcCompat="@mipmap/logo_masboletos" />
+                    app:srcCompat="@mipmap/logo_masboletos"
+                    android:layout_toRightOf="@+id/IMVEvento" />
 
                 <ImageView
                     android:id="@+id/IMVEvento"
@@ -85,7 +86,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
-                    app:srcCompat="@drawable/mbiconor" />
+                    app:srcCompat="@drawable/mbiconor"
+                    android:layout_alignParentLeft="true" />
 
                 <TextView
                     android:id="@+id/txvNombreEve"
@@ -163,11 +165,20 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/IMVFondo"
-                    android:background="@color/azulmboscuro"
+                    android:background="@color/blanco"
                     android:clickable="false"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/verdemb"
-                    app:tabTextColor="#fff"></android.support.design.widget.TabLayout>
+                    app:tabIndicatorColor="@color/azulmboscuro"
+                    app:tabMode="scrollable"
+                    app:tabSelectedTextColor="@color/azulmb"
+                    app:tabTextColor="@color/gris"
+                    android:layout_alignParentLeft="true"></android.support.design.widget.TabLayout>
+
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gris"/>
 
                 <itstam.masboletos.NonSwipeableViewPager
                     android:id="@+id/pagerFragments"
@@ -178,9 +189,8 @@
                     android:layout_below="@+id/TabLayout"
                     android:background="#fff"
                     android:fillViewport="true"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:context=".DetallesEventos"
-                    tools:showIn="@layout/activity_detalles_eventos"></itstam.masboletos.NonSwipeableViewPager>
+                    ></itstam.masboletos.NonSwipeableViewPager>
             </LinearLayout>
 
 

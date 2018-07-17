@@ -6,14 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -21,25 +16,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jackandphantom.blurimage.BlurImage;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
-import org.json.JSONArray;
 
 public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener
-,ComprarBoletoFr.Funcion_NumBolListener,SeleccionZonaFR.SelZonaList{
+,ComprarBoletoFr.Funcion_NumBolListener,SeleccionZonaFR.SelZonaList,FRMejDisp.Continuar_compra{
 
     ImageView IMVFondo,IMVEvento;
     String indiceimagen,nombreEvento,eventogrupo;
-    JSONArray Elementos=null;
-    ViewPager viewPager;
+    NonSwipeableViewPager viewPager;
     FRPagerAdapter adapter;
     TabLayout tabLayout;
-    DatosCompra datosCompra = new DatosCompra();
+    String[] FRNombres;
+    ImageButton IMBTRegresar;
     TextView TXVNEvento;
+    FRPagerAdOrder pagerAdOrder;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint({"ResourceAsColor", "ResourceType"})
@@ -49,16 +47,14 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_eventos);
         TXVNEvento=(TextView)findViewById(R.id.txvNombreEve);
-
+        IMVFondo=(ImageView)findViewById(R.id.IMVFondo);
+        IMVEvento=(ImageView)findViewById(R.id.IMVEvento);
+        IMBTRegresar=(ImageButton)findViewById(R.id.imBtRegresar);
         Bundle bundle = getIntent().getExtras();
         indiceimagen=bundle.getString("indiceimagen");
-
-
         SharedPreferences prefe=this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         TXVNEvento.setText((prefe.getString("NombreEvento","")));
 
-        IMVFondo=(ImageView)findViewById(R.id.IMVFondo);
-        IMVEvento=(ImageView)findViewById(R.id.IMVEvento);
         difuminar_imagen();
         IniciarFragments();
     }
@@ -66,15 +62,33 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     void IniciarFragments(){
         tabLayout = (TabLayout) findViewById(R.id.TabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Cantidad de Boletos"));
-        tabLayout.addTab(tabLayout.newTab().setText("Selección de Zona"));
-        tabLayout.addTab(tabLayout.newTab().setText("Mejor Disponible"));
+        tabLayout.addTab(tabLayout.newTab().setText("1. Cantidad de Boletos"));
+        tabLayout.addTab(tabLayout.newTab().setText("2"));
+        tabLayout.addTab(tabLayout.newTab().setText("3"));
+        tabLayout.addTab(tabLayout.newTab().setText("4"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        viewPager = (ViewPager) findViewById(R.id.pagerFragments);
+        viewPager = (NonSwipeableViewPager) findViewById(R.id.pagerFragments);
         adapter = new FRPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext(),nombreEvento,eventogrupo);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        FRNombres=new String[tabLayout.getTabCount()];
+        FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mejor disponible";FRNombres[3]="4. Forma de Pago";
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tab.setText(FRNombres[tab.getPosition()]);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.setText(String.valueOf(tab.getPosition()+1));
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
         for(int i = 0; i < tabStrip.getChildCount(); i++) {
             tabStrip.getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
@@ -90,6 +104,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         Log.e("VPActual",String.valueOf(viewPager.getCurrentItem()));
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
     }
+
     public void pagina_anterior(){
         if(viewPager.getCurrentItem()>0) {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
@@ -99,12 +114,11 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     }
 
     public void regresar(View view){
-        finish();
+        pagina_anterior();
     }
 
     @Override
     public void onClick(View v) {
-
     }
 
     public void intent_compartir(View v){
@@ -116,14 +130,34 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         startActivity(Intent.createChooser(compartir, "Compartir vía"));
     }
 
+    Bitmap imageBlur;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
+
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                imageBlur=bitmap;
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        };
+        Picasso.with(getApplicationContext())
+                .load(indiceimagen)
+                .error(R.drawable.ic_inicio)
+                .into(target);
         Picasso.with(getApplicationContext())
                 .load(indiceimagen)
                 .error(R.drawable.ic_inicio)
                 .into(IMVEvento);
-        Bitmap resultBmp = BlurCreador.blur(this, BitmapFactory.decodeResource(getResources(),R.drawable.mblogo));
-        IMVFondo.setImageBitmap(resultBmp);
+        BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+        IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     @Override
@@ -143,7 +177,30 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         set_DatosCompra("precio",precio);
         set_DatosCompra("comision",comision);
         FRMejDisp frMejDisp =(FRMejDisp) getSupportFragmentManager().findFragmentById(R.id.pagerFragments);
-        frMejDisp.RecibirDatos();
+        if (frMejDisp!=null){
+            frMejDisp.RecibirDatos();
+        }else{
+            // Otherwise, we're in the one-pane layout and must swap frags...
+
+            // Create fragment and give it an argument for the selected article
+            FRMejDisp newFragment = new FRMejDisp();
+
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction.replace(R.id.pagerFragments, newFragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
+        }
+    }
+
+    @Override
+    public void seguir_compra() {
+        FPagoFR fPagoFR=(FPagoFR) getSupportFragmentManager().findFragmentById(R.id.pagerFragments);
+        fPagoFR.RecepcionDatos();
     }
 
     public void set_DatosCompra(String ndato,String dato){
@@ -153,37 +210,12 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         editor.commit();
     }
 
+
+
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    public static class BlurCreador {
-
-        private static final float BITMAP_SCALE = 0.9f;
-        private static final float BLUR_RADIUS = 20f;
-
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-        public static Bitmap blur(Context context, Bitmap image) {
-            int width = Math.round(image.getWidth() * BITMAP_SCALE);
-            int height = Math.round(image.getHeight() * BITMAP_SCALE);
-
-            Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
-            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
-
-            RenderScript rs = RenderScript.create(context);
-
-            ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-            Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
-            Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
-
-            intrinsicBlur.setRadius(BLUR_RADIUS);
-            intrinsicBlur.setInput(tmpIn);
-            intrinsicBlur.forEach(tmpOut);
-            tmpOut.copyTo(outputBitmap);
-
-            return outputBitmap;
-        }
-
+        pagina_anterior();
+        //super.onBackPressed();
     }
 }
