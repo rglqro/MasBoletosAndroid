@@ -49,10 +49,7 @@ public class MyAdapter extends PagerAdapter {
         ImageButton myImage = (ImageButton) myImageLayout.findViewById(R.id.image);
         myImage.setAdjustViewBounds(true);
         myImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        Picasso.with(context)
-                .load(URLimagenes.get(position))
-                .error(R.drawable.ic_inicio)
-                .into(myImage);
+        Picasso.get().load(URLimagenes.get(position)).error(R.drawable.mbiconor).into(myImage);
         view.addView(myImageLayout, 0);
         myImage.setOnClickListener(new View.OnClickListener() {
             @Override

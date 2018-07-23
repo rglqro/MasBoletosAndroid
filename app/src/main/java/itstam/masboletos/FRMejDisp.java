@@ -3,8 +3,11 @@ package itstam.masboletos;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +27,11 @@ public class FRMejDisp extends Fragment {
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
     Button btComprar;
     DecimalFormat df = new DecimalFormat("#.00");
-    Continuar_compra continuar_compra;
     public FRMejDisp() {
         // Required empty public constructor
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -38,11 +41,13 @@ public class FRMejDisp extends Fragment {
         TXVInfoCompra=(TextView)vista.findViewById(R.id.txvInfo);
         TXVTotal=(TextView)vista.findViewById(R.id.txvTotal);
         btComprar=(Button)vista.findViewById(R.id.btComprar);
+        RecibirDatos();
         return vista;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     void RecibirDatos(){
-        Toast.makeText(getActivity(),"Mejor Disponible Abierto",Toast.LENGTH_SHORT).show();
+        ((DetallesEventos)getActivity()).cerrar_cargando();
         SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
         Cant_Boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
@@ -51,31 +56,36 @@ public class FRMejDisp extends Fragment {
         llenar_info();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     void llenar_info(){
-        TXVSeccionComp.setText("Sección: "+zona+" , $ "+precio+" c/u");
+        TXVSeccionComp.setText(zona);
         subtotal=Cant_Boletos*precio;
         subtotal+=comision*Cant_Boletos;
         cargoTC=subtotal*0.03;
-        TXVAsientos.setText("Asientos: "+Cant_Boletos);
-                String TxTotal="Total: $"+String.valueOf(df.format(subtotal+cargoTC));
-        TXVInfoCompra.setText("PRECIO: $"+precio+" x "+Cant_Boletos+"\n"
-                +"CARGOS POR SERVICIO: $"+comision+" x "+Cant_Boletos+"\n"
-                +"SUBTOTAL: $"+df.format(subtotal)+"\n"
-                +"CARGO POR TARJETA DE CREDITO: $"+String.valueOf(df.format(cargoTC)));
+        TXVAsientos.setText(String.valueOf(Cant_Boletos));
+                String TxTotal="$"+String.valueOf(df.format(subtotal));
+        TXVInfoCompra.setText("$"+precio+" x "+Cant_Boletos);
         TXVTotal.setText(TxTotal);
         btComprar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                continuar_compra.seguir_compra();
+                ((DetallesEventos)getActivity()).replaceFragment(new FPagoFR());
             }
         });
+    }
+
+    public void set_DatosCompra(String ndato,String dato){
+        SharedPreferences preferencias=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        editor.putString(ndato, dato);
+        editor.commit();
     }
 
 
     @Override
     public void onAttach(Context context) {
         try {
-            continuar_compra=(Continuar_compra)context;
+
         }catch (Exception e){}
         super.onAttach(context);
     }
@@ -85,8 +95,5 @@ public class FRMejDisp extends Fragment {
         super.onDetach();
     }
 
-    public interface Continuar_compra{
-        void seguir_compra();
-    }
 
 }

@@ -1,10 +1,13 @@
 package itstam.masboletos;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -16,13 +19,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -46,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.relex.circleindicator.CircleIndicator;
 
 public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefreshListener{
@@ -59,14 +67,17 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     JSONArray Elementos = null;
     ArrayList<ImageButton> ImBotonEvento;
+    ImageButton[] BtsOrganizadores;
+    String[]ListaImagOrg;
     ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos,NombresEvento,EventosGrupo;
-    Spinner spcategorias, sporganizadores;
+    Spinner spcategorias;
     Handler handler;
     Runnable Update;
     TableLayout tabla_imagenes;
     View vista;
     TableRow row;
     Timer swipeTimer;
+    LinearLayout LLImagOrg;
     private SwipeRefreshLayout swipeContainer;
 
     public BoletosPrin() {
@@ -80,14 +91,15 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         vista = inflater.inflate(R.layout.fragment_boletos_prin, container, false);
         swipeContainer = (SwipeRefreshLayout) vista.findViewById(R.id.SWRLY);
         tabla_imagenes = (TableLayout) vista.findViewById(R.id.tabla_imagenes);
+        LLImagOrg=(LinearLayout)vista.findViewById(R.id.LLImagOrg);
 
-        Consulta_Imagen_Botones(vista);
+        Consulta_Imagen_Botones();
 
         swipeContainer.setOnRefreshListener(this);
         return vista;
     }
 
-    void Consulta_Imagen_Botones(final View vista){
+    void Consulta_Imagen_Botones(){
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -116,10 +128,11 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                                     NombresEvento.add(datos.getString("evento"));
                                     IDEventos.add(datos.getString("idevento"));
                                     EventosGrupo.add(datos.getString("eventogrupo"));
+                                    Log.e("ListaCuadrada",ListaImagBoton.get(i));
                                 }
-                                iniciar_listas_spinner(vista);
-                                iniciar_Carrusel2(vista);
-                                generarBotonesEvento(vista);
+                                iniciar_listas_spinner();
+                                iniciar_Carrusel2();
+                                generarBotonesEvento();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -131,7 +144,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         tr.start();
     }
 
-    void generarBotonesEvento(View vista){
+    void generarBotonesEvento(){
         int Tam_ListaImEve=ListaImagBoton.size();
         if(ListaImagBoton.size()%2!=0){
             Tam_ListaImEve++;}
@@ -149,18 +162,15 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
             for (int i=0;i<2;i++){
                 if(pos_arr_ima==ListaImagBoton.size()) break;
                 ImBotonEvento.add(new ImageButton(getActivity()));
-                ImBotonEvento.get(i).setLayoutParams(lp2);
-                Picasso.with(getActivity())
-                        .load(ListaImagBoton.get(pos_arr_ima))
-                        .error(R.drawable.ic_inicio)
-                        .into(ImBotonEvento.get(pos_arr_ima));
+                ImBotonEvento.get(pos_arr_ima).setLayoutParams(lp2);
+                ImBotonEvento.get(pos_arr_ima).setImageResource(R.drawable.mbiconor);
                 ImBotonEvento.get(pos_arr_ima).setBackgroundColor(Color.TRANSPARENT);
                 ImBotonEvento.get(pos_arr_ima).setScaleType(ImageView.ScaleType.FIT_CENTER);
-                ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
                 ImBotonEvento.get(pos_arr_ima).setTag(pos_arr_ima);
                 ImBotonEvento.get(pos_arr_ima).setId(pos_arr_ima);
-                ImBotonEvento.get(pos_arr_ima).setPadding(10,10,10,10);
+                ImBotonEvento.get(pos_arr_ima).setPadding(5,5,5,5);
                 ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
+                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.drawable.mbiconor).into(ImBotonEvento.get(pos_arr_ima));
                 ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -173,6 +183,13 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                         startActivity(mainIntent);
                     }
                 });
+                ImBotonEvento.get(pos_arr_ima).setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Toast.makeText(getActivity(),NombresEvento.get(v.getId()).toString(),Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
                 row.addView(ImBotonEvento.get(pos_arr_ima));
                 pos_arr_ima++;
             }
@@ -180,13 +197,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
             tabla_imagenes.addView(row,j);
         }
         Log.d("Total Botones",String.valueOf(ImBotonEvento.size()));
+        Consulta_Imagen_Organizadores();
     }
 
-    void iniciar_listas_spinner(View vista){
-        sporganizadores=(Spinner) vista.findViewById(R.id.sp_organizadores);
-        ArrayAdapter adapter2 = ArrayAdapter.createFromResource(getActivity(), R.array.organizadores, R.layout.spinner_item_2);
-        adapter2.setDropDownViewResource(R.layout.spinner_lista2);
-        sporganizadores.setAdapter(adapter2);
+    void iniciar_listas_spinner(){
 
         spcategorias=(Spinner) vista.findViewById(R.id.spcategorias);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.Cat_Evento, R.layout.spinner_item);
@@ -194,7 +208,55 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         spcategorias.setAdapter(adapter);
     }
 
-    void iniciar_Carrusel2(View vista){
+    void Consulta_Imagen_Organizadores(){
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getPatrocinadores.php");  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            try {
+                                Elementos = new JSONArray(resultado);
+                                ListaImagOrg=new String[Elementos.length()];
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    ListaImagOrg[i]= "http://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
+                                    Log.e("banner",ListaImagOrg[i]);
+                                }
+                                genera_Imag_Orga();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });  //permite trabajar con la interfaz grafica
+            }
+        };
+        tr.start();
+    }
+
+    @SuppressLint("ResourceAsColor")
+    void genera_Imag_Orga(){
+        int tam_lista=ListaImagOrg.length;
+        BtsOrganizadores = new ImageButton[tam_lista];
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.setMargins(5,dpToPx(5),5,dpToPx(5));
+        for(int i=0;i<BtsOrganizadores.length;i++){
+            BtsOrganizadores[i]=new ImageButton(getActivity());
+            BtsOrganizadores[i].setLayoutParams(lp);
+            BtsOrganizadores[i].setBackgroundColor(Color.TRANSPARENT);
+            BtsOrganizadores[i].setAdjustViewBounds(true);
+            BtsOrganizadores[i].setScaleType(ImageView.ScaleType.FIT_XY);
+            BtsOrganizadores[i].setPadding(15,0,15,0);
+            Picasso.get().load(ListaImagOrg[i]).error(R.drawable.mbiconor).into(BtsOrganizadores[i]);
+            LLImagOrg.addView(BtsOrganizadores[i]);
+        }
+    }
+
+    void iniciar_Carrusel2(){
         mPager = (ViewPager) vista.findViewById(R.id.pager);
         activity=getActivity();
         mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo,ListaImagBoton));
@@ -219,8 +281,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-
         URL url = null;
+        Log.e("Enlace",enlace);
         int respuesta = 0;
         String linea = "",valor="";
         StringBuilder resul = null;
@@ -268,6 +330,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         }
     }
 
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -302,8 +368,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                     //cancel timer task and assign null
                 }
                 ImBotonEvento.clear();
+                LLImagOrg.removeAllViews();
                 tabla_imagenes.removeAllViews();
-                Consulta_Imagen_Botones(vista);
+                Consulta_Imagen_Botones();
                 swipeContainer.setRefreshing(false);
             }
         }, 3000);

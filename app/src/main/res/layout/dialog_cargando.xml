@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/azulmboscuro"
+    android:layout_marginHorizontal="20dp">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifcarg"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/cargando" />
+
+    <TextView
+        android:id="@+id/textView27"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/gifcarg"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:text="Espere..."
+        android:textColor="@color/blanco"
+        android:textSize="24sp"
+        android:layout_toRightOf="@+id/gifcarg"
+        android:textAlignment="center"/>
+
+</RelativeLayout>

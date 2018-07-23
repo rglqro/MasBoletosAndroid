@@ -15,7 +15,6 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/mbiconor"
         android:label="@string/app_name"

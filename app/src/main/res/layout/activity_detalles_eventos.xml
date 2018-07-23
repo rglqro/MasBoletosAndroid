@@ -180,17 +180,13 @@
                     android:layout_height="1dp"
                     android:background="@color/gris"/>
 
-                <itstam.masboletos.NonSwipeableViewPager
-                    android:id="@+id/pagerFragments"
+                <FrameLayout
+                    android:id="@+id/pagerfragmets2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/TabLayout"
-                    android:background="#fff"
-                    android:fillViewport="true"
-                    tools:context=".DetallesEventos"
-                    ></itstam.masboletos.NonSwipeableViewPager>
+                    android:layout_height="match_parent">
+
+                </FrameLayout>
+
             </LinearLayout>
 
 

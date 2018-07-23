@@ -1,96 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/aquamarina">
-
+    android:background="@color/blanco"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blanco"
+            android:orientation="vertical"
+            android:paddingHorizontal="7dp"
+            android:paddingVertical="7dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grisclaro"
+                android:orientation="horizontal"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="7dp">
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sección:"
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txvSeccion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="Seccion: ,Costo "
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="7dp">
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Asientos: "
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txvAsientos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="Asientos: 1"
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grisclaro"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="7dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Precio: "
+                    android:textColor="#000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txvInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="PRECIO $450 x 1"
+                    android:textColor="@color/azulmboscuro"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="7dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total a pagar"
+                    android:textColor="#ff0000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txvTotal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="Total: "
+                    android:textColor="#ff0000"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Más Boletos te recomienda"
-            android:textSize="20sp"
-            android:textAlignment="textEnd"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="10dp"
-            android:textColor="@android:color/background_light"
-            android:background="@color/azulmb"
-            android:gravity="end" />
+            android:orientation="horizontal"
+            android:paddingBottom="7dp">
+
+            <TextView
+                android:id="@+id/txvPesos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/btComprar"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginVertical="15dp"
+                android:text="Precios en Pesos Mexicanos MX$
+    \nLos boletos son válidos unicamente en el día y horario seleccionado. No se realizará reembolso ni cambios de evento una vez realizada la compra"
+                android:textAlignment="center"
+                android:textColor="@color/gris"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btComprar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/verdemb"
+                android:paddingHorizontal="15dp"
+                android:text="Continuar"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="18sp" />
+        </RelativeLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/txvSeccion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Seccion: ,Costo "
-        android:textSize="20sp"
-        android:textColor="#000"
-        android:paddingVertical="10dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/txvAsientos"
-        android:text="Asientos: 1"
-        android:textSize="20sp"
-        android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:paddingVertical="10dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/azulmboscuro"
-        android:id="@+id/txvInfo"
-        android:text="PRECIO $450 x 1
- \nCARGOS POR SERVICIO $.0000 x 1
- \nSUBTOTAL $450
- \nCARGO TARJETA DE CREDITO $13.50
- \nTOTAL $463.50"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/txvTotal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Total: "
-        android:textColor="#ff0000"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txvPesos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Precios en Pesos Mexicanos MX$"
-        android:textSize="16sp"
-        android:textColor="@color/azulmboscuro"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btComprar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/azulmb"
-            android:drawableRight="@drawable/ic_comprar"
-            android:paddingHorizontal="15dp"
-            android:text="Continuar con la compra"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

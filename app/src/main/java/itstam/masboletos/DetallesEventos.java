@@ -2,20 +2,24 @@ package itstam.masboletos;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,18 +30,16 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 
-public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener
-,ComprarBoletoFr.Funcion_NumBolListener,SeleccionZonaFR.SelZonaList,FRMejDisp.Continuar_compra{
+public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener {
 
     ImageView IMVFondo,IMVEvento;
-    String indiceimagen,nombreEvento,eventogrupo;
-    NonSwipeableViewPager viewPager;
-    FRPagerAdapter adapter;
+    String indiceimagen,nombreEvento;
     TabLayout tabLayout;
     String[] FRNombres;
     ImageButton IMBTRegresar;
     TextView TXVNEvento;
-    FRPagerAdOrder pagerAdOrder;
+    int contadorTab=0;
+    Dialog customDialog;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint({"ResourceAsColor", "ResourceType"})
@@ -57,28 +59,30 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
 
         difuminar_imagen();
         IniciarFragments();
+        set_DatosCompra("Cant_boletos","0");
+        set_DatosCompra("posEve","0");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     void IniciarFragments(){
         tabLayout = (TabLayout) findViewById(R.id.TabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("1. Cantidad de Boletos"));
-        tabLayout.addTab(tabLayout.newTab().setText("2"));
-        tabLayout.addTab(tabLayout.newTab().setText("3"));
-        tabLayout.addTab(tabLayout.newTab().setText("4"));
+        for(int i=2;i<=7;i++){
+            tabLayout.addTab(tabLayout.newTab().setText(""+i));
+        }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        viewPager = (NonSwipeableViewPager) findViewById(R.id.pagerFragments);
-        adapter = new FRPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext(),nombreEvento,eventogrupo);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        ComprarBoletoFr comprarBoletoFr= new ComprarBoletoFr();
+        getSupportFragmentManager().beginTransaction().add(R.id.pagerfragmets2,comprarBoletoFr).commit();
         FRNombres=new String[tabLayout.getTabCount()];
-        FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mejor disponible";FRNombres[3]="4. Forma de Pago";
+        FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mas Boletos te recomienda";FRNombres[3]="4. Forma de Pago";
+        FRNombres[4]="5. Forma de Entrega"; FRNombres[5]="6. Revisión"; FRNombres[6]="7. Usuario";
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 tab.setText(FRNombres[tab.getPosition()]);
             }
 
+            @SuppressLint("ResourceType")
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 tab.setText(String.valueOf(tab.getPosition()+1));
@@ -100,21 +104,18 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         }
     }
 
-    public void next_page(){
-        Log.e("VPActual",String.valueOf(viewPager.getCurrentItem()));
-        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-    }
-
     public void pagina_anterior(){
-        if(viewPager.getCurrentItem()>0) {
-            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
-        }else{
+        if(contadorTab>0) {
+            contadorTab--;
+            TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
+            tab.select();
+        }else {
             finish();
         }
     }
 
     public void regresar(View view){
-        pagina_anterior();
+        onBackPressed();
     }
 
     @Override
@@ -135,72 +136,52 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     void difuminar_imagen(){
 
         Target target = new Target() {
+
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 imageBlur=bitmap;
+                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+                IMVEvento.setImageBitmap(bitmap);
             }
 
             @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
+
             }
         };
-        Picasso.with(getApplicationContext())
-                .load(indiceimagen)
-                .error(R.drawable.ic_inicio)
-                .into(target);
-        Picasso.with(getApplicationContext())
-                .load(indiceimagen)
-                .error(R.drawable.ic_inicio)
-                .into(IMVEvento);
-        BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+        Log.e("ImagenEventourl",indiceimagen);
+        Picasso.get().load(indiceimagen).error(R.drawable.mbiconor).into(target);
         IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
-    @Override
-    public void setFuncion_NumBol(String idevento, String Cant_Boletos) {
-        Log.e("Datos a Mandar ",idevento+Cant_Boletos);
-        set_DatosCompra("Cant_boletos",Cant_Boletos);
-        set_DatosCompra("idevento",idevento);
-        SeleccionZonaFR seleccionZonaFR= (SeleccionZonaFR) getSupportFragmentManager().findFragmentById(R.id.pagerFragments);
-        seleccionZonaFR.Recibir_Funcion_CBol();
+    public void iniciar_cargando(){
+        customDialog = new Dialog(this);
+        //deshabilitamos el título por defecto
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        customDialog.setContentView(R.layout.dialog_cargando);
+        customDialog.setCancelable(false);
+        customDialog.show();
+        Window window = customDialog.getWindow();
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    }
+    public void cerrar_cargando(){
+        customDialog.dismiss();
     }
 
-    @Override
-    public void setSelZona(String numerado, String zona, String idzonaxgrupo, String precio, String comision) {
-        set_DatosCompra("numerado",numerado);
-        set_DatosCompra("zona",zona);
-        set_DatosCompra("idzonaxgrupo",idzonaxgrupo);
-        set_DatosCompra("precio",precio);
-        set_DatosCompra("comision",comision);
-        FRMejDisp frMejDisp =(FRMejDisp) getSupportFragmentManager().findFragmentById(R.id.pagerFragments);
-        if (frMejDisp!=null){
-            frMejDisp.RecibirDatos();
-        }else{
-            // Otherwise, we're in the one-pane layout and must swap frags...
-
-            // Create fragment and give it an argument for the selected article
-            FRMejDisp newFragment = new FRMejDisp();
-
-            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.pagerFragments, newFragment);
-            transaction.addToBackStack(null);
-
-            // Commit the transaction
-            transaction.commit();
-        }
-    }
-
-    @Override
-    public void seguir_compra() {
-        FPagoFR fPagoFR=(FPagoFR) getSupportFragmentManager().findFragmentById(R.id.pagerFragments);
-        fPagoFR.RecepcionDatos();
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.pagerfragmets2, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        contadorTab++;
+        TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
+        tab.select();
     }
 
     public void set_DatosCompra(String ndato,String dato){
@@ -210,12 +191,9 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         editor.commit();
     }
 
-
-
-
     @Override
     public void onBackPressed() {
         pagina_anterior();
-        //super.onBackPressed();
+        super.onBackPressed();
     }
 }

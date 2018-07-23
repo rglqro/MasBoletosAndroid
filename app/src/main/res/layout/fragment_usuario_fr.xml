@@ -1,14 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UsuarioFR">
+    android:fillViewport="true"
+    tools:context=".UsuarioFR"
+    android:background="@color/blanco">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="7dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Correo"
+            android:textColor="#000"
+            android:layout_alignParentLeft="true" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView28"
+            android:ems="10"
+            android:hint="Ingresa tu correo"
+            android:textColor="@color/negro"
+            android:textColorHint="@color/grisclaro"
+            android:inputType="textEmailAddress"
+            android:layout_alignParentLeft="true"
+            android:backgroundTint="@color/azulmb"/>
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/editText"
+            android:text="Contraseña"
+            android:textColor="#000"
+            android:layout_alignParentLeft="true" />
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView29"
+            android:ems="10"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:layout_alignParentLeft="true"
+            android:backgroundTint="@color/azulmb"
+            android:textColor="@color/negro"
+            android:textColorHint="@color/grisclaro"/>
+
+        <Button
+            android:id="@+id/btentrar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/editText2"
+            android:background="@drawable/shape_ovalado"
+            android:text="Entrar"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/btentrar"
+            android:layout_alignParentStart="true"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textColor="#000"
+            android:layout_alignParentLeft="true" />
+
+        <LinearLayout
+            android:id="@+id/LLinfoCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/btentrar"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView31"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:text="¿No tienes una cuenta?  \n\nCrea tu cuenta para:"
+                android:textColor="#000" />
+
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="• Agilizar tu compra guardando tu información
+\n• Imprimir boletos desde tu casa
+\n• Obtener recomendaciones de eventos"
+                android:textColor="@color/negro" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/LLinfoCuenta"
+            android:background="@drawable/shape_ovalado"
+            android:text="Crear Cuenta"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_alignParentRight="true"
+            android:paddingHorizontal="5dp"/>
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

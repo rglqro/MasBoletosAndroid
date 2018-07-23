@@ -1,7 +1,13 @@
 package itstam.masboletos;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,13 +15,23 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ZoomControls;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,20 +43,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 
 public class SeleccionZonaFR extends Fragment {
     View vista;
-    public static final String TAG = MyApplication.class.getSimpleName();
-    String [] funciones, zonas,colores, precios, disponibilidad, subzonas,idevento_funcion,numerado,idsubzonas,comision;
+    public static final String TAG = SeleccionZonaFR.class.getSimpleName();
+    String [] funciones, zonas,colores, precios, disponibilidad, subzonas,idevento_funcion,numerado,idsubzonas,comision,zona_precio;
     JSONArray Elementos=null;
-    String idevento,_zona,id_seccionXevento;
+    String idevento,_zona,id_seccionXevento, URLMapa;
     int indiceZona;
-    DatosCompra datosCompra= new DatosCompra();
     Spinner spzona,spseccion;
     Button btContinuar;
-    SelZonaList selZonaList;
-    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos;
+    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila;
+    ImageView IMVMApa;
+    Dialog customDialog = null;
 
     public SeleccionZonaFR() {
         // Required empty public constructor
@@ -53,12 +74,12 @@ public class SeleccionZonaFR extends Fragment {
         spzona=(Spinner)vista.findViewById(R.id.spzona);
         spseccion=(Spinner)vista.findViewById(R.id.spseccion);
         btContinuar=(Button)vista.findViewById(R.id.btContinuar2);
-
+        IMVMApa=(ImageView)vista.findViewById(R.id.IMVMapa);
+        Recibir_Funcion_CBol();
         return vista;
     }
 
     public void Recibir_Funcion_CBol(){
-        Toast.makeText(getActivity(),"Recarga de Fragment",Toast.LENGTH_SHORT).show();
         SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=(prefe.getString("idevento",""));
         cantidadBoletos=(prefe.getString("Cant_boletos",""));
@@ -66,6 +87,7 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void obtener_zonas(){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -84,16 +106,21 @@ public class SeleccionZonaFR extends Fragment {
                                 disponibilidad= new String[Elementos.length()];
                                 numerado= new String[Elementos.length()];
                                 comision= new String[Elementos.length()];
+                                zona_precio= new String[Elementos.length()];
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     zonas[i]=datos.getString("grupo");
+                                    zona_precio[i]=datos.getString("grupo")+" $"+datos.getString("precio")+" c/u" +
+                                            "\nDisponibles: "+datos.getString("disponibilidad");
                                     colores[i]=datos.getString("color");
                                     precios[i]=datos.getString("precio");
                                     disponibilidad[i]=datos.getString("disponibilidad");
                                     numerado[i]=datos.getString("numerado");
                                     comision[i]=datos.getString("comision");
+                                    URLMapa="http://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapam");
                                 }
                                 spinner_zonas();
+                                Mostrar_Mapa();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -105,16 +132,73 @@ public class SeleccionZonaFR extends Fragment {
         tr.start();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void Mostrar_Mapa(){
+        pintar_imagen(URLMapa,IMVMApa);
+        IMVMApa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customDialog = new Dialog(getActivity());
+                //deshabilitamos el título por defecto
+                customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                //obligamos al usuario a pulsar los botones para cerrarlo
+                //establecemos el contenido de nuestro dialog
+                customDialog.setContentView(R.layout.dialog_custom_layout);
+                PhotoView photoView = customDialog.findViewById(R.id.IMVMapaZoom);
+                photoView.setAdjustViewBounds(true);
+                photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                pintar_imagen(URLMapa,photoView);
+                customDialog.show();
+                Window window = customDialog.getWindow();
+                window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                Instruccion_Zoom();
+            }
+        });
+    }
+
+    void Instruccion_Zoom(){
+        // cuadro de dialogo que se abre si no se envio ningun sms o no hubo respuesta del servidor para ingresar el numero de celular manualmente
+        // con este tema personalizado evitamos los bordes por defecto
+        customDialog = new Dialog(getActivity());
+        //deshabilitamos el título por defecto
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //obligamos al usuario a pulsar los botones para cerrarlo
+        //establecemos el contenido de nuestro dialog
+        customDialog.setContentView(R.layout.gifzoom);
+
+        customDialog.show();
+        Window window = customDialog.getWindow();
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TimerTask task = new TimerTask(){
+            public void run() {
+                customDialog.dismiss();
+            }
+        };
+        // cuenta regresiva para cerrar el activity
+        Timer timer = new Timer();
+        timer.schedule(task,2000);
+    }
+
+    void pintar_imagen(String urlMapa,ImageView imag){
+        Picasso.get()
+                .load(urlMapa)
+                .error(R.drawable.ic_inicio)
+                .into(imag);
+    }
+
+
     public void spinner_zonas(){
-        ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item_2,zonas);
+        ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item_2,zona_precio);
         adapter.setDropDownViewResource(R.layout.spinner_lista2);
         spzona.setAdapter(adapter);
+        ((DetallesEventos)getActivity()).cerrar_cargando();
         spzona.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 indiceZona=position;
                 String txtsel="";
-                txtsel=(String) parent.getItemAtPosition(position);
+                txtsel=(String) zonas[position];
                 _zona=txtsel.replace(" ","%20");
                 obtener_secciones();
             }
@@ -127,6 +211,7 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void obtener_secciones(){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -164,6 +249,7 @@ public class SeleccionZonaFR extends Fragment {
         ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,subzonas);
         adapter.setDropDownViewResource(R.layout.spinner_lista2);
         spseccion.setAdapter(adapter);
+        ((DetallesEventos)getActivity()).cerrar_cargando();
         spseccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -185,6 +271,7 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void Mejor_Disponible(){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -204,11 +291,17 @@ public class SeleccionZonaFR extends Fragment {
                                     asiento_compra=datos.getString("mensagesetAsientos");
                                     tipomsj=datos.getString("mensagesetTipo");
                                     msj=datos.getString("mensagesetMensage");
-                                    }
+                                    fila=datos.getString("mensagesetNombrePuerta") ;
+                                }
                                 if(tipomsj.equals("1")) {
-                                        ((DetallesEventos) getActivity()).next_page();
-                                        selZonaList.setSelZona(numerado[indiceZona],zonas[indiceZona],id_seccionXevento,precios[indiceZona],comision[indiceZona]);
+                                        set_DatosCompra("zona",zonas[indiceZona]);
+                                        set_DatosCompra("precio",precios[indiceZona]);
+                                        set_DatosCompra("comision",comision[indiceZona]);
+                                        set_DatosCompra("fila",fila);
+                                        set_DatosCompra("asientos",asiento_compra);
+                                        ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
                                     }else {
+                                    ((DetallesEventos)getActivity()).cerrar_cargando();
                                     Toast.makeText(getActivity(),msj+"\nSolicite una cantidad diferente o verifique la zona",Toast.LENGTH_LONG).show();
                                     }
                                 } catch (JSONException e) {
@@ -220,11 +313,18 @@ public class SeleccionZonaFR extends Fragment {
         tr.start();
     }
 
+    public void set_DatosCompra(String ndato,String dato){
+        SharedPreferences preferencias=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        editor.putString(ndato, dato);
+        editor.commit();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            selZonaList = (SelZonaList) getActivity();
+
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString()
                     + " must implement OnHeadlineSelectedListener");
@@ -280,7 +380,4 @@ public class SeleccionZonaFR extends Fragment {
         return respuesta;
     }
 
-    public interface SelZonaList{
-        public void setSelZona(String numerado, String zona, String idzonaxgrupo, String precio, String comision);
-    }
 }

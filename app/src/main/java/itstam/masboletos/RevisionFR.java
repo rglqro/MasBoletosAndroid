@@ -1,108 +1,96 @@
 package itstam.masboletos;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.DecimalFormat;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RevisionFR.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RevisionFR#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RevisionFR extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    View vista;
+    SharedPreferences prefe;
+    String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="";
+    Double precio=0.0,total=0.00;
+    TextView txvprecio,txvcarfentr,txvfila,txvasiento,txvseccion,txvtotal,txvcarserv,txvasientos2,txvfpago,txvfentrega,txvcarfentr2,txvtotal2;
+    DecimalFormat df = new DecimalFormat("#.00");
+    Button btcontinuar6;
+    CheckBox cbdeacuerdo;
 
     public RevisionFR() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RevisionFR.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RevisionFR newInstance(String param1, String param2) {
-        RevisionFR fragment = new RevisionFR();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_revision_fr, container, false);
+        vista=inflater.inflate(R.layout.fragment_revision_fr, container, false);
+        btcontinuar6=(Button)vista.findViewById(R.id.btContinuar6);
+        txvseccion=(TextView)vista.findViewById(R.id.txvSeccionFRev);
+        txvasiento=(TextView)vista.findViewById(R.id.txvAsientosFRev);
+        txvfila=(TextView)vista.findViewById(R.id.txvfilaFRev);
+        txvprecio=(TextView)vista.findViewById(R.id.txvprecioFRev);
+        txvcarserv=(TextView)vista.findViewById(R.id.txvcservFRev);
+        txvcarfentr=(TextView)vista.findViewById(R.id.txvcfentrFRev);
+        txvtotal=(TextView)vista.findViewById(R.id.txvtotalFRev);
+        txvasientos2=(TextView)vista.findViewById(R.id.txvasientosRev2);
+        txvfpago=(TextView)vista.findViewById(R.id.txvfpagoRev2);
+        txvfentrega=(TextView)vista.findViewById(R.id.txventregRev2);
+        txvcarfentr2=(TextView)vista.findViewById(R.id.txvcfentrFRev2);
+        txvtotal2=(TextView)vista.findViewById(R.id.txvtotalFRev2);
+        cbdeacuerdo=(CheckBox)vista.findViewById(R.id.cbdeacuerdo);
+
+        recepcion_datos();
+
+        return vista;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    void recepcion_datos(){
+        prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        seccion=prefe.getString("zona","");
+        fila=prefe.getString("fila","");
+        asiento=prefe.getString("asientos","0");
+        precio=Double.parseDouble(prefe.getString("precio","0.00"));
+        total=Double.parseDouble(prefe.getString("total",""));
+        carserv= (prefe.getString("cargos_servicio","0.00"));
+        carfentr=prefe.getString("cargos_entrega","");
+        fentregas=prefe.getString("fentrega","");
+        fpago=prefe.getString("formapago","");
+        txvseccion.setText(seccion);
+        txvasiento.setText(asiento);
+        txvfila.setText(fila);
+        txvprecio.setText("MX $"+df.format(precio)+" x "+asiento);
+        txvcarserv.setText(""+carserv);
+        txvcarfentr.setText(""+carfentr);
+        txvtotal.setText("MX $"+total);
+        txvasientos2.setText("ASIENTO(S): "+asiento);
+        txvfpago.setText("FORMA DE PAGO: "+fpago);
+        txvfentrega.setText("ENTREGA: "+fentregas);
+        txvcarfentr2.setText("CARGOS POR FORMA ENTREGA:\n"+carfentr);
+        txvtotal2.setText("MX $"+total);
+        btcontinuar6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cbdeacuerdo.isChecked()){
+                    ((DetallesEventos)getActivity()).replaceFragment(new UsuarioFR());
+                }else{
+                    Toast.makeText(getActivity(),"Debes marcar que estás de acuerdo",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

@@ -1,53 +1,25 @@
 package itstam.masboletos;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.safetynet.SafetyNet;
-import com.google.android.gms.safetynet.SafetyNetApi;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,27 +31,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-
-import butterknife.ButterKnife;
 
 public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
 
     // TODO: Rename and change types of parameters
-    TextView txvCantidad,txvprecio;
+    TextView txvCantidad;
     ImageButton BtMas,BtMenos;
-    int cantidadBoletos=0, indiceZona=0;
-    String idevento,eventogrupo,NombreEvento;
+    int cantidadBoletos=0;
+    String idevento,eventogrupo;
     TextView TXVSFuncion,TXVEFuncion,TXVSFuncion2;
-    Spinner spfuncion; LinearLayout LLYZonas;
-    View vista; JSONArray Elementos=null;
+    Spinner spfuncion;    View vista; JSONArray Elementos=null;
     String [] funciones,idevento_funcion;
     Button btmDisponible;
-    Funcion_NumBolListener funcion_numBolListener;
+    SharedPreferences prefe;
 
 
     public ComprarBoletoFr() {
@@ -104,9 +69,11 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         btmDisponible=(Button)vista.findViewById(R.id.btmdisponible);
         btmDisponible.setClickable(false);
 
-        SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=(prefe.getString("idevento",""));
         eventogrupo=(prefe.getString("eventogrupo",""));
+        cantidadBoletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
+        txvCantidad.setText(String.valueOf(cantidadBoletos));
         inicio_interfaz();
 
         return vista;
@@ -120,7 +87,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         BtMenos.setOnClickListener(this);
         btmDisponible.setOnClickListener(this);
         btmDisponible.setClickable(false);
-        if(cantidadBoletos==0){ BtMenos.setClickable(false);}
+        if(cantidadBoletos==0){ BtMenos.setClickable(false);} else{ BtMenos.setClickable(true);btmDisponible.setClickable(true);}
         if(eventogrupo.equals("0")){
             TXVSFuncion2.setVisibility(View.GONE);
             TXVEFuncion.setVisibility(View.GONE);
@@ -133,6 +100,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     }
 
     void Consulta_Funciones_Evento(){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -147,7 +115,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                                 Elementos = new JSONArray(resultado);
                                 funciones= new String[Elementos.length()+1];
                                 idevento_funcion= new String[Elementos.length()+1];
-                                funciones[0]="..Seleccione un evento.."; idevento_funcion[0]="000";
+                                funciones[0]="..Selecciona.."; idevento_funcion[0]="000";
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
@@ -169,11 +137,14 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         ArrayAdapter adapter2 = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,funciones);
         adapter2.setDropDownViewResource(R.layout.spinner_lista2);
         spfuncion.setAdapter(adapter2);
+        spfuncion.setSelection(Integer.parseInt(prefe.getString("posEve","0")));
+        ((DetallesEventos)getActivity()).cerrar_cargando();
         spfuncion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
                     idevento=idevento_funcion[position];
+                    set_DatosCompra("posEve",String.valueOf(position));
                     BtMas.setClickable(true);
                     BtMenos.setClickable(true);
                 }else{
@@ -232,7 +203,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            funcion_numBolListener=(Funcion_NumBolListener)context;
+
         }catch (Exception e){}
     }
 
@@ -286,14 +257,21 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         }
         if(v==btmDisponible){
             Log.e("BTMD","pulsado");
-            funcion_numBolListener.setFuncion_NumBol(idevento,txvCantidad.getText().toString());
-            ((DetallesEventos) getActivity()).next_page();
+            ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
+            set_DatosCompra("idevento",idevento);
+            set_DatosCompra("Cant_boletos",txvCantidad.getText().toString());
         }
     }
 
-
-    public interface Funcion_NumBolListener{
-        public void setFuncion_NumBol(String funcion,String Cant_Boletos);
+    public void set_DatosCompra(String ndato,String dato){
+        SharedPreferences preferencias=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        editor.putString(ndato, dato);
+        editor.commit();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 }

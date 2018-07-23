@@ -33,7 +33,7 @@ dependencies {
     implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation 'com.github.Vatican-Cameos:CarouselPicker:v1.0'
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.google.android.gms:play-services-safetynet:15.0.1'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.8.0'
@@ -44,4 +44,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'jp.wasabeef:fresco-processors:2.1.0'
     implementation 'com.jackandphantom.android:blurimage:1.2.0'
+    implementation 'com.github.chrisbanes:PhotoView:1.2.6'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
 }

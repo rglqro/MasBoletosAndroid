@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal" android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blanco">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/iconsp"
+                android:src="@drawable/puntoventa"
+                android:adjustViewBounds="true"
+                android:layout_marginVertical="10dp"/>
+
+            <TextView
+                android:id="@+id/txvsp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:text="Forma de Pago"
+                android:textColor="@color/negro"
+                android:textSize="16sp"
+                android:layout_alignParentRight="true"
+                android:paddingHorizontal="5dp"
+                android:layout_toRightOf="@id/iconsp"
+                android:layout_below="@id/txvsp"/>
+
+            <TextView
+                android:id="@+id/txvdescFP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/iconsp"
+                android:layout_below="@id/txvsp"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@id/iconsp"
+                android:paddingHorizontal="7dp"
+                android:text="TextView"
+                android:textColor="@color/grisclaro"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
