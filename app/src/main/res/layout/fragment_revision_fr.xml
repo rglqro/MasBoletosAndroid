@@ -19,7 +19,8 @@
             android:text="DATOS FINALES DE TU COMPRA\nREVISA QUE LOS DATOS DE TU COMPRA SEAN CORRECTOS"
             android:textColor="@color/blanco"
             android:background="@color/azulmb"
-            android:padding="5dp"
+            android:padding="7dp"
+            android:layout_marginBottom="5dp"
             android:gravity="center"/>
 
         <ImageView
@@ -140,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/gris2"
-                    android:text="Precio de Boleto"
+                    android:text="Precio de Boleto:"
                     android:textColor="#000"
                     android:textSize="17sp" />
 
@@ -165,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/gris2"
-                    android:text="Cargos por servicio"
+                    android:text="Cargos por servicio:"
                     android:textColor="#000"
                     android:textSize="17sp" />
 
@@ -216,7 +217,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/gris2"
-                    android:text="TOTAL: "
+                    android:text="Total: "
                     android:textColor="#000"
                     android:textSize="17sp" />
 
@@ -230,95 +231,124 @@
                     android:textColor="#000"
                     android:textSize="17sp" />
             </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/textView34"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gris2"
+                    android:text="Asientos(s):"
+                    android:textColor="@color/negro"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txvasientosRev2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/blanco"
+                    android:gravity="end"
+                    android:text="1"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="17sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/textView35"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gris2"
+                    android:text="Forma de Pago:"
+                    android:textColor="@color/negro"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txvfpagoRev2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/blanco"
+                    android:gravity="end"
+                    android:text="TextView"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="17sp"
+                    tools:text="PayPal" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/textView36"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gris2"
+                    android:text="Entrega:"
+                    android:textColor="@color/negro"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txventregRev2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/blanco"
+                    android:gravity="end"
+                    android:text="TextView"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="17sp"
+                    tools:text="WillCall" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/textView37"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gris2"
+                    android:text="Cargos Forma Entrega:"
+                    android:textColor="@color/negro"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txvcfentrFRev2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/blanco"
+                    android:gravity="end"
+                    android:text="MX $0.00"
+                    android:textAllCaps="true"
+                    android:textColor="#000"
+                    android:textSize="17sp" />
+            </TableRow>
+
         </TableLayout>
-
-        <LinearLayout
-            android:id="@+id/llseguro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/TBLCostos"
-            android:orientation="vertical"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="5dp"
-            android:background="@color/gris2">
-
-
-            <TextView
-                android:id="@+id/txvasientosRev2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Asientos(s): 1"
-                android:textAllCaps="true"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:layout_marginVertical="5dp"
-                android:background="@color/blanco"/>
-
-            <TextView
-                android:id="@+id/txvfpagoRev2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAllCaps="true"
-                android:textColor="#000"
-                android:textSize="20sp"
-                tools:text="Forma de Pago: \nPayPal"
-                android:layout_marginBottom="5dp"
-                android:background="@color/blanco"/>
-
-            <TextView
-                android:id="@+id/txventregRev2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAllCaps="true"
-                android:textColor="#000"
-                android:textSize="20sp"
-                tools:text="Entrega: WillCall"
-                android:layout_marginBottom="5dp"
-                android:background="@color/blanco"/>
-
-            <TextView
-                android:id="@+id/txvcfentrFRev2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cargos por Forma Entrega:\n MX $0.00"
-                android:textAllCaps="true"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/blanco"/>
-
-            <TextView
-                android:id="@+id/txvtotalFRev2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="MX $600.00"
-                android:padding="10dp"
-                android:textSize="24sp"
-                android:textColor="#ffff"
-                android:background="@color/verde2"/>
-
-            <CheckBox
-                android:id="@+id/cbdeacuerdo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/azulmboscuro"
-                android:text="Estoy de acuerdo"
-                android:textColor="@color/negro"
-                android:layout_marginBottom="5dp"
-                android:background="@color/blanco"/>
-
-        </LinearLayout>
 
         <Button
             android:id="@+id/btContinuar6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/llseguro"
+            android:layout_below="@+id/cbdeacuerdo"
             android:layout_gravity="bottom"
             android:layout_marginHorizontal="7dp"
             android:layout_marginVertical="7dp"
@@ -326,7 +356,31 @@
             android:text="Continuar"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:layout_alignParentRight="true" />
+
+        <CheckBox
+            android:id="@+id/cbdeacuerdo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/txvtotalFRev2"
+            android:background="@color/blanco"
+            android:buttonTint="@color/azulmboscuro"
+            android:text="Estoy de acuerdo"
+            android:textColor="@color/negro"
+            android:layout_alignParentRight="true" />
+
+        <TextView
+            android:id="@+id/txvtotalFRev2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/TBLCostos"
+            android:padding="10dp"
+            android:text="MX $600.00"
+            android:textColor="#ff0000"
+            android:textSize="24sp" />
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

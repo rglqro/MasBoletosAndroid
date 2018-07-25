@@ -1,10 +1,19 @@
 package itstam.masboletos;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.CompoundButtonCompat;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +21,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,20 +44,26 @@ public class FEntregaFr extends Fragment {
     View vista;
     SharedPreferences prefe;
     String seccion,fila,datoscargos,idevento="",fentregas="";
-    Double precio=0.00,total=0.00, ptecargo=0.00,imtecargo=0.00, CargosServ=0.00,CargoFEntr=0.00,CargoFEntr2=0.00;
+    Double precio=0.00,total=0.00, ptecargo=0.00,imtecargo=0.00, CargosServ=0.00,CargoFEntr=0.00,Sumafentr=0.00;
+    Double cargoseg=0.00,sumaseg=0.00;
     int asiento=0,cant_datos=0;
     TextView txvprecio,txvfila,txvasiento,txvseccion,txvtotal,txvcserv,txvfentr;
     DecimalFormat df = new DecimalFormat("#.00");
-    Button btcontinuar5;
-    CheckBox cbseguro,cbwillc;
+    Button btcontinuar5;RadioButton[]rbentregas; RadioGroup rgentregas;
+    TextView[]txventregas;
     Double[]idtipoentrega,ptecentr,costoentrega,ptecentr2,costoentrega2;
+    String[]tipoentre,tipoentre2,txtentre,txtentre2;
+    LinearLayout llentregas,llseguros;
+    Double total2=0.00,total4=0.00;
     JSONArray Elementos;
+    CheckBox cbseguros[];
 
     public FEntregaFr() {
         // Required empty public constructor
     }
 
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this
@@ -57,11 +75,11 @@ public class FEntregaFr extends Fragment {
         txvprecio=(TextView)vista.findViewById(R.id.txvprecioFE);
         txvcserv=(TextView)vista.findViewById(R.id.txvcservFE);
         txvfentr=(TextView)vista.findViewById(R.id.txvcfentrFE);
-        cbseguro=(CheckBox)vista.findViewById(R.id.cbseguro);
-        cbwillc=(CheckBox)vista.findViewById(R.id.cbwillcall);
         txvtotal=(TextView)vista.findViewById(R.id.txvtotalFE);
+        llentregas=(LinearLayout)vista.findViewById(R.id.llfentregas);
+        llseguros=(LinearLayout)vista.findViewById(R.id.llseguro);
 
-        btcontinuar5.setClickable(false);
+        btcontinuar5.setBackgroundResource(R.color.grisclaro);
         recepcion_datos();
         return vista;
     }
@@ -92,11 +110,13 @@ public class FEntregaFr extends Fragment {
     }
 
     void consulta_formas_entrega(){
+        ((DetallesEventos)getActivity()).dialogcarg.show();
         Thread tr=new Thread(){
             @Override
             public void run() {
                 final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);  //para que la variable sea reconocida en todos los metodos
                 getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void run() {
                         int r = validadatos(resultado); // checa si la pagina devolvio algo
@@ -106,7 +126,9 @@ public class FEntregaFr extends Fragment {
                                 idtipoentrega= new Double[Elementos.length()];
                                 ptecentr= new Double[Elementos.length()];
                                 costoentrega = new Double[Elementos.length()];
-                                String tipo="";
+                                tipoentre= new String[Elementos.length()];
+                                txtentre= new String[Elementos.length()];
+                                String tipo=""; cant_datos=0;
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     tipo=datos.getString("Tipo");
@@ -114,6 +136,8 @@ public class FEntregaFr extends Fragment {
                                         idtipoentrega[i]=Double.parseDouble(datos.getString("idforma"));
                                         ptecentr[i]=Double.parseDouble(datos.getString("porcentajecargo"));
                                         costoentrega[i]=Double.parseDouble(datos.getString("Costo"));
+                                        tipoentre[i]=datos.getString("texto");
+                                        txtentre[i]=datos.getString("descripcion");
                                         cant_datos++;
                                     }else if (tipo.equals("FormaPago")) {
                                         idtipoentrega[i]=0.00;
@@ -133,76 +157,158 @@ public class FEntregaFr extends Fragment {
         tr.start();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     void lista_willcall_seguro(){
         int cont=0;
         ptecentr2= new Double[cant_datos];
         costoentrega2 = new Double[cant_datos];
+        tipoentre2= new String[cant_datos];
+        txtentre2= new String[cant_datos];
         for (int i=0; i<idtipoentrega.length;i++){
-            if(idtipoentrega[i]==1.0 || idtipoentrega[i]==4.0) {
+            if(idtipoentrega[i]==1.0 || idtipoentrega[i]==4.0 ||idtipoentrega[i]==2.0 ||idtipoentrega[i]==3.0) {
                 ptecentr2[cont] = ptecentr[i];
                 costoentrega2[cont] = costoentrega[i];
+                tipoentre2[cont]=tipoentre[i];
+                txtentre2[cont]=txtentre[i];
                 cont++;
             }
         }
         willcallyseguro();
     }
 
-    void willcallyseguro(){
-        final Double total2=total;
-        cbwillc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                CargoFEntr=costoentrega2[1]+(total2*(ptecentr2[1]/100));
-                if (isChecked){
-                    btcontinuar5.setClickable(true);
-                    txvfentr.setText("MX $"+df.format(CargoFEntr+CargoFEntr2)+" x "+asiento);
-                    CargoFEntr=CargoFEntr*asiento;
-                    total=total2+CargoFEntr;
-                    txvtotal.setText("MX $"+df.format(total));
-                    fentregas="WILLCALL";
-                }else{
-                    total=total-(CargoFEntr*asiento);
-                    CargoFEntr=0.00;
-                    txvtotal.setText("MX $"+df.format(total));
-                    txvfentr.setText("MX $"+(CargoFEntr+CargoFEntr2)+" x "+asiento);
-                }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @SuppressLint("ResourceAsColor")
+    void willcallyseguro() {
+        total4=total;
+        rgentregas = new RadioGroup(getActivity());
+        rbentregas = new RadioButton[cant_datos];
+        txventregas = new TextView[cant_datos];
+        cbseguros = new CheckBox[cant_datos];
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        for (int i = 0; i < cant_datos; i++) {
+            Log.e("Tipoentreg2",tipoentre2[i]);
+            if(tipoentre2[i].equalsIgnoreCase("Will Call")||tipoentre2[i].equalsIgnoreCase("Boleto Electronico")||tipoentre2[i].equalsIgnoreCase("Recibe tu boleto en Casa")) {
+                rgentregas.setLayoutParams(lp);
+                rbentregas[i] = new RadioButton(getActivity());
+                rbentregas[i].setLayoutParams(lp);
+                rbentregas[i].setButtonTintList(ColorStateList.valueOf(R.color.azulmboscuro));
+                SpannableString txtcosto=new SpannableString(" MX $"+costoentrega2[i]);
+                txtcosto.setSpan(new StyleSpan(android.graphics.Typeface.BOLD_ITALIC),
+                        0,txtcosto.length(), 0);
+                rbentregas[i].setText(tipoentre2[i] + txtcosto);
+                rbentregas[i].setTextColor(Color.BLACK);
+                rbentregas[i].setId(i);
+                txventregas[i] = new TextView(getActivity());
+                txventregas[i].setLayoutParams(lp);
+                txventregas[i].setText(txtentre2[i]);
+                txventregas[i].setTextColor(Color.GRAY);
+                txventregas[i].setId(100 + i);
+                rgentregas.addView(rbentregas[i]);
+                rgentregas.addView(txventregas[i]);
+            }else{
+                cbseguros[i]=new CheckBox(getActivity());
+                cbseguros[i].setLayoutParams(lp);
+                cbseguros[i].setButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.azulmboscuro));
+                cbseguros[i].setText(tipoentre2[i]+ " MX $"+costoentrega2[i]);
+                cbseguros[i].setTextColor(Color.BLACK);
+                cbseguros[i].setId(i);
+                cbseguros[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        Log.e("idcb",String.valueOf(buttonView.getId()));
+                        if(isChecked){
+                            btcontinuar5.setBackgroundResource(R.color.verdemb);
+                            suma_seguro_entrega(buttonView.getId());
+                        }else{
+                            resta_seguro_entrega(buttonView.getId());
+                        }
+                    }
+                });
+                txventregas[i] = new TextView(getActivity());
+                txventregas[i].setLayoutParams(lp);
+                txventregas[i].setText(txtentre2[i]);
+                txventregas[i].setTextColor(Color.GRAY);
+                txventregas[i].setId(100 + i);
+                llseguros.addView(cbseguros[i]);
+                llseguros.addView(txventregas[i]);
             }
-        });
-        cbseguro.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                CargoFEntr2=costoentrega2[0]+(total2*(ptecentr2[0]/100));
-                if(isChecked){
-                    btcontinuar5.setClickable(true);
-                    txvfentr.setText("MX $"+df.format(CargoFEntr2+CargoFEntr)+" x "+asiento);
-                    CargoFEntr2=CargoFEntr2*asiento;
-                    total=total2+CargoFEntr2;
-                    txvtotal.setText("MX $"+df.format(total));
 
-                }else {
-                    total=total-(CargoFEntr2*asiento);
-                    CargoFEntr2=0.00;
-                    txvtotal.setText("MX $"+df.format(total));
-                    txvfentr.setText("MX $"+CargoFEntr2+CargoFEntr+" x "+asiento);
-                }
+        }
+        llentregas.removeAllViews();
+        rgentregas.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                suma_cargo_entrega(checkedId);
             }
         });
+        llentregas.addView(rgentregas);
+        ((DetallesEventos)getActivity()).dialogcarg.dismiss();
         continuar();
+    }
+    
+    void suma_cargo_entrega(int j){
+        total2=total4;
+        if (tipoentre2[j].equalsIgnoreCase("Will Call")) {
+            Sumafentr=costoentrega2[j]+(total2*(ptecentr2[j]/100));
+            btcontinuar5.setBackgroundResource(R.color.verdemb);
+            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+asiento);
+            CargoFEntr=(Sumafentr*asiento);
+            total=total2+CargoFEntr+cargoseg;
+            txvtotal.setText("MX $"+df.format(total));
+            fentregas="Will Call";
+        }else if (tipoentre2[j].equalsIgnoreCase("Boleto Electronico")){
+            Sumafentr=costoentrega2[j]+(total2*(ptecentr2[j]/100));
+            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+asiento);
+            CargoFEntr=(Sumafentr*asiento);
+            total=total2+CargoFEntr+cargoseg;
+            txvtotal.setText("MX $"+df.format(total));
+            fentregas="Boleto Electronico";
+        }
+        else if (tipoentre2[j].equalsIgnoreCase("Recibe tu boleto en Casa")){
+            Sumafentr=costoentrega2[j]+(total2*(ptecentr2[j]/100));
+            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+asiento);
+            CargoFEntr=(Sumafentr*asiento);
+            total=total2+CargoFEntr+cargoseg;
+            txvtotal.setText("MX $"+df.format(total));
+            fentregas="Recibe tu boleto en Casa";
+        }
+    }
+
+    void suma_seguro_entrega(int j){
+        total2=total4;
+        if(tipoentre2[j].equalsIgnoreCase("Seguro Boleto")){
+            sumaseg=costoentrega2[j]+(total2*(ptecentr2[j]/100));
+            cargoseg=sumaseg*asiento;
+            total=total2+cargoseg+CargoFEntr;
+            txvtotal.setText("MX $"+df.format(total));
+            txvfentr.setText("MX $"+df.format(sumaseg+Sumafentr)+" x "+asiento);
+        }
+    }
+
+    void resta_seguro_entrega(int j){
+        Double total3=total;
+        if(tipoentre2[j].equalsIgnoreCase("Seguro Boleto")){
+            sumaseg=costoentrega2[j]+(total3*(ptecentr2[j]/100));
+            cargoseg=sumaseg*asiento;
+            total=total3-cargoseg+CargoFEntr;
+            sumaseg=0.00;
+            txvtotal.setText("MX $"+df.format(total));
+            txvfentr.setText("MX $"+df.format(sumaseg+Sumafentr)+" x "+asiento);
+        }
     }
 
     void continuar(){
         btcontinuar5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cbseguro.isChecked() || cbwillc.isChecked()) {
-                    set_DatosCompra("cargos_servicio",txvcserv.getText().toString());
-                    set_DatosCompra("cargos_entrega",txvfentr.getText().toString());
-                    set_DatosCompra("fentrega",fentregas);
+                if(rgentregas.getCheckedRadioButtonId()!=-1) {
+                    set_DatosCompra("cargos_servicio", txvcserv.getText().toString());
+                    set_DatosCompra("cargos_entrega", txvfentr.getText().toString());
+                    set_DatosCompra("fentrega", fentregas);
                     set_DatosCompra("total", df.format(total));
                     ((DetallesEventos) getActivity()).replaceFragment(new RevisionFR());
-                }else{
+                }else
                     Toast.makeText(getActivity(),"Debe seleccionar al menos una de las formas de entrega",Toast.LENGTH_LONG).show();
-                }
             }
         });
     }

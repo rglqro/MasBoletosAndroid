@@ -13,6 +13,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textView38"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Elige la Forma de Entrega"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:background="@color/turquesa"
+            android:gravity="center"
+            android:paddingVertical="14dp"
+            android:layout_marginBottom="4dp"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -227,60 +239,26 @@
             </TableLayout>
 
             <LinearLayout
-                android:id="@+id/llwillcall"
+                android:id="@+id/llfentregas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/TBLCostos"
                 android:layout_marginVertical="5dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:paddingHorizontal="5dp">
 
-                <CheckBox
-                    android:id="@+id/cbwillcall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/azulmboscuro"
-                    android:checked="false"
-                    android:duplicateParentState="false"
-                    android:text="WILL CALL"
-                    android:textColor="#000"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/txvwillcall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingHorizontal="5dp"
-                    android:text="El cliente debe acudir a cualquier punto de venta para recoger su boleto. La taquilla del recinto esta generalmente abierta el día de la función. Será provechoso si usted puede llegar temprano para tener en cuenta el estacionamiento y para evitar el ingreso al recinto una vez iniciado el espectáculo."
-                    android:textColor="@color/negro" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llseguro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/llwillcall"
-                android:orientation="vertical">
+                android:id="@+id/llseguro"
+                android:orientation="vertical"
+                android:layout_below="@+id/view4"
+                android:paddingHorizontal="5dp">
 
-                <CheckBox
-                    android:id="@+id/cbseguro"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/azulmboscuro"
-                    android:text="SEGURO DEL BOLETO"
-                    android:textColor="@color/negro"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/txvseguro"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="5dp"
-                    android:text="Protege tus boletos con tranquilidad al realizar la compra de sus boletos para cualquier evento, asegurándolo contra circunstancias inesperadas."
-                    android:textColor="#000" />
             </LinearLayout>
 
             <Button
@@ -298,6 +276,16 @@
                 android:textColor="#fff"
                 android:textSize="18sp"
                 android:layout_alignParentRight="true" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_below="@+id/llfentregas"
+                android:layout_marginVertical="3dp"
+                android:background="@color/gris"
+                android:visibility="visible"
+                tools:ignore="UnknownId" />
 
         </RelativeLayout>
     </LinearLayout>

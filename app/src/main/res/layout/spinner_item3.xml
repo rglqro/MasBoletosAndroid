@@ -2,7 +2,7 @@
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal" android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blanco">
+            android:background="@drawable/select_lv">
 
             <ImageView
                 android:layout_width="60dp"
@@ -19,7 +19,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:text="Forma de Pago"
-                android:textColor="@color/negro"
+                android:textColor="@drawable/select_lv_text"
                 android:textSize="16sp"
                 android:layout_alignParentRight="true"
                 android:paddingHorizontal="5dp"
@@ -36,7 +36,7 @@
                 android:layout_toRightOf="@id/iconsp"
                 android:paddingHorizontal="7dp"
                 android:text="TextView"
-                android:textColor="@color/grisclaro"
+                android:textColor="@color/gris"
                 android:layout_alignParentRight="true" />
 
         </RelativeLayout>

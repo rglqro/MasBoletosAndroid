@@ -1,6 +1,7 @@
 package itstam.masboletos;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -67,7 +68,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         TXVEFuncion=(TextView)vista.findViewById(R.id.TXVEFuncion);
         spfuncion=(Spinner) vista.findViewById(R.id.spFuncion);
         btmDisponible=(Button)vista.findViewById(R.id.btmdisponible);
-        btmDisponible.setClickable(false);
+        btmDisponible.setBackgroundResource(R.color.grisclaro);
 
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=(prefe.getString("idevento",""));
@@ -86,8 +87,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         BtMas.setOnClickListener(this);
         BtMenos.setOnClickListener(this);
         btmDisponible.setOnClickListener(this);
-        btmDisponible.setClickable(false);
-        if(cantidadBoletos==0){ BtMenos.setClickable(false);} else{ BtMenos.setClickable(true);btmDisponible.setClickable(true);}
+        if(cantidadBoletos==0){ BtMenos.setClickable(false);} else{ BtMenos.setClickable(true);btmDisponible.setBackgroundResource(R.color.verdemb);}
         if(eventogrupo.equals("0")){
             TXVSFuncion2.setVisibility(View.GONE);
             TXVEFuncion.setVisibility(View.GONE);
@@ -140,6 +140,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         spfuncion.setSelection(Integer.parseInt(prefe.getString("posEve","0")));
         ((DetallesEventos)getActivity()).cerrar_cargando();
         spfuncion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
@@ -148,7 +149,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                     BtMas.setClickable(true);
                     BtMenos.setClickable(true);
                 }else{
-                    btmDisponible.setClickable(false);
+                    btmDisponible.setBackgroundResource(R.color.grisclaro);
                     txvCantidad.setText("0");
                     BtMas.setClickable(false);
                     BtMenos.setClickable(false);
@@ -238,7 +239,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             txvCantidad.setText(String.valueOf(cantidadBoletos));
             if(cantidadBoletos>0){
                 BtMenos.setClickable(true);
-                btmDisponible.setClickable(true);
+                btmDisponible.setBackgroundResource(R.color.verdemb);
             }
         }
         if(v==BtMenos){
@@ -248,18 +249,25 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             if (cantidadBoletos==0){
                 BtMenos.setClickable(false);
-                btmDisponible.setClickable(false);
+                btmDisponible.setBackgroundResource(R.color.grisclaro);
             } else{
                 BtMenos.setClickable(true);
-                btmDisponible.setClickable(true);
+                btmDisponible.setBackgroundResource(R.color.verdemb);
                 txvCantidad.setText(String.valueOf(cantidadBoletos));
             }
         }
         if(v==btmDisponible){
-            Log.e("BTMD","pulsado");
-            ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
-            set_DatosCompra("idevento",idevento);
-            set_DatosCompra("Cant_boletos",txvCantidad.getText().toString());
+            cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
+            if(cantidadBoletos>0) {
+                Log.e("BTMD", "pulsado");
+                ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
+                set_DatosCompra("idevento", idevento);
+                set_DatosCompra("Cant_boletos", txvCantidad.getText().toString());
+            }else if(spfuncion.getSelectedItemPosition()==0 && !eventogrupo.equals("0")){
+                ((DetallesEventos)getActivity()).AlertaBoton("Evento","Debe elegir un Evento").show();
+            }else{
+                ((DetallesEventos)getActivity()).AlertaBoton("Cantidad Boletos","Debe elegir al menos un boleto").show();
+            }
         }
     }
 

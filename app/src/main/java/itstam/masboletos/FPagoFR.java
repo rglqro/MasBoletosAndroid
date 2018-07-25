@@ -1,9 +1,12 @@
 package itstam.masboletos;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
@@ -32,8 +36,8 @@ public class FPagoFR extends Fragment {
     String[] spTitFP,spDescFP,idtipopagom,ptajecargo,itefijo,listatipopagos,listadescpago,listaptecar,listaitecar,listaidpago,listatipopagos2;
     String datoscargos;
     int[] spImagesFP,listaimagpagos;
-    Spinner spFPago;
-    int cant_datos=0;
+    ListView lvfpago;
+    int cant_datos=0,idsel=0,pos=0;
     Button btContinuar4;
     JSONArray Elementos;
     SharedPreferences prefe;
@@ -43,13 +47,14 @@ public class FPagoFR extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         vista=inflater.inflate(R.layout.fragment_fpago_fr, container, false);
-        spFPago=(Spinner)vista.findViewById(R.id.spfpago);
+        lvfpago=(ListView)vista.findViewById(R.id.lvfpago);
         btContinuar4=(Button)vista.findViewById(R.id.btContinuar4);
-
+        btContinuar4.setBackgroundResource(R.color.grisclaro);
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=prefe.getString("idevento","");
         ConsultaFormasPago();
@@ -63,6 +68,7 @@ public class FPagoFR extends Fragment {
             public void run() {
                 final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);  //para que la variable sea reconocida en todos los metodos
                 getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void run() {
                         int r = validadatos(resultado); // checa si la pagina devolvio algo
@@ -100,6 +106,7 @@ public class FPagoFR extends Fragment {
         tr.start();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void LlenadoLista(){
         spImagesFP= new int[]{R.drawable.puntoventa,R.drawable.mcpago,R.drawable.mcpago,R.drawable.oxxopago,R.drawable.pppago};
         spTitFP= new String[]{"Pago en punto de venta","Tarjeta de Crédito ", "Tarjeta de Débito","Oxxo ","PayPal"};
@@ -126,28 +133,37 @@ public class FPagoFR extends Fragment {
             }
         }
         SpinnerAdater adapter= new SpinnerAdater(getActivity(),listatipopagos,listaimagpagos,listadescpago);
-        spFPago.setAdapter(null);
-        spFPago.setAdapter(adapter);
+        lvfpago.setAdapter(null);
+        lvfpago.setAdapter(adapter);
         ((DetallesEventos)getActivity()).cerrar_cargando();
-        spFPago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        lvfpago.setNestedScrollingEnabled(true);
+        idsel=0;
+        lvfpago.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                btContinuar4.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        datoscargos=listaidpago[position]+",";datoscargos+=listaptecar[position]+",";datoscargos+=listaitecar[position];
-                        Log.e("datoscargos",datoscargos);
-                        set_DatosCompra("datoscargos",datoscargos);
-                        set_DatosCompra("formapago",listatipopagos2[position]);
-                        FEntregaFr fEntregaFr= new FEntregaFr();
-                        ((DetallesEventos)getActivity()).replaceFragment(fEntregaFr);
-                    }
-                });
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                view.setSelected(true);
+                btContinuar4.setBackgroundResource(R.color.verdemb);
+                pos=position;
+                idsel++;
             }
-
+        });
+        btContinuar4.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                if(idsel!=0) {
+                    datoscargos = listaidpago[pos] + ",";
+                    datoscargos += listaptecar[pos] + ",";
+                    datoscargos += listaitecar[pos];
+                    Log.e("datoscargos", datoscargos);
+                    set_DatosCompra("datoscargos", datoscargos);
+                    set_DatosCompra("formapago", listatipopagos2[pos]);
+                    set_DatosCompra("idformapago", listaidpago[pos]);
+                    FEntregaFr fEntregaFr = new FEntregaFr();
+                    ((DetallesEventos) getActivity()).replaceFragment(fEntregaFr);
+                }else {
+                    ((DetallesEventos) getActivity()).AlertaBoton("Forma de Pago","Debe elegir al menos una forma de pago").show();
+                }
             }
         });
     }

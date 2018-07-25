@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,11 +71,22 @@ public class RevisionFR extends Fragment {
         txvcarserv.setText(""+carserv);
         txvcarfentr.setText(""+carfentr);
         txvtotal.setText("MX $"+total);
-        txvasientos2.setText("ASIENTO(S): "+asiento);
-        txvfpago.setText("FORMA DE PAGO: "+fpago);
-        txvfentrega.setText("ENTREGA: "+fentregas);
-        txvcarfentr2.setText("CARGOS POR FORMA ENTREGA:\n"+carfentr);
+        txvasientos2.setText(""+asiento);
+        txvfpago.setText(""+fpago);
+        txvfentrega.setText(""+fentregas);
+        txvcarfentr2.setText(""+carfentr);
         txvtotal2.setText("MX $"+total);
+        btcontinuar6.setBackgroundResource(R.color.gris2);
+        cbdeacuerdo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    btcontinuar6.setBackgroundResource(R.color.verdemb);
+                }else{
+                    btcontinuar6.setBackgroundResource(R.color.gris2);
+                }
+            }
+        });
         btcontinuar6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

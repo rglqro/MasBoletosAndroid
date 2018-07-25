@@ -211,7 +211,6 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void obtener_secciones(){
-        ((DetallesEventos)getActivity()).iniciar_cargando();
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -249,7 +248,6 @@ public class SeleccionZonaFR extends Fragment {
         ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item_2,subzonas);
         adapter.setDropDownViewResource(R.layout.spinner_lista2);
         spseccion.setAdapter(adapter);
-        ((DetallesEventos)getActivity()).cerrar_cargando();
         spseccion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -2,12 +2,13 @@ package itstam.masboletos;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Dialog;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,7 +39,8 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     ImageButton IMBTRegresar;
     TextView TXVNEvento;
     int contadorTab=0;
-    Dialog customDialog;
+    ProgressDialog dialogcarg;
+
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint({"ResourceAsColor", "ResourceType"})
@@ -67,7 +68,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     void IniciarFragments(){
         tabLayout = (TabLayout) findViewById(R.id.TabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("1. Cantidad de Boletos"));
-        for(int i=2;i<=7;i++){
+        for(int i=2;i<=8;i++){
             tabLayout.addTab(tabLayout.newTab().setText(""+i));
         }
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -75,7 +76,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         getSupportFragmentManager().beginTransaction().add(R.id.pagerfragmets2,comprarBoletoFr).commit();
         FRNombres=new String[tabLayout.getTabCount()];
         FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mas Boletos te recomienda";FRNombres[3]="4. Forma de Pago";
-        FRNombres[4]="5. Forma de Entrega"; FRNombres[5]="6. Revisión"; FRNombres[6]="7. Usuario";
+        FRNombres[4]="5. Forma de Entrega"; FRNombres[5]="6. Revisión"; FRNombres[6]="7. Usuario"; FRNombres[7]="8. Cuenta";
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -160,17 +161,16 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     }
 
     public void iniciar_cargando(){
-        customDialog = new Dialog(this);
-        //deshabilitamos el título por defecto
-        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        customDialog.setContentView(R.layout.dialog_cargando);
-        customDialog.setCancelable(false);
-        customDialog.show();
-        Window window = customDialog.getWindow();
-        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialogcarg= new ProgressDialog(this);
+        dialogcarg.setTitle("Cargando información");
+        dialogcarg.setMessage("  Espere...");
+        dialogcarg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialogcarg.setCancelable(false);
+        dialogcarg.show();
     }
+
     public void cerrar_cargando(){
-        customDialog.dismiss();
+        dialogcarg.dismiss();
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -182,6 +182,20 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         contadorTab++;
         TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
         tab.select();
+    }
+
+    public AlertDialog AlertaBoton(String titulo,String mensaje) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+        return builder.create();
     }
 
     public void set_DatosCompra(String ndato,String dato){
