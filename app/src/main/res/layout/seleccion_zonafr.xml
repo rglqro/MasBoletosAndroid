@@ -71,6 +71,15 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/negro"/>
 
+        <CheckBox
+            android:id="@+id/cbvermapa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mostrar Mapa Asientos"
+            android:textColor="#000"
+            android:buttonTint="@color/azulmboscuro"
+            android:layout_marginVertical="3dp"/>
+
         <Button
             android:id="@+id/btContinuar2"
             android:layout_width="match_parent"

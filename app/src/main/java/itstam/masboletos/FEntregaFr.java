@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CompoundButtonCompat;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -43,10 +44,10 @@ import java.text.DecimalFormat;
 public class FEntregaFr extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,datoscargos,idevento="",fentregas="";
+    String seccion,fila,datoscargos,idevento="",fentregas="",asiento="";
     Double precio=0.00,total=0.00, ptecargo=0.00,imtecargo=0.00, CargosServ=0.00,CargoFEntr=0.00,Sumafentr=0.00;
     Double cargoseg=0.00,sumaseg=0.00;
-    int asiento=0,cant_datos=0;
+    int cant_datos=0,cant_boletos;
     TextView txvprecio,txvfila,txvasiento,txvseccion,txvtotal,txvcserv,txvfentr;
     DecimalFormat df = new DecimalFormat("#.00");
     Button btcontinuar5;RadioButton[]rbentregas; RadioGroup rgentregas;
@@ -89,7 +90,8 @@ public class FEntregaFr extends Fragment {
         idevento=prefe.getString("idevento","");
         seccion=prefe.getString("zona","");
         fila=prefe.getString("fila","");
-        asiento=Integer.parseInt(prefe.getString("asientos","0"));
+        cant_boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
+        asiento=(prefe.getString("asientos","0"));
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
         datoscargos=prefe.getString("datoscargos","");
         String[] datocargo = datoscargos.split(",");
@@ -98,12 +100,12 @@ public class FEntregaFr extends Fragment {
         txvseccion.setText(seccion);
         txvasiento.setText(""+asiento);
         txvfila.setText(fila);
-        total=precio*asiento;
+        total=precio*cant_boletos;
         CargosServ=((precio*(ptecargo/100))+imtecargo);
-        txvprecio.setText("MX $"+df.format(precio)+" x "+asiento);
-        txvcserv.setText("MX $"+df.format(CargosServ)+" x "+asiento);
-        txvfentr.setText("MX $0.00"+" x "+asiento);
-        total+=CargosServ*asiento;
+        txvprecio.setText("MX $"+df.format(precio)+" x "+cant_boletos);
+        txvcserv.setText("MX $"+df.format(CargosServ)+" x "+cant_boletos);
+        txvfentr.setText("MX $0.00"+" x "+cant_boletos);
+        total+=CargosServ*cant_boletos;
         txvtotal.setText("MX $"+df.format(total));
         consulta_formas_entrega();
 
@@ -192,10 +194,8 @@ public class FEntregaFr extends Fragment {
                 rbentregas[i] = new RadioButton(getActivity());
                 rbentregas[i].setLayoutParams(lp);
                 rbentregas[i].setButtonTintList(ColorStateList.valueOf(R.color.azulmboscuro));
-                SpannableString txtcosto=new SpannableString(" MX $"+costoentrega2[i]);
-                txtcosto.setSpan(new StyleSpan(android.graphics.Typeface.BOLD_ITALIC),
-                        0,txtcosto.length(), 0);
-                rbentregas[i].setText(tipoentre2[i] + txtcosto);
+                String sourceString = tipoentre2[i]+" - <b>MX $" + costoentrega2[i] + "</b>";
+                rbentregas[i].setText(Html.fromHtml(sourceString));
                 rbentregas[i].setTextColor(Color.BLACK);
                 rbentregas[i].setId(i);
                 txventregas[i] = new TextView(getActivity());
@@ -209,7 +209,8 @@ public class FEntregaFr extends Fragment {
                 cbseguros[i]=new CheckBox(getActivity());
                 cbseguros[i].setLayoutParams(lp);
                 cbseguros[i].setButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.azulmboscuro));
-                cbseguros[i].setText(tipoentre2[i]+ " MX $"+costoentrega2[i]);
+                String sourceString = tipoentre2[i]+" - <b>MX $" + costoentrega2[i] + "</b>";
+                cbseguros[i].setText(Html.fromHtml(sourceString));
                 cbseguros[i].setTextColor(Color.BLACK);
                 cbseguros[i].setId(i);
                 cbseguros[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -245,43 +246,28 @@ public class FEntregaFr extends Fragment {
         ((DetallesEventos)getActivity()).dialogcarg.dismiss();
         continuar();
     }
-    
+
     void suma_cargo_entrega(int j){
-        total2=total4;
-        if (tipoentre2[j].equalsIgnoreCase("Will Call")) {
+        total2=total-CargoFEntr-cargoseg;
+        if (tipoentre2[j].equalsIgnoreCase("Will Call")||tipoentre2[j].equalsIgnoreCase("Boleto Electronico")||tipoentre2[j].equalsIgnoreCase("Recibe tu boleto en Casa")) {
             Sumafentr=costoentrega2[j]+(total2*(ptecentr2[j]/100));
             btcontinuar5.setBackgroundResource(R.color.verdemb);
-            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+asiento);
-            CargoFEntr=(Sumafentr*asiento);
+            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+cant_boletos);
+            CargoFEntr=(Sumafentr*cant_boletos);
             total=total2+CargoFEntr+cargoseg;
             txvtotal.setText("MX $"+df.format(total));
             fentregas="Will Call";
-        }else if (tipoentre2[j].equalsIgnoreCase("Boleto Electronico")){
-            Sumafentr=costoentrega2[j]+(total2*(ptecentr2[j]/100));
-            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+asiento);
-            CargoFEntr=(Sumafentr*asiento);
-            total=total2+CargoFEntr+cargoseg;
-            txvtotal.setText("MX $"+df.format(total));
-            fentregas="Boleto Electronico";
-        }
-        else if (tipoentre2[j].equalsIgnoreCase("Recibe tu boleto en Casa")){
-            Sumafentr=costoentrega2[j]+(total2*(ptecentr2[j]/100));
-            txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+asiento);
-            CargoFEntr=(Sumafentr*asiento);
-            total=total2+CargoFEntr+cargoseg;
-            txvtotal.setText("MX $"+df.format(total));
-            fentregas="Recibe tu boleto en Casa";
         }
     }
 
     void suma_seguro_entrega(int j){
-        total2=total4;
+        total2=total;
         if(tipoentre2[j].equalsIgnoreCase("Seguro Boleto")){
             sumaseg=costoentrega2[j]+(total2*(ptecentr2[j]/100));
-            cargoseg=sumaseg*asiento;
-            total=total2+cargoseg+CargoFEntr;
+            cargoseg=sumaseg*cant_boletos;
+            total=total2+cargoseg;
             txvtotal.setText("MX $"+df.format(total));
-            txvfentr.setText("MX $"+df.format(sumaseg+Sumafentr)+" x "+asiento);
+            txvfentr.setText("MX $"+df.format(sumaseg+Sumafentr)+" x "+cant_boletos);
         }
     }
 
@@ -289,11 +275,12 @@ public class FEntregaFr extends Fragment {
         Double total3=total;
         if(tipoentre2[j].equalsIgnoreCase("Seguro Boleto")){
             sumaseg=costoentrega2[j]+(total3*(ptecentr2[j]/100));
-            cargoseg=sumaseg*asiento;
-            total=total3-cargoseg+CargoFEntr;
-            sumaseg=0.00;
+            cargoseg=sumaseg*cant_boletos;
+            total=total3-cargoseg;
+            sumaseg=0.00; cargoseg=0.00;
             txvtotal.setText("MX $"+df.format(total));
-            txvfentr.setText("MX $"+df.format(sumaseg+Sumafentr)+" x "+asiento);
+            txvfentr.setText("MX $"+df.format(sumaseg+Sumafentr)+" x "+cant_boletos);
+            fentregas=tipoentre2[j];
         }
     }
 

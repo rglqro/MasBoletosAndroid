@@ -188,7 +188,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(titulo)
                 .setMessage(mensaje)
-                .setPositiveButton("OK",
+                .setPositiveButton("Aceptar",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 public class RevisionFR extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="";
+    String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="",cant_boletos;
     Double precio=0.0,total=0.00;
     TextView txvprecio,txvcarfentr,txvfila,txvasiento,txvseccion,txvtotal,txvcarserv,txvasientos2,txvfpago,txvfentrega,txvcarfentr2,txvtotal2;
     DecimalFormat df = new DecimalFormat("#.00");
@@ -64,10 +64,11 @@ public class RevisionFR extends Fragment {
         carfentr=prefe.getString("cargos_entrega","");
         fentregas=prefe.getString("fentrega","");
         fpago=prefe.getString("formapago","");
+        cant_boletos=prefe.getString("Cant_boletos","");
         txvseccion.setText(seccion);
         txvasiento.setText(asiento);
         txvfila.setText(fila);
-        txvprecio.setText("MX $"+df.format(precio)+" x "+asiento);
+        txvprecio.setText("MX $"+df.format(precio)+" x "+cant_boletos);
         txvcarserv.setText(""+carserv);
         txvcarfentr.setText(""+carfentr);
         txvtotal.setText("MX $"+total);

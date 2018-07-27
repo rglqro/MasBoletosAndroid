@@ -22,6 +22,8 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,15 +55,16 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class SeleccionZonaFR extends Fragment {
     View vista;
     public static final String TAG = SeleccionZonaFR.class.getSimpleName();
-    String [] funciones, zonas,colores, precios, disponibilidad, subzonas,idevento_funcion,numerado,idsubzonas,comision,zona_precio;
+    String [] funciones, zonas,colores, precios, disponibilidad, subzonas,numerado,idsubzonas,comision,zona_precio,numeradozona;
     JSONArray Elementos=null;
-    String idevento,_zona,id_seccionXevento, URLMapa;
-    int indiceZona;
+    String idevento,_zona,id_seccionXevento, URLMapa,indicenumerzona,idvermapa;
+    int indiceZona,indicesubzona;
     Spinner spzona,spseccion;
     Button btContinuar;
     String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila;
     ImageView IMVMApa;
     Dialog customDialog = null;
+    CheckBox cbvermapaas;
 
     public SeleccionZonaFR() {
         // Required empty public constructor
@@ -75,6 +78,7 @@ public class SeleccionZonaFR extends Fragment {
         spseccion=(Spinner)vista.findViewById(R.id.spseccion);
         btContinuar=(Button)vista.findViewById(R.id.btContinuar2);
         IMVMApa=(ImageView)vista.findViewById(R.id.IMVMapa);
+        cbvermapaas=(CheckBox)vista.findViewById(R.id.cbvermapa); cbvermapaas.setVisibility(View.INVISIBLE);
         Recibir_Funcion_CBol();
         return vista;
     }
@@ -225,12 +229,14 @@ public class SeleccionZonaFR extends Fragment {
                                 Elementos = new JSONArray(resultado);
                                 subzonas= new String[Elementos.length()+1];
                                 idsubzonas= new String[Elementos.length()+1];
-                                subzonas[0]="Mejor disponible";
+                                numeradozona= new String[Elementos.length()+1];
+                                subzonas[0]="Mejor disponible"; numeradozona[0]="0";
                                 idsubzonas[0]="0";
                                 for (int i=0;i<Elementos.length();i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     subzonas[i+1]=datos.getString("nombre");
                                     idsubzonas[i+1]=datos.getString("idzona");
+                                    numeradozona[i+1]=datos.getString("numerado");
                                 }
                                 spinner_seccion();
                             } catch (JSONException e) {
@@ -252,6 +258,18 @@ public class SeleccionZonaFR extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 id_seccionXevento=idsubzonas[position];
+                indicenumerzona=numeradozona[position];
+                indicesubzona=position;
+                if(!id_seccionXevento.equalsIgnoreCase("0")&& !indicenumerzona.equalsIgnoreCase("0")) { // si e
+                    btContinuar.setText("Buscar Mejor Disponible");
+                    cbvermapaas.setVisibility(View.VISIBLE);
+                }else if(id_seccionXevento.equalsIgnoreCase("0")&& indicenumerzona.equals("0")){
+                    btContinuar.setText("Buscar Mejor Disponible");
+                    cbvermapaas.setVisibility(View.INVISIBLE);
+                    cbvermapaas.setChecked(false);
+                }else{
+                    btContinuar.setText("Buscar Asientos");
+                }
                 Log.e("id:seccion",id_seccionXevento);
             }
 
@@ -260,10 +278,22 @@ public class SeleccionZonaFR extends Fragment {
 
             }
         });
+        cbvermapaas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    btContinuar.setText("Seleccionar Asientos");
+                    idvermapa="1";
+                }else {
+                    btContinuar.setText("Buscar Mejor Disponible");
+                    idvermapa = "0";
+                }
+            }
+        });
         btContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Mejor_Disponible();
+                    Mejor_Disponible();
             }
         });
     }
@@ -289,14 +319,18 @@ public class SeleccionZonaFR extends Fragment {
                                     asiento_compra=datos.getString("mensagesetAsientos");
                                     tipomsj=datos.getString("mensagesetTipo");
                                     msj=datos.getString("mensagesetMensage");
-                                    fila=datos.getString("mensagesetNombrePuerta") ;
+                                    fila=datos.getString("mensagesetFila") ;
                                 }
                                 if(tipomsj.equals("1")) {
                                         set_DatosCompra("zona",zonas[indiceZona]);
                                         set_DatosCompra("precio",precios[indiceZona]);
                                         set_DatosCompra("comision",comision[indiceZona]);
                                         set_DatosCompra("fila",fila);
-                                        set_DatosCompra("asientos",asiento_compra);
+                                        set_DatosCompra("asientos",fila+": "+asiento_compra);
+                                        set_DatosCompra("valornumerado",indicenumerzona);
+                                        set_DatosCompra("idsubzona",idsubzonas[indicesubzona]);
+                                        set_DatosCompra("subzona",subzonas[indicesubzona]);
+                                        set_DatosCompra("idvermapa",idvermapa);
                                         ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
                                     }else {
                                     ((DetallesEventos)getActivity()).cerrar_cargando();
