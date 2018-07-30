@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,36 +109,42 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
     void Consulta_Funciones_Evento(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo;
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                funciones= new String[Elementos.length()+1];
-                                idevento_funcion= new String[Elementos.length()+1];
-                                funciones[0]="..Selecciona.."; idevento_funcion[0]="000";
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
-                                    idevento_funcion[i+1]=datos.getString("idevento_funcion");
-                                }
-                                spinner_funcion();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            funciones= new String[Elementos.length()+1];
+                            idevento_funcion= new String[Elementos.length()+1];
+                            funciones[0]="..Selecciona.."; idevento_funcion[0]="000";
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
+                                idevento_funcion[i+1]=datos.getString("idevento_funcion");
                             }
+                            spinner_funcion();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     void spinner_funcion(){
@@ -161,43 +175,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             }
         });
 
-    }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.d("Enlace ",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
     }
 
     @Override

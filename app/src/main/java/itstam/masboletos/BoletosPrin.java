@@ -3,29 +3,23 @@ package itstam.masboletos;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,26 +28,22 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import me.relex.circleindicator.CircleIndicator;
 
 public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefreshListener{
@@ -100,48 +90,54 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void Consulta_Imagen_Botones(){
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getEventosActivos.php");  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/getEventosActivos.php";
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                ListaImagBoton = new ArrayList<String>();
-                                ListaImagBoton.clear();
-                                ListaImagCarrusel = new ArrayList<String>();
-                                ListaImagCarrusel.clear();
-                                NombresEvento= new ArrayList<String>();
-                                NombresEvento.clear();
-                                IDEventos= new ArrayList<String>();
-                                IDEventos.clear();
-                                EventosGrupo= new ArrayList<String>();
-                                EventosGrupo.clear();
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    ListaImagBoton.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
-                                    ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
-                                    NombresEvento.add(datos.getString("evento"));
-                                    IDEventos.add(datos.getString("idevento"));
-                                    EventosGrupo.add(datos.getString("eventogrupo"));
-                                    Log.e("ListaCuadrada",ListaImagBoton.get(i));
-                                }
-                                iniciar_listas_spinner();
-                                iniciar_Carrusel2();
-                                generarBotonesEvento();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            ListaImagBoton = new ArrayList<String>();
+                            ListaImagBoton.clear();
+                            ListaImagCarrusel = new ArrayList<String>();
+                            ListaImagCarrusel.clear();
+                            NombresEvento= new ArrayList<String>();
+                            NombresEvento.clear();
+                            IDEventos= new ArrayList<String>();
+                            IDEventos.clear();
+                            EventosGrupo= new ArrayList<String>();
+                            EventosGrupo.clear();
+                            for (int i=0;i<response.length();i++){
+                                JSONObject datos = response.getJSONObject(i);
+                                ListaImagBoton.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
+                                ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
+                                NombresEvento.add(datos.getString("evento"));
+                                IDEventos.add(datos.getString("idevento"));
+                                EventosGrupo.add(datos.getString("eventogrupo"));
+                                Log.e("ListaCuadrada",ListaImagBoton.get(i));
                             }
+                            iniciar_listas_spinner();
+                            iniciar_Carrusel2();
+                            generarBotonesEvento();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     void generarBotonesEvento(){
@@ -209,33 +205,40 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void Consulta_Imagen_Organizadores(){
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getPatrocinadores.php");  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/getPatrocinadores.php";
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                ListaImagOrg=new String[Elementos.length()];
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    ListaImagOrg[i]= "http://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
-                                    Log.e("banner",ListaImagOrg[i]);
-                                }
-                                genera_Imag_Orga();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos=response;
+                            ListaImagOrg=new String[Elementos.length()];
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                ListaImagOrg[i]= "http://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
+                                Log.e("banner",ListaImagOrg[i]);
                             }
+                            genera_Imag_Orga();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     @SuppressLint("ResourceAsColor")
@@ -278,43 +281,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 handler.post(Update);
             }
         }, 2500, 2500);
-    }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.e("Enlace",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
     }
 
     public void set_DatosCompra(String ndato,String dato){

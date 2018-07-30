@@ -10,13 +10,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class SpinnerAdater extends ArrayAdapter<String> {
-    String[] spinnerTitles,DescFP;
-    int[] spinnerImages;
+    ArrayList<String> spinnerTitles,DescFP;
+    ArrayList<Integer> spinnerImages;
     Context mContext;
 
-    public SpinnerAdater(@NonNull Context context, String[] titles, int[] images, String[] DescFP) {
+    public SpinnerAdater(@NonNull Context context, ArrayList<String> titles, ArrayList<Integer> images, ArrayList<String> DescFP) {
         super(context, R.layout.spinner_item3);
         this.spinnerTitles = titles;
         this.spinnerImages = images;
@@ -26,7 +28,7 @@ public class SpinnerAdater extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        return spinnerTitles.length;
+        return spinnerTitles.size();
     }
 
     @NonNull
@@ -44,9 +46,9 @@ public class SpinnerAdater extends ArrayAdapter<String> {
         } else {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
-        mViewHolder.IMVFpago.setImageResource(spinnerImages[position]);
-        mViewHolder.mName.setText(spinnerTitles[position]);
-        mViewHolder.TXVDescFP.setText(DescFP[position]);
+        mViewHolder.IMVFpago.setImageResource(spinnerImages.get(position));
+        mViewHolder.mName.setText(spinnerTitles.get(position));
+        mViewHolder.TXVDescFP.setText(DescFP.get(position));
 
         return convertView;
     }

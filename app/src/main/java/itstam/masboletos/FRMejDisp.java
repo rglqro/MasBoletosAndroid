@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.renderscript.Element;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
 import android.util.Log;
@@ -18,10 +19,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,49 +138,58 @@ public class FRMejDisp extends Fragment {
 
     void consulta_asientos(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona;
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                ((DetallesEventos)getActivity()).cerrar_cargando();
-                                if(TBLasientos!=null){
-                                    TBLasientos.removeAllViews();
-                                }
-                                fila= new String[Elementos.length()];
-                                inicia= new int[Elementos.length()];
-                                termina= new int[Elementos.length()];
-                                dispfila= new String[Elementos.length()];
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    fila[i]=datos.getString("fila");
-                                    inicia[i]=datos.getInt("inicia");
-                                    termina[i]=datos.getInt("termina");
-                                    dispfila[i]=datos.getString("asientos");
-                                }
-                                pintar_asientos();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+                            if(TBLasientos!=null){
+                                TBLasientos.removeAllViews();
                             }
+                            fila= new String[Elementos.length()];
+                            inicia= new int[Elementos.length()];
+                            termina= new int[Elementos.length()];
+                            dispfila= new String[Elementos.length()];
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                fila[i]=datos.getString("fila");
+                                fila[i]=fila[i].replace(" ","");
+                                inicia[i]=datos.getInt("inicia");
+                                termina[i]=datos.getInt("termina");
+                                dispfila[i]=datos.getString("asientos");
+                            }
+                            pintar_asientos();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }});  //permite trabajar con la interfaz grafica
-            }};
-        tr.start();
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
-
 
     void pintar_asientos(){
         btasientos= new ImageButton[fila.length][termina[0]];
         txvnombreasiento = new TextView[fila.length][termina[0]];
-        TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
-        TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,90,1);
+        TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        TableRow.LayoutParams lptbra2 = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         lptbra.setMargins(1,0,2,0);
         asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));
         for (int j=0;j<fila.length;j++) {
@@ -182,9 +200,9 @@ public class FRMejDisp extends Fragment {
                 btasientos[j][i - 1].setId(j*100+i);
                 btasientos[j][i-1].setTag(j+","+i+",0");
                 btasientos[j][i - 1].setBackgroundColor(Color.TRANSPARENT);
-                btasientos[j][i - 1].setLayoutParams(lptbra);
+                btasientos[j][i - 1].setLayoutParams(lptbra2);
                 btasientos[j][i - 1].setAdjustViewBounds(true);
-                btasientos[j][i - 1].setScaleType(ImageView.ScaleType.CENTER);
+                btasientos[j][i - 1].setScaleType(ImageView.ScaleType.FIT_CENTER);
                 btasientos[j][i - 1].setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("ResourceType")
                     @Override
@@ -273,43 +291,6 @@ public class FRMejDisp extends Fragment {
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
-    }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.d("Enlace ",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
     }
 
     @Override

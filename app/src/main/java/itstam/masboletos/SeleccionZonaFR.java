@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -92,48 +100,54 @@ public class SeleccionZonaFR extends Fragment {
 
     void obtener_zonas(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento;
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                zonas= new String[Elementos.length()];
-                                colores= new String[Elementos.length()];
-                                precios= new String[Elementos.length()];
-                                disponibilidad= new String[Elementos.length()];
-                                numerado= new String[Elementos.length()];
-                                comision= new String[Elementos.length()];
-                                zona_precio= new String[Elementos.length()];
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    zonas[i]=datos.getString("grupo");
-                                    zona_precio[i]=datos.getString("grupo")+" $"+datos.getString("precio")+" c/u" +
-                                            "\nDisponibles: "+datos.getString("disponibilidad");
-                                    colores[i]=datos.getString("color");
-                                    precios[i]=datos.getString("precio");
-                                    disponibilidad[i]=datos.getString("disponibilidad");
-                                    numerado[i]=datos.getString("numerado");
-                                    comision[i]=datos.getString("comision");
-                                    URLMapa="http://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapam");
-                                }
-                                spinner_zonas();
-                                Mostrar_Mapa();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            zonas= new String[Elementos.length()];
+                            colores= new String[Elementos.length()];
+                            precios= new String[Elementos.length()];
+                            disponibilidad= new String[Elementos.length()];
+                            numerado= new String[Elementos.length()];
+                            comision= new String[Elementos.length()];
+                            zona_precio= new String[Elementos.length()];
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                zonas[i]=datos.getString("grupo");
+                                zona_precio[i]=datos.getString("grupo")+" $"+datos.getString("precio")+" c/u" +
+                                        "\nDisponibles: "+datos.getString("disponibilidad");
+                                colores[i]=datos.getString("color");
+                                precios[i]=datos.getString("precio");
+                                disponibilidad[i]=datos.getString("disponibilidad");
+                                numerado[i]=datos.getString("numerado");
+                                comision[i]=datos.getString("comision");
+                                URLMapa="http://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapam");
                             }
+                            spinner_zonas();
+                            Mostrar_Mapa();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -215,39 +229,45 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void obtener_secciones(){
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona;
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                subzonas= new String[Elementos.length()+1];
-                                idsubzonas= new String[Elementos.length()+1];
-                                numeradozona= new String[Elementos.length()+1];
-                                subzonas[0]="Mejor disponible"; numeradozona[0]="0";
-                                idsubzonas[0]="0";
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    subzonas[i+1]=datos.getString("nombre");
-                                    idsubzonas[i+1]=datos.getString("idzona");
-                                    numeradozona[i+1]=datos.getString("numerado");
-                                }
-                                spinner_seccion();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            subzonas= new String[Elementos.length()+1];
+                            idsubzonas= new String[Elementos.length()+1];
+                            numeradozona= new String[Elementos.length()+1];
+                            subzonas[0]="Mejor disponible"; numeradozona[0]="0";
+                            idsubzonas[0]="0";
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                subzonas[i+1]=datos.getString("nombre");
+                                idsubzonas[i+1]=datos.getString("idzona");
+                                numeradozona[i+1]=datos.getString("numerado");
                             }
+                            spinner_seccion();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     void spinner_seccion(){
@@ -263,7 +283,7 @@ public class SeleccionZonaFR extends Fragment {
                 if(!id_seccionXevento.equalsIgnoreCase("0")&& !indicenumerzona.equalsIgnoreCase("0")) { // si e
                     btContinuar.setText("Buscar Mejor Disponible");
                     cbvermapaas.setVisibility(View.VISIBLE);
-                }else if(id_seccionXevento.equalsIgnoreCase("0")&& indicenumerzona.equals("0")){
+                }else if((!id_seccionXevento.equalsIgnoreCase("0")||id_seccionXevento.equalsIgnoreCase("0"))&& indicenumerzona.equals("0")){
                     btContinuar.setText("Buscar Mejor Disponible");
                     cbvermapaas.setVisibility(View.INVISIBLE);
                     cbvermapaas.setChecked(false);
@@ -272,7 +292,6 @@ public class SeleccionZonaFR extends Fragment {
                 }
                 Log.e("id:seccion",id_seccionXevento);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -320,6 +339,9 @@ public class SeleccionZonaFR extends Fragment {
                                     tipomsj=datos.getString("mensagesetTipo");
                                     msj=datos.getString("mensagesetMensage");
                                     fila=datos.getString("mensagesetFila") ;
+                                    if(fila.equals("0")){
+                                        fila="*";
+                                    }
                                 }
                                 if(tipomsj.equals("1")) {
                                         set_DatosCompra("zona",zonas[indiceZona]);

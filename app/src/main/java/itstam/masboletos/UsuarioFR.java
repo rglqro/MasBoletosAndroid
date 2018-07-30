@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -43,7 +50,7 @@ public class UsuarioFR extends Fragment {
     SharedPreferences prefe;
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
-    String fpago,totalpago,nombreevento,idevento;
+    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp;
     Button entrar;
     JSONArray Elementos;
     EditText edtusuario,edtcontra;
@@ -138,41 +145,47 @@ public class UsuarioFR extends Fragment {
 
     void iniciar_sesion(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("http://www.masboletos.mx/appMasboletos/validalogin.php?correo="+edtusuario.getText().toString()+"&contrasenia="+edtcontra.getText().toString());  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="http://www.masboletos.mx/appMasboletos/validalogin.php?correo="+edtusuario.getText().toString()+"&contrasenia="+edtcontra.getText().toString();
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray(resultado);
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    resp=datos.getBoolean("respuesta");
-                                    msj=datos.getString("mensaje");
-                                    id_cliente=datos.getString("id_cliente");
-                                    usuario=datos.getString("usuario");
-                                }
-                                ((DetallesEventos)getActivity()).cerrar_cargando();
-                                if(resp){
-                                    Toast.makeText(getActivity(),"Bienvenido: "+usuario,Toast.LENGTH_LONG).show();
-                                    checar_tipo_pago();
-                                }else {
-                                    Toast.makeText(getActivity(),msj,Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                resp=datos.getBoolean("respuesta");
+                                msj=datos.getString("mensaje");
+                                id_cliente=datos.getString("id_cliente");
+                                usuario=datos.getString("usuario");
                             }
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+                            if(resp){
+                                Toast.makeText(getActivity(),"Bienvenido: "+usuario,Toast.LENGTH_LONG).show();
+                                checar_tipo_pago();
+                            }else {
+                                Toast.makeText(getActivity(),msj,Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                });  //permite trabajar con la interfaz grafica
-            }
-        };
-        tr.start();
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     void checar_tipo_pago(){
@@ -197,8 +210,13 @@ public class UsuarioFR extends Fragment {
                 if(confirmation!=null){
                     try {
                         String detallespago= confirmation.toJSONObject().toString(4);
-                        Toast.makeText(getActivity(),"Detalles Pago: "+detallespago+"\nPor: "+totalpago,Toast.LENGTH_LONG).show();
-                        Log.e("Pago Realizado",detallespago+"Por "+totalpago);
+                        JSONObject obj1= new JSONObject(detallespago);// Lee el objeto de Json
+                        JSONObject json3 = obj1.getJSONObject("response"); //Obtiene un conjunto de elementos nombrado
+                        fechappp=json3.getString("create_time");
+                        idpp=json3.getString("id");
+                        statuspp=json3.getString("state");
+                        Toast.makeText(getActivity(),"Fecha: "+fechappp+"\nid: "+idpp,Toast.LENGTH_LONG).show();
+                        Log.e("Datos Pago Paypal","Fecha: "+fechappp+"\nid: "+idpp);
                     }catch (Exception e){}
                 }
             }else if(resultCode==RESULT_CANCELED){
@@ -207,43 +225,6 @@ public class UsuarioFR extends Fragment {
         }else if(resultCode==PaymentActivity.RESULT_EXTRAS_INVALID){
 
         }
-    }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.d("Enlace ",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
     }
 
     @Override
