@@ -109,6 +109,7 @@ public class FPagoFR extends Fragment {
                                     ptajecargo.add(cargopte);
                                     itefijo.add(cargofijo);
                                     spTitFP2.add(datos.getString("texto")+" - % Cargo "+cargopte+" + Cargo $"+cargofijo);
+                                    spDescFP2.add(spDescFP.get(i));
                                     spImagesFP2.add(spImagesFP.get(Integer.parseInt(datos.getString("IdTipoPago"))-1));
                                     cant_datos++;
                                 }
@@ -159,8 +160,9 @@ public class FPagoFR extends Fragment {
                     datoscargos += ptajecargo.get(pos) + ",";
                     datoscargos += itefijo.get(pos);
                     Log.e("datoscargos", datoscargos);
+                    String [] fpago= spTitFP2.get(pos).split("-");
                     set_DatosCompra("datoscargos", datoscargos);
-                    set_DatosCompra("formapago", spTitFP.get(pos));
+                    set_DatosCompra("formapago", fpago[0]);
                     set_DatosCompra("idformapago", idtipopagom.get(pos));
                     FEntregaFr fEntregaFr = new FEntregaFr();
                     ((DetallesEventos) getActivity()).replaceFragment(fEntregaFr);

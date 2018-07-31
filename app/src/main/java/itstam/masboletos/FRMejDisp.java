@@ -50,7 +50,7 @@ import java.util.Iterator;
 
 public class FRMejDisp extends Fragment {
 
-    Double precio, subtotal, Total,comision, cargoTC;
+    Double precio, subtotal,comision, cargoTC;
     int Cant_Boletos,cont_asientos=1;
     int []inicia,termina;
     String[] fila=null,dispfila=null;
@@ -61,7 +61,7 @@ public class FRMejDisp extends Fragment {
     Button btComprar;
     DecimalFormat df = new DecimalFormat("#.00");
     JSONArray Elementos=null;
-    TableLayout TBLasientos; TableRow rowasientos;
+    TableLayout TBLasientos; TableRow rowasientos; LinearLayout llasientotexto;
     ImageButton[][] btasientos;
     ArrayList<String>asientosmar;
     String asientosel;
@@ -104,6 +104,8 @@ public class FRMejDisp extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     void llenar_info(){
         if(numerado.equals("0")) {
+            asientos= String.valueOf(Cant_Boletos);
+            set_DatosCompra("asientos",asientos);
             TXVAsientos.setText(asientos);
             btComprar.setBackgroundResource(R.color.verdemb);
             btComprar.setOnClickListener(new View.OnClickListener() {
@@ -184,25 +186,28 @@ public class FRMejDisp extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void pintar_asientos(){
         btasientos= new ImageButton[fila.length][termina[0]];
         txvnombreasiento = new TextView[fila.length][termina[0]];
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
-        TableRow.LayoutParams lptbra2 = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         lptbra.setMargins(1,0,2,0);
         asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));
         for (int j=0;j<fila.length;j++) {
             rowasientos = new TableRow(getActivity());
             rowasientos.setLayoutParams(lptbl); cont_asientos=0;
             for (int i = inicia[j]; i <= termina[j]; i++) {
+                llasientotexto= new LinearLayout(getActivity());
+                llasientotexto.setLayoutParams(lptbra);
+                llasientotexto.setOrientation(LinearLayout.VERTICAL);
                 btasientos[j][i - 1] = new ImageButton(getActivity());
                 btasientos[j][i - 1].setId(j*100+i);
                 btasientos[j][i-1].setTag(j+","+i+",0");
                 btasientos[j][i - 1].setBackgroundColor(Color.TRANSPARENT);
-                btasientos[j][i - 1].setLayoutParams(lptbra2);
+                btasientos[j][i - 1].setLayoutParams(lptbra);
                 btasientos[j][i - 1].setAdjustViewBounds(true);
-                btasientos[j][i - 1].setScaleType(ImageView.ScaleType.FIT_CENTER);
+                btasientos[j][i - 1].setScaleType(ImageView.ScaleType.FIT_XY);
                 btasientos[j][i - 1].setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("ResourceType")
                     @Override
@@ -248,17 +253,17 @@ public class FRMejDisp extends Fragment {
                     btasientos[j][i - 1].setImageResource(R.drawable.asiento_ocupado);
                     btasientos[j][i - 1].setClickable(false);
                 }
-                rowasientos.addView(btasientos[j][i - 1]);
-                cont_asientos++;
-            }
-            TBLasientos.addView(rowasientos);
-            rowasientos = new TableRow(getActivity());
-            rowasientos.setLayoutParams(lptbl);
-            for (int i=inicia[j];i<=termina[j];i++){
+                btasientos[j][i - 1].setRotation((float) 180);
+                llasientotexto.addView(btasientos[j][i - 1]);
                 txvnombreasiento[j][i-1]= new TextView(getActivity());
                 txvnombreasiento[j][i-1].setTextColor(Color.BLACK);
                 txvnombreasiento[j][i-1].setText(fila[j]+""+i);
-                rowasientos.addView(txvnombreasiento[j][i-1]);
+                txvnombreasiento[j][i-1].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                txvnombreasiento[j][i-1].setTextSize(10);
+                llasientotexto.addView(txvnombreasiento[j][i-1]);
+
+                rowasientos.addView(llasientotexto);
+                cont_asientos++;
             }
             TBLasientos.addView(rowasientos);
         }
@@ -268,6 +273,7 @@ public class FRMejDisp extends Fragment {
                 if (asientosmar.size()==Cant_Boletos) {
                     set_DatosCompra("asientos",TXVAsientos.getText().toString());
                     set_DatosCompra("fila","");
+                    ((DetallesEventos) getActivity()).FRNombres[2]="3. Selecciona tus Asientos";
                     ((DetallesEventos) getActivity()).replaceFragment(new FPagoFR());
                 }else{
                     ((DetallesEventos)getActivity()).AlertaBoton("Selección de Boletos","No ha seleccionado todos sus lugares aún").show();

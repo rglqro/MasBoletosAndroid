@@ -212,7 +212,6 @@ public class FEntregaFr extends Fragment {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         Log.e("idcb",String.valueOf(buttonView.getId()));
                         if(isChecked){
-                            btcontinuar5.setBackgroundResource(R.color.verdemb);
                             suma_seguro_entrega(buttonView.getId());
                         }else{
                             resta_seguro_entrega(buttonView.getId());
