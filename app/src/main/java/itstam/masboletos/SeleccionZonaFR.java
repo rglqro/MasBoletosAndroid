@@ -214,6 +214,7 @@ public class SeleccionZonaFR extends Fragment {
         spzona.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                indicenumerzona=numerado[position];
                 indiceZona=position;
                 String txtsel="";
                 txtsel=(String) zonas[position];
@@ -278,11 +279,11 @@ public class SeleccionZonaFR extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 id_seccionXevento=idsubzonas[position];
-                indicenumerzona=numeradozona[position];
                 indicesubzona=position;
                 if(!id_seccionXevento.equalsIgnoreCase("0")&& !indicenumerzona.equalsIgnoreCase("0")) { // si e
                     btContinuar.setText("Buscar Mejor Disponible");
                     cbvermapaas.setVisibility(View.VISIBLE);
+                    cbvermapaas.setChecked(false);
                 }else if((!id_seccionXevento.equalsIgnoreCase("0")||id_seccionXevento.equalsIgnoreCase("0"))&& indicenumerzona.equals("0")){
                     btContinuar.setText("Buscar Mejor Disponible");
                     cbvermapaas.setVisibility(View.INVISIBLE);
@@ -302,10 +303,12 @@ public class SeleccionZonaFR extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     btContinuar.setText("Seleccionar Asientos");
+                    ((DetallesEventos) getActivity()).FRNombres[2]="3. Selecciona tus Asientos";
                     idvermapa="1";
                 }else {
                     btContinuar.setText("Buscar Mejor Disponible");
                     idvermapa = "0";
+                    ((DetallesEventos) getActivity()).FRNombres[2]="3. Mas Boletos te recomienda";
                 }
             }
         });

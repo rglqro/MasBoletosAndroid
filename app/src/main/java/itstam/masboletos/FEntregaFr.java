@@ -3,6 +3,7 @@ package itstam.masboletos;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,20 +56,22 @@ import java.util.ArrayList;
 public class FEntregaFr extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,datoscargos,idevento="",fentregas="",asiento="";
-    Double precio=0.00,total=0.00, ptecargo=0.00,imtecargo=0.00, CargosServ=0.00,CargoFEntr=0.00,Sumafentr=0.00;
+    String seccion,fila,datoscargos,idevento="",fentregas="",asiento="",numerado="";
+    Double precio=0.00,total=0.00,CargoFEntr=0.00,Sumafentr=0.00;
     Double cargoseg=0.00,sumaseg=0.00;
     int cant_datos=0,cant_boletos;
-    TextView txvprecio,txvfila,txvasiento,txvseccion,txvtotal,txvcserv,txvfentr;
+    TextView txvfila,txvasiento,txvseccion,txvtotal,txvfentr,txvfila2,txvasiento2,txvseccion2;
     DecimalFormat df = new DecimalFormat("#.00");
     Button btcontinuar5;RadioButton[]rbentregas; RadioGroup rgentregas;
     TextView[]txventregas;
+    Button[] btdescentr;
     ArrayList<Double>idtipoentrega,ptecentr,costoentrega;
     ArrayList<String> tipoentre,txtentre;
     LinearLayout llentregas,llseguros;
     Double total2=0.00,total4=0.00;
     JSONArray Elementos;
     CheckBox cbseguros[];
+    View lineasep[];
 
     public FEntregaFr() {
         // Required empty public constructor
@@ -83,8 +87,9 @@ public class FEntregaFr extends Fragment {
         txvseccion=(TextView)vista.findViewById(R.id.txvSeccionFE);
         txvasiento=(TextView)vista.findViewById(R.id.txvAsientosFE);
         txvfila=(TextView)vista.findViewById(R.id.txvfilaFE);
-        txvprecio=(TextView)vista.findViewById(R.id.txvprecioFE);
-        txvcserv=(TextView)vista.findViewById(R.id.txvcservFE);
+        txvseccion2=(TextView)vista.findViewById(R.id.txvSeccionFE2);
+        txvasiento2=(TextView)vista.findViewById(R.id.txvAsientosFE2);
+        txvfila2=(TextView)vista.findViewById(R.id.txvfilaFE2);
         txvfentr=(TextView)vista.findViewById(R.id.txvcfentrFE);
         txvtotal=(TextView)vista.findViewById(R.id.txvtotalFE);
         llentregas=(LinearLayout)vista.findViewById(R.id.llfentregas);
@@ -103,19 +108,19 @@ public class FEntregaFr extends Fragment {
         cant_boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
         asiento=(prefe.getString("asientos","0"));
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
-        datoscargos=prefe.getString("datoscargos","");
-        String[] datocargo = datoscargos.split(",");
-        ptecargo=Double.parseDouble(datocargo[1]);
-        imtecargo=Double.parseDouble(datocargo[2]);
-        txvseccion.setText(seccion);
+        numerado=prefe.getString("valornumerado","0");
+        txvseccion2.setText(seccion+" x "+cant_boletos);
+
+        if(numerado.equals("0")){
+            txvfila.setVisibility(View.GONE); txvfila2.setVisibility(View.GONE);
+            txvasiento.setVisibility(View.GONE); txvasiento2.setVisibility(View.GONE);
+        }
+
         txvasiento.setText(""+asiento);
         txvfila.setText(fila);
         total=precio*cant_boletos;
-        CargosServ=((precio*(ptecargo/100))+imtecargo);
-        txvprecio.setText("MX $"+df.format(precio)+" x "+cant_boletos);
-        txvcserv.setText("MX $"+df.format(CargosServ)+" x "+cant_boletos);
         txvfentr.setText("MX $0.00"+" x "+cant_boletos);
-        total+=CargosServ*cant_boletos;
+        txvseccion.setText("MX $"+df.format(total));
         txvtotal.setText("MX $"+df.format(total));
         consulta_formas_entrega();
 
@@ -179,12 +184,18 @@ public class FEntregaFr extends Fragment {
         rgentregas = new RadioGroup(getActivity());
         rbentregas = new RadioButton[cant_datos];
         txventregas = new TextView[cant_datos];
+        btdescentr= new Button[cant_datos];
         cbseguros = new CheckBox[cant_datos];
+        lineasep= new View[cant_datos];
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rgentregas.setLayoutParams(lp);
         for (int i = 0; i < cant_datos; i++) {
             Log.e("Tipoentreg2",tipoentre.get(i));
+            lineasep[i]= new View(getActivity());
+            lineasep[i].setBackgroundResource(R.color.grismasclaro);
+            lineasep[i].setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,3));
+            lineasep[i].setId(i);
             if(tipoentre.get(i).equalsIgnoreCase("Will Call")||tipoentre.get(i).equalsIgnoreCase("Boleto Electronico")||tipoentre.get(i).equalsIgnoreCase("Recibe tu boleto en Casa")) {
-                rgentregas.setLayoutParams(lp);
                 rbentregas[i] = new RadioButton(getActivity());
                 rbentregas[i].setLayoutParams(lp);
                 rbentregas[i].setButtonTintList(ColorStateList.valueOf(R.color.azulmboscuro));
@@ -192,13 +203,16 @@ public class FEntregaFr extends Fragment {
                 rbentregas[i].setText(Html.fromHtml(sourceString));
                 rbentregas[i].setTextColor(Color.BLACK);
                 rbentregas[i].setId(i);
-                txventregas[i] = new TextView(getActivity());
-                txventregas[i].setLayoutParams(lp);
-                txventregas[i].setText(txtentre.get(i));
-                txventregas[i].setTextColor(Color.GRAY);
-                txventregas[i].setId(100 + i);
+                btdescentr[i]= new Button(getActivity());
+                btdescentr[i].setText("Ver descripción...");
+                btdescentr[i].setBackgroundColor(Color.TRANSPARENT);
+                btdescentr[i].setTextColor(Color.BLACK);
+                btdescentr[i].setLayoutParams(lp);
+                btdescentr[i].setGravity(Gravity.END);
+                btdescentr[i].setId(i);
                 rgentregas.addView(rbentregas[i]);
-                rgentregas.addView(txventregas[i]);
+                rgentregas.addView(btdescentr[i]);
+                rgentregas.addView(lineasep[i]);
             }else{
                 cbseguros[i]=new CheckBox(getActivity());
                 cbseguros[i].setLayoutParams(lp);
@@ -218,15 +232,25 @@ public class FEntregaFr extends Fragment {
                         }
                     }
                 });
-                txventregas[i] = new TextView(getActivity());
-                txventregas[i].setLayoutParams(lp);
-                txventregas[i].setText(txtentre.get(i));
-                txventregas[i].setTextColor(Color.GRAY);
-                txventregas[i].setId(100 + i);
+                btdescentr[i]= new Button(getActivity());
+                btdescentr[i].setText("Ver descripción...");
+                btdescentr[i].setBackgroundColor(Color.TRANSPARENT);
+                btdescentr[i].setTextColor(Color.BLACK);
+                btdescentr[i].setLayoutParams(lp);
+                btdescentr[i].setGravity(Gravity.END);
+                btdescentr[i].setId(i);
                 llseguros.addView(cbseguros[i]);
-                llseguros.addView(txventregas[i]);
+                llseguros.addView(btdescentr[i]);
             }
-
+            btdescentr[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i=new Intent(getActivity(),DescEntregas.class);
+                    i.putExtra("descripcionentrega", txtentre.get(v.getId()));
+                    i.putExtra("tituloentrega",tipoentre.get(v.getId()));
+                    startActivity(i);
+                }
+            });
         }
         llentregas.removeAllViews();
         rgentregas.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -281,8 +305,8 @@ public class FEntregaFr extends Fragment {
             @Override
             public void onClick(View v) {
                 if(rgentregas.getCheckedRadioButtonId()!=-1) {
-                    set_DatosCompra("cargos_servicio", txvcserv.getText().toString());
-                    set_DatosCompra("cargos_entrega", txvfentr.getText().toString());
+                    set_DatosCompra("cargos_servicio", "0.00");
+                    set_DatosCompra("cargos_entrega", df.format(sumaseg+Sumafentr));
                     set_DatosCompra("fentrega", fentregas);
                     set_DatosCompra("total", df.format(total));
                     ((DetallesEventos) getActivity()).replaceFragment(new RevisionFR());

@@ -140,6 +140,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                     }
                 }
         );

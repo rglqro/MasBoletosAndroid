@@ -37,19 +37,14 @@ public class MainActivity extends AppCompatActivity implements BoletosPrin.OnFra
         BTUbic=(ImageButton)findViewById(R.id.BTUbicacion);
         BTPerfil=(ImageButton)findViewById(R.id.BTPerfil);
 
-        try {
-            if(conectadoAInternet()){
+
+            if(NetworkUtils.isNetworkConnected(this)){
                 Menu_Navegacion();
                 frboletos = new BoletosPrin();
                 getSupportFragmentManager().beginTransaction().add(R.id.contenedor,frboletos).commit();
             }else {
                 alertanointernet();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 

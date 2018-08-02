@@ -109,7 +109,7 @@ public class FPagoFR extends Fragment {
                                     ptajecargo.add(cargopte);
                                     itefijo.add(cargofijo);
                                     spTitFP2.add(datos.getString("texto")+" - % Cargo "+cargopte+" + Cargo $"+cargofijo);
-                                    spDescFP2.add(spDescFP.get(i));
+                                    spDescFP2.add(spDescFP.get(Integer.parseInt(datos.getString("IdTipoPago"))-1));
                                     spImagesFP2.add(spImagesFP.get(Integer.parseInt(datos.getString("IdTipoPago"))-1));
                                     cant_datos++;
                                 }
@@ -135,8 +135,7 @@ public class FPagoFR extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void LlenadoLista(){
-
-        SpinnerAdater adapter= new SpinnerAdater(getActivity(),spTitFP2,spImagesFP2,spDescFP);
+        SpinnerAdater adapter= new SpinnerAdater(getActivity(),spTitFP2,spImagesFP2,spDescFP2);
         lvfpago.setAdapter(null);
         lvfpago.setAdapter(adapter);
         ((DetallesEventos)getActivity()).cerrar_cargando();

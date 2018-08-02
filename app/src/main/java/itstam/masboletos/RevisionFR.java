@@ -18,9 +18,9 @@ import java.text.DecimalFormat;
 public class RevisionFR extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="",cant_boletos;
-    Double precio=0.0,total=0.00;
-    TextView txvprecio,txvcarfentr,txvfila,txvasiento,txvseccion,txvtotal,txvcarserv,txvasientos2,txvfpago,txvfentrega,txvcarfentr2,txvtotal2;
+    String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="",cant_boletos,datoscargos;
+    Double precio=0.0,total=0.00,ptecargo=0.00,imtecargo=0.00, CargosServ=0.00;
+    TextView txvnevento,txvfechaeve,txvhoraeve,txvfila,txvasiento,txvseccion,txvcarserv,txvfpago,txvfentrega,txvcarfentr2,txvtotal2,txvseccion2;
     DecimalFormat df = new DecimalFormat("#.00");
     Button btcontinuar6;
     CheckBox cbdeacuerdo;
@@ -34,14 +34,14 @@ public class RevisionFR extends Fragment {
         // Inflate the layout for this fragment
         vista=inflater.inflate(R.layout.fragment_revision_fr, container, false);
         btcontinuar6=(Button)vista.findViewById(R.id.btContinuar6);
+        txvnevento=(TextView)vista.findViewById(R.id.txvnevento);
+        txvfechaeve=(TextView)vista.findViewById(R.id.txvfechaeve);
+        txvhoraeve=(TextView)vista.findViewById(R.id.txvhoraeve);
+        txvseccion2=(TextView)vista.findViewById(R.id.txvSeccionFRev2);
         txvseccion=(TextView)vista.findViewById(R.id.txvSeccionFRev);
         txvasiento=(TextView)vista.findViewById(R.id.txvAsientosFRev);
         txvfila=(TextView)vista.findViewById(R.id.txvfilaFRev);
-        txvprecio=(TextView)vista.findViewById(R.id.txvprecioFRev);
         txvcarserv=(TextView)vista.findViewById(R.id.txvcservFRev);
-        txvcarfentr=(TextView)vista.findViewById(R.id.txvcfentrFRev);
-        txvtotal=(TextView)vista.findViewById(R.id.txvtotalFRev);
-        txvasientos2=(TextView)vista.findViewById(R.id.txvasientosRev2);
         txvfpago=(TextView)vista.findViewById(R.id.txvfpagoRev2);
         txvfentrega=(TextView)vista.findViewById(R.id.txventregRev2);
         txvcarfentr2=(TextView)vista.findViewById(R.id.txvcfentrFRev2);
@@ -60,23 +60,29 @@ public class RevisionFR extends Fragment {
         asiento=prefe.getString("asientos","0");
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
         total=Double.parseDouble(prefe.getString("total",""));
+        datoscargos=prefe.getString("datoscargos","");
+        String[] datocargo = datoscargos.split(",");
+        ptecargo=Double.parseDouble(datocargo[1]);
+        imtecargo=Double.parseDouble(datocargo[2]);
         carserv= (prefe.getString("cargos_servicio","0.00"));
         carfentr=prefe.getString("cargos_entrega","");
         fentregas=prefe.getString("fentrega","");
         fpago=prefe.getString("formapago","");
-        cant_boletos=prefe.getString("Cant_boletos","");
-        txvseccion.setText(seccion);
+        cant_boletos=prefe.getString("Cant_boletos","0");
+
+        txvnevento.setText(prefe.getString("NombreEvento",""));
+        txvseccion2.setText(seccion+" x "+cant_boletos);
+        txvseccion.setText("MX $"+df.format(precio*Integer.parseInt(cant_boletos)));
+        CargosServ=((precio*(ptecargo/100))+imtecargo);
+        total+=CargosServ*Integer.parseInt(cant_boletos);
+
         txvasiento.setText(asiento);
         txvfila.setText(fila);
-        txvprecio.setText("MX $"+df.format(precio)+" x "+cant_boletos);
-        txvcarserv.setText(""+carserv);
-        txvcarfentr.setText(""+carfentr);
-        txvtotal.setText("MX $"+total);
-        txvasientos2.setText(""+asiento);
+        txvcarserv.setText("MX $"+df.format(CargosServ)+" x "+cant_boletos);
         txvfpago.setText(""+fpago);
         txvfentrega.setText(""+fentregas);
-        txvcarfentr2.setText(""+carfentr);
-        txvtotal2.setText("MX $"+total);
+        txvcarfentr2.setText("MX $"+carfentr+" x "+cant_boletos);
+        txvtotal2.setText("MX $"+df.format(total));
         btcontinuar6.setBackgroundResource(R.color.gris2);
         cbdeacuerdo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -99,7 +105,6 @@ public class RevisionFR extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onDetach() {

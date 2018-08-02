@@ -206,7 +206,7 @@ public class FRMejDisp extends Fragment {
                 btasientos[j][i-1].setTag(j+","+i+",0");
                 btasientos[j][i - 1].setBackgroundColor(Color.TRANSPARENT);
                 btasientos[j][i - 1].setLayoutParams(lptbra);
-                btasientos[j][i - 1].setAdjustViewBounds(true);
+                //btasientos[j][i - 1].setAdjustViewBounds(true);
                 btasientos[j][i - 1].setScaleType(ImageView.ScaleType.FIT_XY);
                 btasientos[j][i - 1].setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("ResourceType")
@@ -273,7 +273,6 @@ public class FRMejDisp extends Fragment {
                 if (asientosmar.size()==Cant_Boletos) {
                     set_DatosCompra("asientos",TXVAsientos.getText().toString());
                     set_DatosCompra("fila","");
-                    ((DetallesEventos) getActivity()).FRNombres[2]="3. Selecciona tus Asientos";
                     ((DetallesEventos) getActivity()).replaceFragment(new FPagoFR());
                 }else{
                     ((DetallesEventos)getActivity()).AlertaBoton("Selección de Boletos","No ha seleccionado todos sus lugares aún").show();
