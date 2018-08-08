@@ -50,7 +50,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     private OnFragmentInteractionListener mListener;
 
-    private static ViewPager mPager;
+    private static HeightWrappingViewPager mPager;
 
     Activity activity=getActivity();
     int currentPage = 0;
@@ -70,11 +70,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     LinearLayout LLImagOrg;
     private SwipeRefreshLayout swipeContainer;
 
-    public BoletosPrin() {
-        // Required empty public constructor
-        handler = new Handler();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -92,7 +87,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void Consulta_Imagen_Botones(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getEventosActivos.php";
+        String URL="http://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -118,7 +113,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                                 NombresEvento.add(datos.getString("evento"));
                                 IDEventos.add(datos.getString("idevento"));
                                 EventosGrupo.add(datos.getString("eventogrupo"));
-                                Log.e("ListaCuadrada",ListaImagBoton.get(i));
                             }
                             iniciar_listas_spinner();
                             iniciar_Carrusel2();
@@ -207,7 +201,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void Consulta_Imagen_Organizadores(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getPatrocinadores.php";
+        String URL="http://www.masboletos.mx/appMasboletos/getPatrocinadores.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -221,7 +215,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 ListaImagOrg[i]= "http://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
-                                Log.e("banner",ListaImagOrg[i]);
                             }
                             genera_Imag_Orga();
                         } catch (JSONException e) {
@@ -260,12 +253,14 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void iniciar_Carrusel2(){
-        mPager = (ViewPager) vista.findViewById(R.id.pager);
+        currentPage=0;
+        mPager = (HeightWrappingViewPager) vista.findViewById(R.id.pager);
         activity=getActivity();
         mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo,ListaImagBoton));
         CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         // Auto start of viewpager
+        handler= new Handler();
         Update = new Runnable() {
             public void run() {
                 if (currentPage == ListaImagCarrusel.size()) {
@@ -374,11 +369,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     public void onPause() {
         //handler.removeCallbacks(Update);
         Log.d("Pause BP","Pause");
-        if(swipeTimer != null){
-            swipeTimer.cancel();
-            swipeTimer= new Timer();
-            //cancel timer task and assign null
-        }
         super.onPause();
     }
 

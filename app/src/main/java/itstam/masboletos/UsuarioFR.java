@@ -76,13 +76,9 @@ public class UsuarioFR extends Fragment {
         edtcontra.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
-
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -109,10 +105,11 @@ public class UsuarioFR extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length()>5){
+                if (edtusuario.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+") && s.length() > 0 && edtcontra.getText().length()>0) {
                     entrar.setBackgroundResource(R.color.verdemb);
                     bloqueo_boton=1;
-                }else {
+                }
+                else {
                     bloqueo_boton=0;
                     entrar.setBackgroundResource(R.color.grisclaro);
                 }

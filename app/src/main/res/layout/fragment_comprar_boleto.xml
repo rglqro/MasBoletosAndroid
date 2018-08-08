@@ -15,14 +15,17 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true"
+        android:layout_alignParentLeft="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="10dp"
-            android:paddingVertical="15dp">
+            android:paddingTop="15dp">
 
             <TextView
                 android:id="@+id/TXVSFuncion2"
@@ -62,13 +65,13 @@
                 android:id="@+id/TXVSFuncion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:gravity="start"
                 android:paddingVertical="5dp"
                 android:text="¿Cuántos boletos desea comprar?"
                 android:textAlignment="textStart"
                 android:textColor="#f000"
-                android:textSize="18sp"
-                android:layout_marginTop="20dp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView10"
@@ -90,66 +93,64 @@
 
 
             <RelativeLayout
+                android:id="@+id/llbotonesnum"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/llbotonesnum">
+                android:layout_weight="1"
+                android:paddingVertical="10dp">
 
-                <LinearLayout
-                    android:id="@+id/llcantbol"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/txvCantidad"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="7dp"
-                    android:paddingVertical="10dp">
-
-                    <ImageButton
-                        android:id="@+id/BtMenos"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bmenos" />
-
-                    <TextView
-                        android:id="@+id/txvCantidad"
-                        android:layout_width="30dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_weight="10"
-                        android:background="@drawable/shapes"
-                        android:paddingHorizontal="10dp"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textColor="#000"
-                        android:textSize="20sp" />
-
-
-                    <ImageButton
-                        android:id="@+id/BtMas"
-                        android:layout_width="0dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/bmas"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btmdisponible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_alignTop="@+id/BtMas"
+                    android:layout_toStartOf="@+id/BtMas"
+                    android:layout_toEndOf="@id/BtMenos"
+                    android:background="@drawable/shapes"
                     android:layout_marginHorizontal="15dp"
-                    android:background="@color/verdemb"
-                    android:text="Continuar"
-                    android:textAppearance="@style/TextAppearance.AppCompat"
-                    android:textSize="18sp" />
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:layout_toLeftOf="@+id/BtMenos"
+                    android:layout_toRightOf="@id/BtMas" />
+
+                <ImageButton
+                    android:id="@+id/BtMas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/ic_mas"
+                    android:visibility="visible"
+                    android:layout_alignParentRight="true" />
+
+                <ImageButton
+                    android:id="@+id/BtMenos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/ic_menos"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentLeft="true" />
+
+
             </RelativeLayout>
 
-
+            <Button
+                android:id="@+id/btmdisponible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/verdemb"
+                android:text="Continuar"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textSize="18sp" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

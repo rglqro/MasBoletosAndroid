@@ -67,7 +67,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/edtcontrasena"
-            android:background="@drawable/shape_ovalado"
+            android:background="@color/azulmb"
             android:text="Entrar"
             android:textAllCaps="false"
             android:textSize="18sp"
@@ -89,31 +89,40 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/textView30"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_alignParentRight="true"
             android:gravity="center_horizontal|center_vertical">
 
             <TextView
                 android:id="@+id/textView32"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="2"
-                android:text="¿No tienes una cuenta?  \n\nCrea tu cuenta para:\n\n• Agilizar tu compra guardando tu información
-\n• Imprimir boletos desde tu casa
-\n• Obtener recomendaciones de eventos"
+                android:text="¿No tienes una cuenta? "
                 android:textColor="@color/negro" />
 
             <Button
                 android:id="@+id/btcrearcta"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/shape_ovalado"
+                android:background="@color/azulmb"
                 android:text="Crear Cuenta"
                 android:textAllCaps="false"
                 android:textColor="#fff"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:layout_marginHorizontal="30dp"/>
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/negro"
+                android:text="\nCrea tu cuenta para:\n\n• Agilizar tu compra guardando tu información
+\n• Imprimir boletos desde tu casa
+\n• Obtener recomendaciones de eventos" />
 
         </LinearLayout>
 

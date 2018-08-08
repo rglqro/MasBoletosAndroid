@@ -45,7 +45,6 @@ dependencies {
     implementation 'jp.wasabeef:fresco-processors:2.1.0'
     implementation 'com.jackandphantom.android:blurimage:1.2.0'
     implementation 'com.github.chrisbanes:PhotoView:1.2.6'
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
     implementation 'com.paypal.sdk:paypal-android-sdk:2.16.0'
 }

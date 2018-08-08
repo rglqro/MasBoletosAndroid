@@ -2,16 +2,20 @@ package itstam.masboletos;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.text.DecimalFormat;
 
@@ -24,6 +28,8 @@ public class RevisionFR extends Fragment {
     DecimalFormat df = new DecimalFormat("#.00");
     Button btcontinuar6;
     CheckBox cbdeacuerdo;
+    LinearLayout lldetalles;
+    ToggleButton tbmasmenos;
 
     public RevisionFR() {
         // Required empty public constructor
@@ -47,6 +53,8 @@ public class RevisionFR extends Fragment {
         txvcarfentr2=(TextView)vista.findViewById(R.id.txvcfentrFRev2);
         txvtotal2=(TextView)vista.findViewById(R.id.txvtotalFRev2);
         cbdeacuerdo=(CheckBox)vista.findViewById(R.id.cbdeacuerdo);
+        tbmasmenos=(ToggleButton)vista.findViewById(R.id.tbmasmenos);
+        lldetalles=(LinearLayout)vista.findViewById(R.id.lldetalles);
 
         recepcion_datos();
 
@@ -75,7 +83,7 @@ public class RevisionFR extends Fragment {
         txvseccion.setText("MX $"+df.format(precio*Integer.parseInt(cant_boletos)));
         CargosServ=((precio*(ptecargo/100))+imtecargo);
         total+=CargosServ*Integer.parseInt(cant_boletos);
-
+        Log.e("Cargo serv ","$"+String.valueOf(CargosServ));
         txvasiento.setText(asiento);
         txvfila.setText(fila);
         txvcarserv.setText("MX $"+df.format(CargosServ)+" x "+cant_boletos);
@@ -84,6 +92,24 @@ public class RevisionFR extends Fragment {
         txvcarfentr2.setText("MX $"+carfentr+" x "+cant_boletos);
         txvtotal2.setText("MX $"+df.format(total));
         btcontinuar6.setBackgroundResource(R.color.gris2);
+        lldetalles.setVisibility(View.GONE);
+        tbmasmenos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable img = getContext().getResources().getDrawable( R.drawable.flecha_arriba );
+                Drawable img2 = getContext().getResources().getDrawable( R.drawable.flecha_abajo );
+                if(tbmasmenos.isChecked()){
+                    lldetalles.setVisibility(View.VISIBLE);
+                    tbmasmenos.setTextOn("Ocultar Detalles");
+                    tbmasmenos.setCompoundDrawablesWithIntrinsicBounds(null,null,img,null);
+                }else{
+                    lldetalles.setVisibility(View.GONE);
+                    tbmasmenos.setTextOff("Ver Detalles");
+                    tbmasmenos.setCompoundDrawablesWithIntrinsicBounds(null,null,img2,null);
+                }
+            }
+        });
+
         cbdeacuerdo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -9,9 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -25,9 +30,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import com.jackandphantom.blurimage.BlurImage;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+
 
 
 public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener {
@@ -58,12 +65,12 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         SharedPreferences prefe=this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         TXVNEvento.setText((prefe.getString("NombreEvento","")));
 
-        difuminar_imagen();
         IniciarFragments();
         set_DatosCompra("Cant_boletos","0");
         set_DatosCompra("posEve","0");
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     void IniciarFragments(){
         tabLayout = (TabLayout) findViewById(R.id.TabLayout);
@@ -103,6 +110,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
                 }
             });
         }
+        difuminar_imagen();
     }
 
     public void pagina_anterior(){
@@ -135,29 +143,20 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     Bitmap imageBlur;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
-
-        Target target = new Target() {
-
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                imageBlur=bitmap;
-                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
-                IMVEvento.setImageBitmap(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
         Log.e("ImagenEventourl",indiceimagen);
-        Picasso.get().load(indiceimagen).error(R.drawable.mbiconor).into(target);
-        IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
+        Picasso.get().load(indiceimagen).error(R.drawable.ic_inicio).into(IMVEvento, new Callback() {
+            @Override
+            public void onSuccess() {
+                imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
+                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+                IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
+            }
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
     }
 
     public void iniciar_cargando(){
@@ -204,6 +203,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         editor.putString(ndato, dato);
         editor.commit();
     }
+
 
     @Override
     public void onBackPressed() {

@@ -2,6 +2,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true" android:drawable="@color/azulmboscuro"></item>
-    <item android:drawable="@color/grismasclaro"></item>
+    <item android:drawable="@drawable/bordefondo"></item>
 
 </selector>

@@ -102,7 +102,7 @@ public class SeleccionZonaFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento;
+        String URL="http://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -232,7 +232,7 @@ public class SeleccionZonaFR extends Fragment {
     void obtener_secciones(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona;
+        String URL="http://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -289,7 +289,9 @@ public class SeleccionZonaFR extends Fragment {
                     cbvermapaas.setVisibility(View.INVISIBLE);
                     cbvermapaas.setChecked(false);
                 }else{
-                    btContinuar.setText("Buscar Asientos");
+                    btContinuar.setText("Buscar Mejor Disponible");
+                    cbvermapaas.setVisibility(View.INVISIBLE);
+                    cbvermapaas.setChecked(false);
                 }
                 Log.e("id:seccion",id_seccionXevento);
             }

@@ -61,7 +61,7 @@ public class FRMejDisp extends Fragment {
     Button btComprar;
     DecimalFormat df = new DecimalFormat("#.00");
     JSONArray Elementos=null;
-    TableLayout TBLasientos; TableRow rowasientos; LinearLayout llasientotexto;
+    TableLayout TBLasientos; TableRow rowasientos; LinearLayout llasientotexto,llleyendaasientos;
     ImageButton[][] btasientos;
     ArrayList<String>asientosmar;
     String asientosel;
@@ -81,6 +81,7 @@ public class FRMejDisp extends Fragment {
         btComprar=(Button)vista.findViewById(R.id.btComprar);
         btComprar.setBackgroundResource(R.color.grisclaro);
         TBLasientos=(TableLayout)vista.findViewById(R.id.TBLAsientos);
+        llleyendaasientos=(LinearLayout)vista.findViewById(R.id.llyLeyendaAsientos);
         RecibirDatos();
         return vista;
     }
@@ -114,11 +115,13 @@ public class FRMejDisp extends Fragment {
                     ((DetallesEventos)getActivity()).replaceFragment(new FPagoFR());
                 }
             });
+            llleyendaasientos.setVisibility(View.GONE);
         }else{
             if(idvermapa.equals("1")) {
                 TXVAsientos.setText("");
                 consulta_asientos();
             }else{
+                llleyendaasientos.setVisibility(View.GONE);
                 btComprar.setBackgroundResource(R.color.verdemb);
                 TXVAsientos.setText(asientos);
                 btComprar.setOnClickListener(new View.OnClickListener() {
