@@ -47,11 +47,11 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     // TODO: Rename and change types of parameters
     TextView txvCantidad;
     ImageButton BtMas,BtMenos;
-    int cantidadBoletos=0;
-    String idevento,eventogrupo;
+    int cantidadBoletos=0,indice=0;
+    String idevento,eventogrupo,fecha="",hora="";
     TextView TXVSFuncion,TXVEFuncion,TXVSFuncion2;
     Spinner spfuncion;    View vista; JSONArray Elementos=null;
-    String [] funciones,idevento_funcion;
+    String [] funciones,idevento_funcion,fechaevento,horaevento;
     Button btmDisponible;
     SharedPreferences prefe;
 
@@ -122,12 +122,19 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                         try {
                             Elementos = response;
                             funciones= new String[Elementos.length()+1];
+                            fechaevento= new String[Elementos.length()+1];
+                            horaevento= new String[Elementos.length()+1];
                             idevento_funcion= new String[Elementos.length()+1];
                             funciones[0]="..Selecciona.."; idevento_funcion[0]="000";
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
                                 idevento_funcion[i+1]=datos.getString("idevento_funcion");
+                                fechaevento[i+1]=datos.getString("FechaLarga");
+                                horaevento[i+1]=datos.getString("hora");
+                                if(horaevento[i+1].equals("null")){
+                                    horaevento[i+1]=" ";
+                                }
                             }
                             spinner_funcion();
                         } catch (JSONException e) {
@@ -160,6 +167,9 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
                     idevento=idevento_funcion[position];
+                    fecha=fechaevento[position];
+                    hora=horaevento[position];
+                    indice=position;
                     set_DatosCompra("posEve",String.valueOf(position));
                     BtMas.setClickable(true);
                     BtMenos.setClickable(true);
@@ -241,6 +251,8 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
                 set_DatosCompra("idevento", idevento);
                 set_DatosCompra("Cant_boletos", txvCantidad.getText().toString());
+                set_DatosCompra("fechaevento",fecha);
+                set_DatosCompra("horaevento",hora);
             }else if(spfuncion.getSelectedItemPosition()==0 && !eventogrupo.equals("0")){
                 ((DetallesEventos)getActivity()).AlertaBoton("Evento","Debe elegir un Evento").show();
             }else{

@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,6 +25,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -41,6 +44,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -50,10 +55,13 @@ public class UsuarioFR extends Fragment {
     SharedPreferences prefe;
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
-    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp;
+    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml;
+    String idzona, cant_boletos,numerado,precio,idcliente,idformaentrega,formadepago,cargoxservicio;
     Button entrar;
+    TextView txvinfocrearcta;
     JSONArray Elementos;
     EditText edtusuario,edtcontra;
+    String URL="";
     boolean resp=false;
     String msj,usuario,id_cliente;
     int bloqueo_boton=0;
@@ -72,6 +80,11 @@ public class UsuarioFR extends Fragment {
         vista= inflater.inflate(R.layout.fragment_usuario_fr, container, false);
         entrar=(Button)vista.findViewById(R.id.btentrar);
         entrar.setBackgroundResource(R.color.grisclaro);
+        txvinfocrearcta=(TextView)vista.findViewById(R.id.txvinfocrearcta);
+        txthtml="<b>Crea tu cuenta para:</b><br><br>• Agilizar tu compra guardando tu información" +
+                "<br>• Imprimir boletos desde tu casa" +
+                "<br>• Obtener recomendaciones de eventos";
+        txvinfocrearcta.setText(Html.fromHtml(txthtml));
         edtcontra=(EditText) vista.findViewById(R.id.edtcontrasena);
         edtcontra.addTextChangedListener(new TextWatcher() {
             @Override
@@ -128,6 +141,15 @@ public class UsuarioFR extends Fragment {
         totalpago=prefe.getString("total","0.00");
         nombreevento=prefe.getString("NombreEvento","");
         idevento=prefe.getString("idevento","");
+        idzona=prefe.getString("","");
+        cant_boletos=prefe.getString("","");
+        numerado=prefe.getString("","");
+        precio=prefe.getString("","");
+        idcliente=prefe.getString("","");
+        idformaentrega=prefe.getString("","");
+        formadepago=prefe.getString("","");
+        cargoxservicio=prefe.getString("","");
+
         entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,6 +211,41 @@ public class UsuarioFR extends Fragment {
         if(fpago.equals("5")){
             procesar_pagoPP();
         }
+    }
+
+    private void preregistro_paypal(){
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        URL = "http://www.masboletos.mx/masBoletosEnviaDatosPaypal.php";
+        Log.e("URL",URL);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, URL,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", String.valueOf(error));
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<>();
+                params.put("name", "Alif");
+                params.put("domain", "http://itsalif.info");
+
+                return params;
+            }
+        };
+        queue.add(postRequest);
     }
 
     private void procesar_pagoPP(){

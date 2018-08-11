@@ -79,6 +79,8 @@ public class RevisionFR extends Fragment {
         cant_boletos=prefe.getString("Cant_boletos","0");
 
         txvnevento.setText(prefe.getString("NombreEvento",""));
+        txvfechaeve.setText(prefe.getString("fechaevento",""));
+        txvhoraeve.setText(prefe.getString("horaevento",""));
         txvseccion2.setText(seccion+" x "+cant_boletos);
         txvseccion.setText("MX $"+df.format(precio*Integer.parseInt(cant_boletos)));
         CargosServ=((precio*(ptecargo/100))+imtecargo);

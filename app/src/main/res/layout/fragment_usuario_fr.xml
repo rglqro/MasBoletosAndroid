@@ -73,56 +73,53 @@
             android:textSize="18sp"
             android:layout_marginHorizontal="30dp"/>
 
-        <TextView
-            android:id="@+id/textView30"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btcrearcta"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/btentrar"
-            android:text="¿Olvidaste tu contraseña?"
-            android:textColor="#000"
-            android:layout_alignParentLeft="true"
-            android:layout_marginVertical="5dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="30dp"
+            android:layout_weight="1"
+            android:background="@color/azulmb"
+            android:text="Crear Cuenta"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="17sp"
+            android:layout_marginTop="15dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/textView30"
-            android:orientation="vertical"
-            android:layout_alignParentRight="true"
-            android:gravity="center_horizontal|center_vertical">
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/btcrearcta"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_alignParentLeft="true"
+            android:paddingVertical="5dp">
+
 
             <TextView
-                android:id="@+id/textView32"
+                android:id="@+id/txvinfocrearcta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="2"
-                android:text="¿No tienes una cuenta? "
+                android:layout_weight="1"
+                android:text="Crea tu cuenta para:\n\n• Agilizar tu compra guardando tu información
+\n• Imprimir boletos desde tu casa
+\n• Obtener recomendaciones de eventos"
                 android:textColor="@color/negro" />
 
-            <Button
-                android:id="@+id/btcrearcta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/azulmb"
-                android:text="Crear Cuenta"
-                android:textAllCaps="false"
-                android:textColor="#fff"
-                android:textSize="17sp"
-                android:layout_marginHorizontal="30dp"/>
-
             <TextView
-                android:id="@+id/textView26"
+                android:id="@+id/textView30"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView28"
+                android:layout_alignStart="@+id/textView28"
+                android:layout_below="@+id/btcrearcta"
+                android:layout_marginVertical="5dp"
                 android:layout_weight="1"
-                android:textColor="@color/negro"
-                android:text="\nCrea tu cuenta para:\n\n• Agilizar tu compra guardando tu información
-\n• Imprimir boletos desde tu casa
-\n• Obtener recomendaciones de eventos" />
+                android:text="\n\n¿Olvidaste tu contraseña?\n\n¿No tienes una cuenta?"
+                android:textColor="#000" />
 
         </LinearLayout>
 
