@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -132,11 +133,11 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     }
 
     public void intent_compartir(View v){
-        Intent compartir = new Intent(android.content.Intent.ACTION_SEND);
+        Intent compartir = new Intent(Intent.ACTION_SEND);
         compartir.setType("text/plain");
         String mensaje = "Asiste a '"+nombreEvento+"' que se llevará a cabo el/los día(s): "+"\nVisita el siguiente enlace: ";
-        compartir.putExtra(android.content.Intent.EXTRA_SUBJECT, nombreEvento);
-        compartir.putExtra(android.content.Intent.EXTRA_TEXT, mensaje);
+        compartir.putExtra(Intent.EXTRA_SUBJECT, nombreEvento);
+        compartir.putExtra(Intent.EXTRA_TEXT, mensaje);
         startActivity(Intent.createChooser(compartir, "Compartir vía"));
     }
 
@@ -202,6 +203,10 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
+    }
+
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
 

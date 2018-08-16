@@ -3,6 +3,7 @@ package itstam.masboletos;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -145,7 +146,7 @@ public class FRMejDisp extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -208,7 +209,7 @@ public class FRMejDisp extends Fragment {
                 btasientos[j][i - 1].setId(j*100+i);
                 btasientos[j][i-1].setTag(j+","+i+",0");
                 btasientos[j][i - 1].setBackgroundColor(Color.TRANSPARENT);
-                btasientos[j][i - 1].setLayoutParams(lptbra);
+                btasientos[j][i - 1].setLayoutParams(new LinearLayout.LayoutParams(60,100));
                 //btasientos[j][i - 1].setAdjustViewBounds(true);
                 btasientos[j][i - 1].setScaleType(ImageView.ScaleType.FIT_XY);
                 btasientos[j][i - 1].setOnClickListener(new View.OnClickListener() {
@@ -256,7 +257,7 @@ public class FRMejDisp extends Fragment {
                     btasientos[j][i - 1].setImageResource(R.drawable.asiento_ocupado);
                     btasientos[j][i - 1].setClickable(false);
                 }
-                btasientos[j][i - 1].setRotation((float) 180);
+                //btasientos[j][i - 1].setRotation((float) 180);
                 llasientotexto.addView(btasientos[j][i - 1]);
                 txvnombreasiento[j][i-1]= new TextView(getActivity());
                 txvnombreasiento[j][i-1].setTextColor(Color.BLACK);
@@ -299,6 +300,9 @@ public class FRMejDisp extends Fragment {
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
+    }
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override

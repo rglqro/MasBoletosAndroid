@@ -127,6 +127,7 @@ public class RevisionFR extends Fragment {
             public void onClick(View v) {
                 if (cbdeacuerdo.isChecked()){
                     ((DetallesEventos)getActivity()).replaceFragment(new UsuarioFR());
+                    ((DetallesEventos)getActivity()).set_DatosCompra("cargoxservicio", String.valueOf(CargosServ*Integer.parseInt(cant_boletos)));
                 }else{
                     Toast.makeText(getActivity(),"Debes marcar que estás de acuerdo",Toast.LENGTH_SHORT).show();
                 }

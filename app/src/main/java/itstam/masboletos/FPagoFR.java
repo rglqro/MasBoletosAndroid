@@ -80,7 +80,7 @@ public class FPagoFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento;
+        String URL="https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento;
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

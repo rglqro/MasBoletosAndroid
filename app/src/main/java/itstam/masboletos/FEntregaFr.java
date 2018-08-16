@@ -65,7 +65,8 @@ public class FEntregaFr extends Fragment {
     Button btcontinuar5;RadioButton[]rbentregas; RadioGroup rgentregas;
     TextView[]txventregas;
     Button[] btdescentr;
-    ArrayList<Double>idtipoentrega,ptecentr,costoentrega;
+    ArrayList<Double>ptecentr,costoentrega;
+    ArrayList<Integer> idtipoentrega;
     ArrayList<String> tipoentre,txtentre;
     LinearLayout llentregas,llseguros;
     Double total2=0.00,total4=0.00;
@@ -130,7 +131,7 @@ public class FEntregaFr extends Fragment {
         ((DetallesEventos)getActivity()).dialogcarg.show();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento;
+        String URL="https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento;
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -141,7 +142,7 @@ public class FEntregaFr extends Fragment {
                         Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
-                            idtipoentrega= new ArrayList<Double>();
+                            idtipoentrega= new ArrayList<Integer>();
                             ptecentr= new ArrayList<Double>();
                             costoentrega = new ArrayList<Double>();
                             tipoentre= new ArrayList<String>();
@@ -151,7 +152,7 @@ public class FEntregaFr extends Fragment {
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 tipo=datos.getString("Tipo");
                                 if (tipo.equals("FormaEntrega")) {
-                                    idtipoentrega.add(Double.parseDouble(datos.getString("idforma")));
+                                    idtipoentrega.add(Integer.parseInt(datos.getString("idforma")));
                                     ptecentr.add(Double.parseDouble(datos.getString("porcentajecargo")));
                                     costoentrega.add(Double.parseDouble(datos.getString("Costo")));
                                     tipoentre.add(datos.getString("texto"));
@@ -274,6 +275,7 @@ public class FEntregaFr extends Fragment {
             total=total2+CargoFEntr+cargoseg;
             txvtotal.setText("MX $"+df.format(total));
             fentregas=tipoentre.get(j);
+            set_DatosCompra("idformaentrega", String.valueOf(idtipoentrega.get(j)));
         }
     }
 

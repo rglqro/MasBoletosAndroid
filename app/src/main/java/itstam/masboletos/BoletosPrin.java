@@ -87,7 +87,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void Consulta_Imagen_Botones(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -108,8 +108,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                             EventosGrupo.clear();
                             for (int i=0;i<response.length();i++){
                                 JSONObject datos = response.getJSONObject(i);
-                                ListaImagBoton.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
-                                ListaImagCarrusel.add("http://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
+                                ListaImagBoton.add("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
+                                ListaImagCarrusel.add("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagencarrusel"));
                                 NombresEvento.add(datos.getString("evento"));
                                 IDEventos.add(datos.getString("idevento"));
                                 EventosGrupo.add(datos.getString("eventogrupo"));
@@ -201,7 +201,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void Consulta_Imagen_Organizadores(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/getPatrocinadores.php"; Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPatrocinadores.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -214,7 +214,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                             ListaImagOrg=new String[Elementos.length()];
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
-                                ListaImagOrg[i]= "http://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
+                                ListaImagOrg[i]= "https://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
                             }
                             genera_Imag_Orga();
                         } catch (JSONException e) {
@@ -322,17 +322,19 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                handler.removeCallbacks(Update);
                 handler = new Handler();
                 if(swipeTimer != null){
                     swipeTimer.cancel();
                     //cancel timer task and assign null
                 }
-                ImBotonEvento.clear();
-                LLImagOrg.removeAllViews();
-                tabla_imagenes.removeAllViews();
-                Consulta_Imagen_Botones();
-                swipeContainer.setRefreshing(false);
+                if (ImBotonEvento!=null) {
+                    ImBotonEvento.clear();
+                    LLImagOrg.removeAllViews();
+                    tabla_imagenes.removeAllViews();
+                }
+                    Consulta_Imagen_Botones();
+                    swipeContainer.setRefreshing(false);
+
             }
         }, 3000);
     }

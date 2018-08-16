@@ -1,5 +1,6 @@
 package itstam.masboletos;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +44,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +59,7 @@ public class UsuarioFR extends Fragment {
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml;
-    String idzona, cant_boletos,numerado,precio,idcliente,idformaentrega,formadepago,cargoxservicio;
+    String idzona, cant_boletos,numerado,precio,idformaentrega,cargoxservicio,folio;
     Button entrar;
     TextView txvinfocrearcta;
     JSONArray Elementos;
@@ -128,9 +131,6 @@ public class UsuarioFR extends Fragment {
                 }
             }
         });
-        Intent intent= new Intent(getActivity(),PayPalService.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
-        getActivity().startService(intent);
         prefe=getActivity().getSharedPreferences("DatosCompra",Context.MODE_PRIVATE);
         recibir_datos();
         return vista;
@@ -141,15 +141,13 @@ public class UsuarioFR extends Fragment {
         totalpago=prefe.getString("total","0.00");
         nombreevento=prefe.getString("NombreEvento","");
         idevento=prefe.getString("idevento","");
-        idzona=prefe.getString("","");
-        cant_boletos=prefe.getString("","");
-        numerado=prefe.getString("","");
-        precio=prefe.getString("","");
-        idcliente=prefe.getString("","");
-        idformaentrega=prefe.getString("","");
-        formadepago=prefe.getString("","");
-        cargoxservicio=prefe.getString("","");
-
+        idzona=prefe.getString("idsubzona","");
+        cant_boletos=prefe.getString("Cant_boletos","");
+        numerado=prefe.getString("valornumerado","");
+        precio=prefe.getString("precio","");
+        idformaentrega=prefe.getString("idformaentrega","");
+        cargoxservicio=prefe.getString("cargoxservicio","");
+        edtusuario.setText(prefe.getString("email",""));
         entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +164,7 @@ public class UsuarioFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="http://www.masboletos.mx/appMasboletos/validalogin.php?correo="+edtusuario.getText().toString()+"&contrasenia="+edtcontra.getText().toString();
+        String URL="https://www.masboletos.mx/appMasboletos/validalogin.php?correo="+edtusuario.getText().toString()+"&contrasenia="+edtcontra.getText().toString();
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -182,6 +180,7 @@ public class UsuarioFR extends Fragment {
                                 msj=datos.getString("mensaje");
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
+                                ((DetallesEventos)getActivity()).set_DatosCompra("email",edtusuario.getText().toString());
                             }
                             ((DetallesEventos)getActivity()).cerrar_cargando();
                             if(resp){
@@ -209,46 +208,36 @@ public class UsuarioFR extends Fragment {
 
     void checar_tipo_pago(){
         if(fpago.equals("5")){
-            procesar_pagoPP();
+            Intent intent= new Intent(getActivity(),PayPalService.class);
+            intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
+            getActivity().startService(intent);
+            preregistro_paypal();
         }
     }
 
     private void preregistro_paypal(){
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        URL = "http://www.masboletos.mx/masBoletosEnviaDatosPaypal.php";
-        Log.e("URL",URL);
-        StringRequest postRequest = new StringRequest(Request.Method.POST, URL,
-                new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Error.Response", String.valueOf(error));
-                    }
-                }
-        ) {
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        Thread tr=new Thread(){
             @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<>();
-                params.put("name", "Alif");
-                params.put("domain", "http://itsalif.info");
-
-                return params;
-            }
-        };
-        queue.add(postRequest);
+            public void run() {
+                final String resultado = inserta("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="+numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="+fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio);  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            Log.e("Resultado registro",resultado);
+                            procesar_pagoPP();
+                            folio=resultado;
+                        }
+                    }});  //permite trabajar con la interfaz grafica
+            }};
+        tr.start();
     }
 
     private void procesar_pagoPP(){
+        ((DetallesEventos)getActivity()).dialogcarg.dismiss();
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalpago),"MXN","Pago por boletos de :"+nombreevento,PayPalPayment.PAYMENT_INTENT_SALE);
         Intent intent = new Intent(getActivity(),PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
@@ -271,14 +260,36 @@ public class UsuarioFR extends Fragment {
                         statuspp=json3.getString("state");
                         Toast.makeText(getActivity(),"Fecha: "+fechappp+"\nid: "+idpp,Toast.LENGTH_LONG).show();
                         Log.e("Datos Pago Paypal","Fecha: "+fechappp+"\nid: "+idpp);
+                        actualizaciondepago("0");
                     }catch (Exception e){}
                 }
             }else if(resultCode==RESULT_CANCELED){
                 Toast.makeText(getActivity(),"Pago Cancelado",Toast.LENGTH_LONG).show();
+                actualizaciondepago("1");
             }
         }else if(resultCode==PaymentActivity.RESULT_EXTRAS_INVALID){
 
         }
+    }
+
+    public void actualizaciondepago(final String error){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("https://www.masboletos.mx/masMoletosRecibeDatosPaypal.php?EM_OrderID="+folio+"&numerado="+error);  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            Log.e("Resultado actualizacion",resultado);
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+                        }
+                    }});  //permite trabajar con la interfaz grafica
+            }};
+        tr.start();
     }
 
     @Override
@@ -295,5 +306,42 @@ public class UsuarioFR extends Fragment {
     public void onDestroy() {
         getActivity().stopService(new Intent(getActivity(),PayPalService.class));
         super.onDestroy();
+    }
+
+    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
+        URL url = null;
+        Log.d("Enlace ",enlace);
+        int respuesta = 0;
+        String linea = "",valor="";
+        StringBuilder resul = null;
+        try {
+            url = new URL(enlace);
+            HttpURLConnection conection;
+            conection = (HttpURLConnection) url.openConnection();
+            respuesta = conection.getResponseCode();
+            resul = new StringBuilder();
+            if (respuesta == HttpURLConnection.HTTP_OK) {
+                InputStream in = new BufferedInputStream(conection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                while ((linea = reader.readLine()) != null) {
+                    resul.append(linea);
+                }
+            }
+            if(resul!=null) {
+                valor = resul.toString();
+            }
+        } catch (Exception e) {
+            //resul.append("Error ----");
+        }
+        Log.d("Resultado pagina",valor);
+        return valor;
+    }
+
+    public int validadatos(String response){
+        int respuesta = 0;
+        if (response.length()>0){
+            respuesta=1;
+        }
+        return respuesta;
     }
 }
