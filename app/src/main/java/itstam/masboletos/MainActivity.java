@@ -2,6 +2,7 @@ package itstam.masboletos;
 
 
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements BoletosPrin.OnFra
     BoletosPrin frboletos;
     Perfil_Fr frperfil = new Perfil_Fr();
     ImageButton BTInicio,BTUbic,BTPerfil;
+    ProgressDialog dialogcarg;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -140,5 +142,19 @@ public class MainActivity extends AppCompatActivity implements BoletosPrin.OnFra
         AlertDialog mostrar = confirmacion.create();
         mostrar.show();
     }
+
+    public void iniciar_cargando(){
+        dialogcarg= new ProgressDialog(this);
+        dialogcarg.setTitle("Cargando información");
+        dialogcarg.setMessage("  Espere...");
+        dialogcarg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialogcarg.setCancelable(false);
+        dialogcarg.show();
+    }
+
+    public void cerrar_cargando(){
+        dialogcarg.dismiss();
+    }
+
 }
 
