@@ -65,11 +65,11 @@ public class SeleccionZonaFR extends Fragment {
     public static final String TAG = SeleccionZonaFR.class.getSimpleName();
     String [] funciones, zonas,colores, precios, disponibilidad, subzonas,numerado,idsubzonas,comision,zona_precio,numeradozona;
     JSONArray Elementos=null;
-    String idevento,_zona,id_seccionXevento, URLMapa,indicenumerzona,idvermapa;
+    String idevento,_zona,id_seccionXevento, URLMapa,indicenumerzona,idvermapa,idzona;
     int indiceZona,indicesubzona;
     Spinner spzona,spseccion;
     Button btContinuar;
-    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila;
+    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila,idfila,inicolumna,fincolumna,filaasientos;
     ImageView IMVMApa;
     Dialog customDialog = null;
     CheckBox cbvermapaas;
@@ -344,6 +344,10 @@ public class SeleccionZonaFR extends Fragment {
                                     tipomsj=datos.getString("mensagesetTipo");
                                     msj=datos.getString("mensagesetMensage");
                                     fila=datos.getString("mensagesetFila") ;
+                                    idzona=datos.getString("mensagesetIdZona");
+                                    idfila=datos.getString("idfila");
+                                    inicolumna=datos.getString("mensagesetIniColumna");
+                                    fincolumna=datos.getString("mensagesetFinColumna");
                                     if(fila.equals("0")){
                                         fila="*";
                                     }
@@ -351,14 +355,17 @@ public class SeleccionZonaFR extends Fragment {
                                 if(tipomsj.equals("1")) {
                                         set_DatosCompra("idsubzona",idsubzonas[indicesubzona]);
                                         set_DatosCompra("zona",zonas[indiceZona]);
+                                        set_DatosCompra("idzona",idzona);
                                         set_DatosCompra("precio",precios[indiceZona]);
                                         set_DatosCompra("comision",comision[indiceZona]);
                                         set_DatosCompra("fila",fila);
                                         set_DatosCompra("asientos",fila+": "+asiento_compra);
                                         set_DatosCompra("valornumerado",indicenumerzona);
-                                        set_DatosCompra("idsubzona",idsubzonas[indicesubzona]);
                                         set_DatosCompra("subzona",subzonas[indicesubzona]);
                                         set_DatosCompra("idvermapa",idvermapa);
+                                        set_DatosCompra("idfila",idfila);
+                                        set_DatosCompra("inicolumna",inicolumna);
+                                        set_DatosCompra("fincolumna",fincolumna);
                                         ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
                                     }else {
                                     ((DetallesEventos)getActivity()).cerrar_cargando();

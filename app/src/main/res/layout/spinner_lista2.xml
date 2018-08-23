@@ -11,4 +11,5 @@
     android:textAlignment="textStart"
     android:textColor="#000000"
     android:textSize="18sp"
-    android:background="#fff"/>
+    android:background="#fff"
+    android:paddingVertical="5dp"/>

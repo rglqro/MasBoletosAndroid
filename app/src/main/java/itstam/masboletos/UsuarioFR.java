@@ -1,6 +1,5 @@
 package itstam.masboletos;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -59,7 +58,7 @@ public class UsuarioFR extends Fragment {
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml;
-    String idzona, cant_boletos,numerado,precio,idformaentrega,cargoxservicio,folio;
+    String idzona, cant_boletos,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",filaasientos="",fila;
     Button entrar;
     TextView txvinfocrearcta;
     JSONArray Elementos;
@@ -141,13 +140,19 @@ public class UsuarioFR extends Fragment {
         totalpago=prefe.getString("total","0.00");
         nombreevento=prefe.getString("NombreEvento","");
         idevento=prefe.getString("idevento","");
-        idzona=prefe.getString("idsubzona","");
+        idzona=prefe.getString("idzona","");
         cant_boletos=prefe.getString("Cant_boletos","");
         numerado=prefe.getString("valornumerado","");
         precio=prefe.getString("precio","");
         idformaentrega=prefe.getString("idformaentrega","");
         cargoxservicio=prefe.getString("cargoxservicio","");
         edtusuario.setText(prefe.getString("email",""));
+        if(numerado.equals("1")){
+            idfila=prefe.getString("idfila","");
+            inicolumna=prefe.getString("inicolumna","");
+            fincolumna=prefe.getString("fincolumna","");
+            fila=prefe.getString("fila","");
+        }
         entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,7 +225,9 @@ public class UsuarioFR extends Fragment {
         Thread tr=new Thread(){
             @Override
             public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="+numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="+fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio);  //para que la variable sea reconocida en todos los metodos
+                final String resultado = inserta("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
+                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
+                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna+"&filaasientos="+""+"&fila="+fila);  //para que la variable sea reconocida en todos los metodos
                 getActivity().runOnUiThread(new Runnable() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
@@ -277,7 +284,7 @@ public class UsuarioFR extends Fragment {
         Thread tr=new Thread(){
             @Override
             public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/masMoletosRecibeDatosPaypal.php?EM_OrderID="+folio+"&numerado="+error);  //para que la variable sea reconocida en todos los metodos
+                final String resultado = inserta("https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error);  //para que la variable sea reconocida en todos los metodos
                 getActivity().runOnUiThread(new Runnable() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
@@ -286,6 +293,36 @@ public class UsuarioFR extends Fragment {
                         if (r>0) {
                             Log.e("Resultado actualizacion",resultado);
                             ((DetallesEventos)getActivity()).cerrar_cargando();
+                            if(error.equals("0")){
+                                ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
+                                ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
+                                ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+                                envio_mail(resultado);
+                            }
+                            else {
+                                ((DetallesEventos)getActivity()).finish();
+                            }
+                        }
+                    }});  //permite trabajar con la interfaz grafica
+            }};
+        tr.start();
+    }
+
+    public void envio_mail(final String fe){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        Thread tr=new Thread(){
+            @Override
+            public void run() {
+                final String resultado = inserta("https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2");  //para que la variable sea reconocida en todos los metodos
+                getActivity().runOnUiThread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void run() {
+                        int r = validadatos(resultado); // checa si la pagina devolvio algo
+                        if (r>0) {
+                            Log.e("Resultado actualizacion",resultado);
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+
                         }
                     }});  //permite trabajar con la interfaz grafica
             }};

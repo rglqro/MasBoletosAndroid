@@ -84,7 +84,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         getSupportFragmentManager().beginTransaction().add(R.id.pagerfragmets2,comprarBoletoFr).commit();
         FRNombres=new String[tabLayout.getTabCount()];
         FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mas Boletos te recomienda";FRNombres[3]="4. Forma de Pago";
-        FRNombres[4]="5. Forma de Entrega"; FRNombres[5]="6. Revisión"; FRNombres[6]="7. Usuario"; FRNombres[7]="8. Cuenta";
+        FRNombres[4]="5. Forma de Entrega"; FRNombres[5]="6. Revisión"; FRNombres[6]="7. Usuario"; FRNombres[7]="8. Finalización de compra";
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

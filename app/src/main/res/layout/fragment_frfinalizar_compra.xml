@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FRFinalizarCompra"
+    android:background="@color/blanco"
+    android:fillViewport="true">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/border_total"
+            android:padding="10dp">
+
+            <TextView
+                android:textColor="@color/negro"
+                android:textAlignment="center"
+                android:id="@+id/txvtitulofc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="Nombre, SU APARTADO SE HA REALIZADO CORRECTAMENTE" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/txvtitulofc"
+                android:background="@color/negro"
+                android:layout_alignParentLeft="true"
+                android:layout_marginVertical="10dp"/>
+
+            <TextView
+                android:id="@+id/txvmensajefnal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view"
+                android:layout_centerHorizontal="true"
+                android:text="Informacion de la compra que es hecha"
+                android:textColor="@color/negro"
+                android:textAlignment="center"
+                android:clickable="true"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/btseguir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/txvmensajefnal"
+                android:background="@color/azulmb"
+                android:text="Seguir Comprando"
+                android:textAllCaps="false"
+                android:textSize="17sp"
+                android:layout_marginHorizontal="30dp"/>
+
+            <Button
+                android:id="@+id/btmisboletos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btseguir"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="30dp"
+                android:layout_weight="1"
+                android:background="@color/azulmb"
+                android:text="Mis Boletos"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="17sp"
+                android:layout_marginTop="15dp"/>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

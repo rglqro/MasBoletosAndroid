@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements BoletosPrin.OnFra
     FragmentManager fm;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     void Menu_Navegacion(){
-        frboletos = new BoletosPrin();
-        fm =getSupportFragmentManager();
-        fm.beginTransaction().add(R.id.contenedor,frboletos).commit();
         BTInicio.setOnClickListener(this);
         BTUbic.setOnClickListener(this);
         BTPerfil.setOnClickListener(this);

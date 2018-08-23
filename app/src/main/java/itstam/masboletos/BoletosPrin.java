@@ -85,7 +85,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void Consulta_Imagen_Botones(){
-        ((MainActivity)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String URL="https://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
@@ -192,7 +191,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void iniciar_listas_spinner(){
-
         spcategorias=(Spinner) vista.findViewById(R.id.spcategorias);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.Cat_Evento, R.layout.spinner_item);
         adapter.setDropDownViewResource(R.layout.spinner_lista);
@@ -237,7 +235,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     @SuppressLint("ResourceAsColor")
     void genera_Imag_Orga(){
-        ((MainActivity)getActivity()).cerrar_cargando();
         int tam_lista=ListaImagOrg.length;
         BtsOrganizadores = new ImageButton[tam_lista];
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
