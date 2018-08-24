@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -58,7 +60,7 @@ public class UsuarioFR extends Fragment {
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml;
-    String idzona, cant_boletos,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",filaasientos="",fila;
+    String idzona, cant_boletos,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa;
     Button entrar;
     TextView txvinfocrearcta;
     JSONArray Elementos;
@@ -140,18 +142,24 @@ public class UsuarioFR extends Fragment {
         totalpago=prefe.getString("total","0.00");
         nombreevento=prefe.getString("NombreEvento","");
         idevento=prefe.getString("idevento","");
-        idzona=prefe.getString("idzona","");
+        idzona=prefe.getString("idsubzona","");
         cant_boletos=prefe.getString("Cant_boletos","");
         numerado=prefe.getString("valornumerado","");
         precio=prefe.getString("precio","");
         idformaentrega=prefe.getString("idformaentrega","");
         cargoxservicio=prefe.getString("cargoxservicio","");
         edtusuario.setText(prefe.getString("email",""));
+        idvermapa=prefe.getString("idvermapa","0");
         if(numerado.equals("1")){
             idfila=prefe.getString("idfila","");
             inicolumna=prefe.getString("inicolumna","");
             fincolumna=prefe.getString("fincolumna","");
             fila=prefe.getString("fila","");
+            if(idvermapa.equals("1")){
+                idfilafilaasiento=prefe.getString("idfilafilaasiento","");
+                filaasientos=prefe.getString("filaasientos","");
+            }
+
         }
         entrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,6 +220,10 @@ public class UsuarioFR extends Fragment {
     }
 
     void checar_tipo_pago(){
+        if (fpago.equals("2")||fpago.equals("3")){
+            preregistroTCTD();
+            ((DetallesEventos)getActivity()).FRNombres[7]="8. Pago con TC";
+        }
         if(fpago.equals("5")){
             Intent intent= new Intent(getActivity(),PayPalService.class);
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
@@ -227,7 +239,8 @@ public class UsuarioFR extends Fragment {
             public void run() {
                 final String resultado = inserta("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
                         +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
-                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna+"&filaasientos="+""+"&fila="+fila);  //para que la variable sea reconocida en todos los metodos
+                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
+                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);  //para que la variable sea reconocida en todos los metodos
                 getActivity().runOnUiThread(new Runnable() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
@@ -243,8 +256,17 @@ public class UsuarioFR extends Fragment {
         tr.start();
     }
 
+    private void preregistroTCTD(){
+        String URL=("https://www.masboletos.mx/masBoletosEnviaDatosMovil.php?idevento="+idevento+"&numerado="
+                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
+                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
+                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);  //para que la variable sea reconocida en todos los metodos
+        ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",URL);
+        ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+    }
+
     private void procesar_pagoPP(){
-        ((DetallesEventos)getActivity()).dialogcarg.dismiss();
+        ((DetallesEventos)getActivity()).cerrar_cargando();
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalpago),"MXN","Pago por boletos de :"+nombreevento,PayPalPayment.PAYMENT_INTENT_SALE);
         Intent intent = new Intent(getActivity(),PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
@@ -292,8 +314,8 @@ public class UsuarioFR extends Fragment {
                         int r = validadatos(resultado); // checa si la pagina devolvio algo
                         if (r>0) {
                             Log.e("Resultado actualizacion",resultado);
-                            ((DetallesEventos)getActivity()).cerrar_cargando();
                             if(error.equals("0")){
+                                ((DetallesEventos)getActivity()).cerrar_cargando();
                                 ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
                                 ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
                                 ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());

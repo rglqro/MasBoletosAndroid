@@ -280,6 +280,7 @@ public class SeleccionZonaFR extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 id_seccionXevento=idsubzonas[position];
                 indicesubzona=position;
+                idzona=idsubzonas[position];
                 if(!id_seccionXevento.equalsIgnoreCase("0")&& !indicenumerzona.equalsIgnoreCase("0")) { // si e
                     btContinuar.setText("Buscar Mejor Disponible");
                     cbvermapaas.setVisibility(View.VISIBLE);
@@ -344,7 +345,9 @@ public class SeleccionZonaFR extends Fragment {
                                     tipomsj=datos.getString("mensagesetTipo");
                                     msj=datos.getString("mensagesetMensage");
                                     fila=datos.getString("mensagesetFila") ;
-                                    idzona=datos.getString("mensagesetIdZona");
+                                    if(cbvermapaas.isChecked()) {
+                                        idzona = datos.getString("mensagesetIdZona");
+                                    }
                                     idfila=datos.getString("idfila");
                                     inicolumna=datos.getString("mensagesetIniColumna");
                                     fincolumna=datos.getString("mensagesetFinColumna");

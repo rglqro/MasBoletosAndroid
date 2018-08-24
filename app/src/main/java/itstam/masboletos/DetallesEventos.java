@@ -119,7 +119,10 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
             contadorTab--;
             TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
             tab.select();
-        }else {
+        }else if(contadorTab==0) {
+            finish();
+        }
+        if(contadorTab==6){
             finish();
         }
     }
@@ -180,6 +183,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         transaction.addToBackStack(null);
         transaction.commit();
         contadorTab++;
+        Log.e("posicion tab",String.valueOf(contadorTab));
         TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
         tab.select();
     }

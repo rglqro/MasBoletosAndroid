@@ -356,7 +356,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     @Override
     public void onStop() {
-        handler.removeCallbacks(Update);
+        if (handler!=null) {
+            handler.removeCallbacks(Update);
+        }
         if(swipeTimer != null){
             swipeTimer.cancel();
             swipeTimer= new Timer();

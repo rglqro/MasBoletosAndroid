@@ -54,8 +54,8 @@ public class FRMejDisp extends Fragment {
     Double precio, subtotal,comision, cargoTC;
     int Cant_Boletos,cont_asientos=1;
     int []inicia,termina;
-    String[] fila=null,dispfila=null;
-    String zona,asientos,numerado,idevento,idsubzona,idvermapa;
+    String[] fila=null,dispfila=null,idfila=null;
+    String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt,idfilaasientotxt;
     View vista;
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
     TextView[][] txvnombreasiento;
@@ -64,7 +64,7 @@ public class FRMejDisp extends Fragment {
     JSONArray Elementos=null;
     TableLayout TBLasientos; TableRow rowasientos; LinearLayout llasientotexto,llleyendaasientos;
     ImageButton[][] btasientos;
-    ArrayList<String>asientosmar;
+    ArrayList<String>asientosmar,idfilaasiento;
     String asientosel;
     public FRMejDisp() {
         // Required empty public constructor
@@ -164,6 +164,7 @@ public class FRMejDisp extends Fragment {
                             inicia= new int[Elementos.length()];
                             termina= new int[Elementos.length()];
                             dispfila= new String[Elementos.length()];
+                            idfila= new String[Elementos.length()];
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 fila[i]=datos.getString("fila");
@@ -171,6 +172,7 @@ public class FRMejDisp extends Fragment {
                                 inicia[i]=datos.getInt("inicia");
                                 termina[i]=datos.getInt("termina");
                                 dispfila[i]=datos.getString("asientos");
+                                idfila[i]=datos.getString("id");
                             }
                             pintar_asientos();
                         } catch (JSONException e) {
@@ -196,8 +198,9 @@ public class FRMejDisp extends Fragment {
         txvnombreasiento = new TextView[fila.length][termina[0]];
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
-        lptbra.setMargins(1,0,2,0);
+        lptbra.setMargins(1,0,1,0);
         asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));
+        idfilaasiento= new ArrayList<String>();
         for (int j=0;j<fila.length;j++) {
             rowasientos = new TableRow(getActivity());
             rowasientos.setLayoutParams(lptbl); cont_asientos=0;
@@ -223,11 +226,12 @@ public class FRMejDisp extends Fragment {
                             if(asientosmar.size()<Cant_Boletos) {
                                 btasientos[f][a].setImageResource(R.drawable.asiento_sel);
                                 btasientos[f][a].setTag(f + "," + (a + 1) + ",1");
-                                asientosel = fila[f] + String.valueOf(a + 1);
-                                Log.e("AsientoSel",asientosel);
-                                asientosmar.add(asientosel);
-                                Log.e("# asientos", String.valueOf(asientosmar.size()));
+                                asientosel = fila[f] + String.valueOf(a + 1); Log.e("AsientoSel",asientosel);
+                                asientosmar.add(asientosel); Log.e("# asientos", String.valueOf(asientosmar.size()));
+                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; Log.e("AsientoSel",asientosel);
+                                idfilaasiento.add(asientosel);
                                 ver_asientos_sel();
+                                id_asientos_sel();
                             }else{
                                 ((DetallesEventos)getActivity()).AlertaBoton("Limite Alcanzado","Ya ha seleccionado todos sus boletos").show();
                             }
@@ -245,6 +249,18 @@ public class FRMejDisp extends Fragment {
                             }
                             Log.e("# asientos", String.valueOf(asientosmar.size()));
                             ver_asientos_sel();
+
+                            asientosel=fila[f]+"-"+String.valueOf(a+1)+"-"+idfila[f];
+                            Log.e("idAsientoSel",asientosel);
+                            for(int i =0;i<idfilaasiento.size();i++){
+                                if(idfilaasiento.size()==1){
+                                    idfilaasiento.clear();
+                                }else if(idfilaasiento.get(i).equals(asientosel)){
+                                    idfilaasiento.remove(i);
+                                }
+                            }
+                            Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
+                            id_asientos_sel();
                         }
                         if(asientosmar.size()==Cant_Boletos){
                             btComprar.setBackgroundResource(R.color.verdemb);
@@ -277,6 +293,8 @@ public class FRMejDisp extends Fragment {
                 if (asientosmar.size()==Cant_Boletos) {
                     set_DatosCompra("asientos",TXVAsientos.getText().toString());
                     set_DatosCompra("fila","");
+                    set_DatosCompra("filaasientos",asientosmartxt);
+                    set_DatosCompra("idfilafilaasiento",idfilaasientotxt);
                     ((DetallesEventos) getActivity()).replaceFragment(new FPagoFR());
                 }else{
                     ((DetallesEventos)getActivity()).AlertaBoton("Selección de Boletos","No ha seleccionado todos sus lugares aún").show();
@@ -286,13 +304,31 @@ public class FRMejDisp extends Fragment {
     }
 
     void ver_asientos_sel(){
+        int cont=1;
         Iterator<String> nombreIterator = asientosmar.iterator();
         String dato=""; TXVAsientos.setText("");
         while(nombreIterator.hasNext()){
-            String elemento = nombreIterator.next();
-            dato+=elemento+",";
+            dato+= nombreIterator.next();
+            if(cont<asientosmar.size()){
+                dato+=",";
+            } cont++;
             TXVAsientos.setText(dato);
         }
+        asientosmartxt=dato;
+    }
+
+    void id_asientos_sel(){
+        int cont=1;
+        Iterator<String> nombreIterator = idfilaasiento.iterator();
+        String dato="";
+        while(nombreIterator.hasNext()){
+            dato+= nombreIterator.next();
+            if(cont<idfilaasiento.size()){
+                dato+=",";
+            } cont++;
+        }
+        idfilaasientotxt=dato;
+        Log.e("idfilaasiento",idfilaasientotxt);
     }
 
     public void set_DatosCompra(String ndato,String dato){
