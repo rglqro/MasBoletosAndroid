@@ -1,4 +1,4 @@
-package itstam.masboletos;
+package itstam.masboletos.principal;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,12 +43,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import itstam.masboletos.HeightWrappingViewPager;
+import itstam.masboletos.MyAdapter;
+import itstam.masboletos.R;
+import itstam.masboletos.carruselcompra.DetallesEventos;
 import me.relex.circleindicator.CircleIndicator;
 
 public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefreshListener{
-
-    private OnFragmentInteractionListener mListener;
-
     private static HeightWrappingViewPager mPager;
 
     Activity activity=getActivity();
@@ -85,6 +86,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void Consulta_Imagen_Botones(){
+        ((MainActivity)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String URL="https://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
@@ -117,6 +119,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                             iniciar_listas_spinner();
                             iniciar_Carrusel2();
                             generarBotonesEvento();
+                            ((MainActivity)getActivity()).cerrar_cargando();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -160,7 +163,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 ImBotonEvento.get(pos_arr_ima).setId(pos_arr_ima);
                 ImBotonEvento.get(pos_arr_ima).setPadding(5,5,5,5);
                 ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
-                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.drawable.mbiconor).into(ImBotonEvento.get(pos_arr_ima));
+                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.mipmap.logo_masboletos).into(ImBotonEvento.get(pos_arr_ima)); Log.e("foto",ListaImagBoton.get(pos_arr_ima));
                 ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -285,9 +288,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     public static int dpToPx(int dp) {
@@ -297,12 +298,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -313,7 +308,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
             swipeTimer.cancel();
             //cancel timer task and assign null
         }
-        mListener = null;
     }
 
     @Override
@@ -336,11 +330,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
             }
         }, 3000);
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     @Override

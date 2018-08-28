@@ -1,10 +1,9 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -17,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,13 +29,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+
+import itstam.masboletos.R;
+import itstam.masboletos.SpinnerAdater;
 
 public class FPagoFR extends Fragment {
     View vista;
@@ -51,6 +45,7 @@ public class FPagoFR extends Fragment {
     JSONArray Elementos;
     SharedPreferences prefe;
     String idevento;
+    TextView txvtitulofp;
 
     public FPagoFR() {
         // Required empty public constructor
@@ -63,6 +58,7 @@ public class FPagoFR extends Fragment {
         vista=inflater.inflate(R.layout.fragment_fpago_fr, container, false);
         lvfpago=(ListView)vista.findViewById(R.id.lvfpago);
         btContinuar4=(Button)vista.findViewById(R.id.btContinuar4);
+        txvtitulofp=(TextView)vista.findViewById(R.id.txvtitulofp);
         btContinuar4.setBackgroundResource(R.color.grisclaro);
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=prefe.getString("idevento","");
@@ -114,7 +110,22 @@ public class FPagoFR extends Fragment {
                                     cant_datos++;
                                 }
                             }
-                            LlenadoLista();
+                            if(Elementos.length()>0) {
+                                LlenadoLista();
+                            }else{
+                                txvtitulofp.setText("Lo sentimos por el momento no contamos con una forma de pago para este evento");
+                                btContinuar4.setText("Selecciona otro evento");
+                                ((DetallesEventos)getActivity()).cerrar_cargando();
+                                btContinuar4.setBackgroundResource(R.color.verdemb);
+                                btContinuar4.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        ((DetallesEventos)getActivity()).replaceFragment2(new ComprarBoletoFr());
+                                        ((DetallesEventos)getActivity()).contadorTab=0;
+                                        ((DetallesEventos)getActivity()).cambiar_tab(0);
+                                    }
+                                });
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

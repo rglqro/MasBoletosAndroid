@@ -6,13 +6,14 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import itstam.masboletos.principal.MainActivity;
 
 public class Splash_Principal extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -10,14 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -36,6 +31,8 @@ import com.jackandphantom.blurimage.BlurImage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import itstam.masboletos.R;
+import itstam.masboletos.carruselcompra.ComprarBoletoFr;
 
 
 public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener {
@@ -47,6 +44,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     ImageButton IMBTRegresar;
     TextView TXVNEvento;
     int contadorTab=0;
+    TabLayout.Tab tab;
     ProgressDialog dialogcarg;
 
 
@@ -148,7 +146,7 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
         Log.e("ImagenEventourl",indiceimagen);
-        Picasso.get().load(indiceimagen).error(R.drawable.ic_inicio).into(IMVEvento, new Callback() {
+        Picasso.get().load(indiceimagen).error(R.mipmap.logo_masboletos).into(IMVEvento, new Callback() {
             @Override
             public void onSuccess() {
                 imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
@@ -184,7 +182,18 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         transaction.commit();
         contadorTab++;
         Log.e("posicion tab",String.valueOf(contadorTab));
-        TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
+        cambiar_tab(contadorTab);
+    }
+
+    public void replaceFragment2(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.pagerfragmets2, fragment);
+        transaction.commit();
+    }
+
+    void cambiar_tab(int pos){
+        tab = tabLayout.getTabAt(pos);
         tab.select();
     }
 

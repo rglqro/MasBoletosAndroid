@@ -1,4 +1,4 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 
 import android.content.Context;
@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import itstam.masboletos.R;
 
 
 /**
@@ -82,7 +84,7 @@ public class FRFinalizarCompra extends Fragment {
             myWebView.setWebViewClient(new WebViewClient());
             WebSettings webSettings = myWebView.getSettings();
             webSettings.setJavaScriptEnabled(true);
-
+            webSettings.setBuiltInZoomControls(true);
         }
         btseguir.setOnClickListener(new View.OnClickListener() {
             @Override

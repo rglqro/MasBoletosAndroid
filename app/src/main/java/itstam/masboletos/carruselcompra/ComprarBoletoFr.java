@@ -1,4 +1,4 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 
 import android.annotation.SuppressLint;
@@ -32,6 +32,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import itstam.masboletos.R;
 
 
 public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
@@ -104,7 +106,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo;
+        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -124,10 +126,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                                 funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
                                 idevento_funcion[i+1]=datos.getString("idevento_funcion");
                                 fechaevento[i+1]=datos.getString("FechaLarga");
-                                horaevento[i+1]=datos.getString("hora");
-                                if(horaevento[i+1].equals("null")){
-                                    horaevento[i+1]=" ";
-                                }
+                                horaevento[i + 1] = datos.getString("hora");
                             }
                             spinner_funcion();
                         } catch (JSONException e) {
@@ -222,6 +221,9 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 BtMenos.setClickable(true);
                 btmDisponible.setBackgroundResource(R.color.verdemb);
             }
+            if(cantidadBoletos==8){
+                BtMas.setClickable(false);
+            }
         }
         if(v==BtMenos){
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
@@ -235,6 +237,9 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 BtMenos.setClickable(true);
                 btmDisponible.setBackgroundResource(R.color.verdemb);
                 txvCantidad.setText(String.valueOf(cantidadBoletos));
+            }
+            if(cantidadBoletos>=0&&cantidadBoletos<8){
+                BtMas.setClickable(true);
             }
         }
         if(v==btmDisponible){

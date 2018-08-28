@@ -19,6 +19,9 @@ import android.widget.ToggleButton;
 
 import java.text.DecimalFormat;
 
+import itstam.masboletos.carruselcompra.DetallesEventos;
+import itstam.masboletos.carruselcompra.UsuarioFR;
+
 public class RevisionFR extends Fragment {
     View vista;
     SharedPreferences prefe;

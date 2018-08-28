@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context=".ComprarBoletoFr"
+    tools:context=".carruselcompra.ComprarBoletoFr"
     android:fillViewport="true"
     android:paddingBottom="5dp">
 

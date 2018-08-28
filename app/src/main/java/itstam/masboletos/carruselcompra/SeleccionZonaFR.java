@@ -1,14 +1,9 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -16,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,21 +19,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.ZoomControls;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
@@ -56,8 +45,8 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import itstam.masboletos.R;
 import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 
 public class SeleccionZonaFR extends Fragment {
@@ -131,8 +120,14 @@ public class SeleccionZonaFR extends Fragment {
                                 comision[i]=datos.getString("comision");
                                 URLMapa="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapam");
                             }
-                            spinner_zonas();
-                            Mostrar_Mapa();
+                            if(Elementos.length()>0) {
+                                spinner_zonas();
+                                Mostrar_Mapa();
+                            }else{
+                                Toast.makeText(getActivity(),"Evento no disponible para su venta.",Toast.LENGTH_LONG).show();
+                                ((DetallesEventos)getActivity()).cerrar_cargando();
+                                ((DetallesEventos)getActivity()).finish();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

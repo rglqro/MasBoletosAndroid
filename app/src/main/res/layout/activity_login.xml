@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".principal.LoginActivity"
+    android:background="@color/blanco"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/LYBarra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azulmboscuro"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imBtRegresarlogin"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@color/azulmboscuro"
+            android:cropToPadding="false"
+            android:onClick="regresar"
+            android:tint="@android:color/background_light"
+            app:srcCompat="@drawable/ic_regresar" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Iniciar Sesión"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingHorizontal="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/textView21"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Inicia sesión con tu cuenta de Mas Boletos"
+                    android:textSize="16sp"
+                    android:textColor="@color/negro"
+                    android:textAlignment="center"
+                    android:paddingVertical="7dp"/>
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Correo"
+                    android:textColor="#000"
+                    android:textSize="11sp"/>
+
+                <EditText
+                    android:id="@+id/edtcorreologin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/azulmb"
+                    android:ems="10"
+                    android:hint="Ingresa tu correo"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/negro"
+                    android:textColorHint="@color/grisclaro" />
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contraseña"
+                    android:textColor="#000"
+                    android:textSize="11sp"/>
+
+                <EditText
+                    android:id="@+id/edtcontrasenalogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/azulmb"
+                    android:ems="10"
+                    android:hint="Contraseña"
+                    android:inputType="textPassword"
+                    android:textColor="@color/negro"
+                    android:textColorHint="@color/grisclaro" />
+
+                <Button
+                    android:id="@+id/btsesionlog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/azulmb"
+                    android:paddingHorizontal="50dp"
+                    android:text="INICIAR SESIÓN" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>

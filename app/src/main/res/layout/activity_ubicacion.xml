@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".UbicacionAct"
     android:background="#fff"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:id="@+id/LYBarra"
@@ -41,45 +41,73 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
+        android:background="@color/azulmb"
         android:gravity="center"
-        android:orientation="vertical"
-        android:background="@color/azulmb">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleccione la ciudad donde quires visualizar los puntos de venta"
-                   android:textSize="22sp"
+            android:background="@android:color/transparent"
+            android:text="Selecciona la ciudad donde deseas visualizar un punto de venta"
             android:textAlignment="center"
             android:textColor="#fff"
-            android:background="@android:color/transparent" />
+            android:textSize="22sp" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/azulmboscuro"
-        android:textSize="16sp" />
 
-    <Spinner
-        android:id="@+id/spEstados"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:backgroundTint="#000"
-        android:entries="@array/EstadosRep"
-        android:spinnerMode="dialog" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/FRLYMapa">
-    </FrameLayout>
+        <Spinner
+            android:id="@+id/spEstados"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:backgroundTint="#000"
+            android:entries="@array/EstadosRep"
+            android:spinnerMode="dialog" />
+
+        <FrameLayout
+            android:id="@+id/FRLYMapa"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/spEstados"
+            android:layout_weight="2"></FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlinfopunto"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingVertical="3dp">
+
+            <TextView
+                android:id="@+id/txvcerrarinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:textColor="@color/negro"
+                android:text="Cerrar"
+                android:layout_alignParentRight="true" />
+
+            <TextView
+                android:id="@+id/txvinfomar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Info Marcador"
+                android:textColor="@color/negro" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>

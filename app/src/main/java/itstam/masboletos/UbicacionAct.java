@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -42,6 +44,8 @@ public class UbicacionAct extends AppCompatActivity {
     String [] Estados,IDEdo,latLngs;
     MAPSFR mapsfr= new MAPSFR();
     String Edo_Sel; ProgressDialog dialogcarg;
+    RelativeLayout rlinfopunto;
+    TextView txvcerrarinfo,txvinfomar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +53,11 @@ public class UbicacionAct extends AppCompatActivity {
         setContentView(R.layout.activity_ubicacion);
         FRLYMapa=(FrameLayout)findViewById(R.id.FRLYMapa);
         spin_edos=(Spinner) findViewById(R.id.spEstados);
-
+        rlinfopunto=(RelativeLayout)findViewById(R.id.rlinfopunto);
+        txvcerrarinfo=(TextView)findViewById(R.id.txvcerrarinfo);
+        txvinfomar=(TextView)findViewById(R.id.txvinfomar);
+        rlinfopunto.setVisibility(View.GONE);
         Consulta_Estados();
-    }
-
-    void llenardatosmapa(){
-        Bundle bundle=new Bundle();
-        bundle.putStringArray("latLngs",latLngs);
-        mapsfr= new MAPSFR();
-        mapsfr.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().add(R.id.FRLYMapa,mapsfr).commit();
-        getSupportFragmentManager().beginTransaction().detach(mapsfr).commit();
-        getSupportFragmentManager().beginTransaction().attach(mapsfr).commit();
     }
 
     void Consulta_Estados(){
@@ -109,6 +106,9 @@ public class UbicacionAct extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Consulta_TiendaXedo(IDEdo[position]); //Obtiene el ID del estado de acuerdo a la opcion seleccionada
                 Edo_Sel=Estados[position];
+                if(rlinfopunto.getVisibility()==View.VISIBLE){
+                    rlinfopunto.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -159,6 +159,16 @@ public class UbicacionAct extends AppCompatActivity {
         );
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
+    }
+
+    void llenardatosmapa(){
+        Bundle bundle=new Bundle();
+        bundle.putStringArray("latLngs",latLngs);
+        mapsfr= new MAPSFR();
+        mapsfr.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().add(R.id.FRLYMapa,mapsfr).commit();
+        getSupportFragmentManager().beginTransaction().detach(mapsfr).commit();
+        getSupportFragmentManager().beginTransaction().attach(mapsfr).commit();
     }
 
     public void regresar(View view) {

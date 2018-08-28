@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context=".Perfil_Fr">
+    tools:context=".principal.Perfil_Fr">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -33,68 +33,75 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#fff"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-            <RelativeLayout
-                android:id="@+id/RLDatosPerfil"
+            <LinearLayout
+                android:id="@+id/LLDatosPerfil"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/azulmboscuro">
+                android:layout_height="wrap_content"
+                android:background="@color/azulmboscuro"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="123dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:cropToPadding="false"
-                    android:src="@drawable/mblogo" />
+                <RelativeLayout
+                    android:id="@+id/RLDatosPerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:paddingVertical="10dp"
+                    android:animateLayoutChanges="true">
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignTop="@+id/imageView3"
-                    android:layout_marginEnd="30dp"
-                    android:text="Nombre del Usuario"
-                    android:textColor="@android:color/background_light"
-                    android:textSize="18sp"
-                    android:layout_marginRight="30dp" />
-            </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="123dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="false"
+                        android:src="@drawable/ic_perfil" />
+
+                    <TextView
+                        android:id="@+id/txvnuser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/imageView3"
+                        android:paddingHorizontal="7dp"
+                        android:text="Nombre del Usuario"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="18sp"
+                        android:layout_toRightOf="@+id/imageView3" />
+                </RelativeLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/BtMEventos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="20dp"
                 android:background="@android:color/transparent"
                 android:text="Mis Eventos"
                 android:textAllCaps="false"
                 android:textColor="#000"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="20dp"/>
+                android:gravity="center_vertical" />
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="20dp"
                 android:background="@android:color/transparent"
                 android:text="Boleto Electrónico"
                 android:textAllCaps="false"
                 android:textColor="#000"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="20dp"/>
+                android:gravity="center_vertical" />
 
             <Button
                 android:id="@+id/button4"
@@ -187,6 +194,17 @@
                 android:textAllCaps="false"
                 android:textColor="#000"
                 android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btcerrarsesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="  Cerrar sesión"
+                android:textColor="@color/negro"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_sesion" />
+
 
         </LinearLayout>
 

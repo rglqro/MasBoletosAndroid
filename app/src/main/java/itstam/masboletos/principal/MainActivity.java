@@ -1,29 +1,25 @@
-package itstam.masboletos;
+package itstam.masboletos.principal;
 
 
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity implements BoletosPrin.OnFragmentInteractionListener, Perfil_Fr.OnFragmentInteractionListener, View.OnClickListener {
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+import itstam.masboletos.NetworkUtils;
+import itstam.masboletos.R;
+import itstam.masboletos.UbicacionAct;
 
-    }
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     BoletosPrin frboletos;
     Perfil_Fr frperfil = new Perfil_Fr();

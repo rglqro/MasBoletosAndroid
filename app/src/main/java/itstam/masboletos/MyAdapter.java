@@ -1,21 +1,20 @@
 package itstam.masboletos;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import itstam.masboletos.carruselcompra.DetallesEventos;
 
 public class MyAdapter extends PagerAdapter {
 
@@ -49,7 +48,7 @@ public class MyAdapter extends PagerAdapter {
         ImageButton myImage = (ImageButton) myImageLayout.findViewById(R.id.image);
         myImage.setAdjustViewBounds(true);
         myImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        Picasso.get().load(URLimagenes.get(position)).error(R.drawable.mbiconor).into(myImage);
+        Picasso.get().load(URLimagenes.get(position)).error(R.mipmap.logo_masboletos).into(myImage);
         view.addView(myImageLayout, 0);
         myImage.setOnClickListener(new View.OnClickListener() {
             @Override

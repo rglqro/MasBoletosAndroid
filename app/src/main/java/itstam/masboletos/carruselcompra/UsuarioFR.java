@@ -1,4 +1,4 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -45,11 +42,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import itstam.masboletos.R;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -212,6 +207,7 @@ public class UsuarioFR extends Fragment {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                     }
                 }
         );
@@ -322,6 +318,7 @@ public class UsuarioFR extends Fragment {
                                 envio_mail(resultado);
                             }
                             else {
+                                ((DetallesEventos)getActivity()).cerrar_cargando();
                                 ((DetallesEventos)getActivity()).finish();
                             }
                         }
