@@ -148,10 +148,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         Log.d("Tamaño ima boton",String.valueOf(Tam_ListaImEve));
         for (int j=0;j<Tam_ListaImEve/2;j++){
             row = new TableRow(getActivity());
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            TableRow.LayoutParams lp2 = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            TableLayout.LayoutParams lp = new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT,1f);
+            TableRow.LayoutParams lp2 = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,(float)1.0);
             row.setLayoutParams(lp);
-
+            row.setOrientation(LinearLayout.HORIZONTAL);
             for (int i=0;i<2;i++){
                 if(pos_arr_ima==ListaImagBoton.size()) break;
                 ImBotonEvento.add(new ImageButton(getActivity()));
@@ -163,7 +163,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 ImBotonEvento.get(pos_arr_ima).setId(pos_arr_ima);
                 ImBotonEvento.get(pos_arr_ima).setPadding(5,5,5,5);
                 ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
-                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.mipmap.logo_masboletos).into(ImBotonEvento.get(pos_arr_ima)); Log.e("foto",ListaImagBoton.get(pos_arr_ima));
+                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.drawable.mbiconor).into(ImBotonEvento.get(pos_arr_ima)); Log.e("foto",ListaImagBoton.get(pos_arr_ima));
                 ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -240,16 +240,16 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void genera_Imag_Orga(){
         int tam_lista=ListaImagOrg.length;
         BtsOrganizadores = new ImageButton[tam_lista];
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(5,dpToPx(5),5,dpToPx(5));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,1);
+        lp.setMargins(5,0,5,0);
         for(int i=0;i<BtsOrganizadores.length;i++){
             BtsOrganizadores[i]=new ImageButton(getActivity());
             BtsOrganizadores[i].setLayoutParams(lp);
             BtsOrganizadores[i].setBackgroundColor(Color.TRANSPARENT);
-            BtsOrganizadores[i].setAdjustViewBounds(true);
             BtsOrganizadores[i].setScaleType(ImageView.ScaleType.FIT_XY);
-            BtsOrganizadores[i].setPadding(15,0,15,0);
+            //BtsOrganizadores[i].setPadding(15,0,15,0);
             Picasso.get().load(ListaImagOrg[i]).error(R.drawable.mbiconor).into(BtsOrganizadores[i]);
+            BtsOrganizadores[i].setAdjustViewBounds(true);
             LLImagOrg.addView(BtsOrganizadores[i]);
         }
     }

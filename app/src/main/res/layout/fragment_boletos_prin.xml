@@ -107,13 +107,14 @@
                         android:orientation="horizontal" />
                 </HorizontalScrollView>
 
+
                 <TableLayout
                     android:id="@+id/tabla_imagenes"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@+id/SCVOrg">
+                    android:layout_below="@+id/SCVOrg"
+                    android:layout_alignParentLeft="true">
 
                 </TableLayout>
 

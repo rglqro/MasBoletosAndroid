@@ -218,6 +218,17 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         editor.commit();
     }
 
+    public void set_DatosUsuario(String ndato,String dato,int tipo){
+        SharedPreferences preferencias=getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferencias.edit();
+        if(tipo==0) {
+            editor.putString(ndato, dato);
+        }else{
+            editor.putBoolean(ndato, Boolean.parseBoolean(dato));
+        }
+        editor.commit();
+    }
+
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }

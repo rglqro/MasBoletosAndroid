@@ -51,7 +51,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class UsuarioFR extends Fragment {
 
-    SharedPreferences prefe;
+    SharedPreferences prefe,prefe_sesion;
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml;
@@ -61,7 +61,7 @@ public class UsuarioFR extends Fragment {
     JSONArray Elementos;
     EditText edtusuario,edtcontra;
     String URL="";
-    boolean resp=false;
+    boolean resp=false,validasesion=false;
     String msj,usuario,id_cliente;
     int bloqueo_boton=0;
     private static final int PAYPAL_REQUEST_CODE=7171;
@@ -128,6 +128,8 @@ public class UsuarioFR extends Fragment {
             }
         });
         prefe=getActivity().getSharedPreferences("DatosCompra",Context.MODE_PRIVATE);
+        prefe_sesion=getActivity().getSharedPreferences("datos_sesion",Context.MODE_PRIVATE);
+        validasesion=prefe_sesion.getBoolean("validasesion",false);
         recibir_datos();
         return vista;
     }
@@ -156,16 +158,23 @@ public class UsuarioFR extends Fragment {
             }
 
         }
-        entrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bloqueo_boton!=0) {
-                    iniciar_sesion();
-                }else{
-                    ((DetallesEventos)getActivity()).AlertaBoton("Datos usuario","Ingresa los datos correspondientes").show();
+        if(validasesion) {
+            usuario=prefe_sesion.getString("usuario_s","");
+            id_cliente=prefe_sesion.getString("id_cliente","");
+            checar_tipo_pago();
+        }else{
+            entrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(bloqueo_boton!=0) {
+                        iniciar_sesion();
+                    }else{
+                        ((DetallesEventos)getActivity()).AlertaBoton("Datos usuario","Ingresa los datos correspondientes").show();
+                    }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     void iniciar_sesion(){
@@ -189,6 +198,11 @@ public class UsuarioFR extends Fragment {
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
                                 ((DetallesEventos)getActivity()).set_DatosCompra("email",edtusuario.getText().toString());
+
+                                ((DetallesEventos)getActivity()).set_DatosUsuario("usuario_s",usuario,0);
+                                ((DetallesEventos)getActivity()).set_DatosUsuario("contrasena_s",edtcontra.getText().toString(),0);
+                                ((DetallesEventos)getActivity()).set_DatosUsuario("id_cliente",id_cliente,0);
+                                ((DetallesEventos)getActivity()).set_DatosUsuario("validasesion","true",1);
                             }
                             ((DetallesEventos)getActivity()).cerrar_cargando();
                             if(resp){
