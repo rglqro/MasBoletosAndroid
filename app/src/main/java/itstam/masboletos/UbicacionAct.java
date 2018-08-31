@@ -1,17 +1,22 @@
 package itstam.masboletos;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,11 +46,13 @@ public class UbicacionAct extends AppCompatActivity {
     Spinner spin_edos;
     FrameLayout FRLYMapa;
     JSONArray Elementos=null;
-    String [] Estados,IDEdo,latLngs;
+    String [] Estados,IDEdo,latLngs,idpuntoventa;
     MAPSFR mapsfr= new MAPSFR();
     String Edo_Sel; ProgressDialog dialogcarg;
     RelativeLayout rlinfopunto;
-    TextView txvcerrarinfo,txvinfomar;
+    TextView txvcerrarinfo,txvinfomar,txvnpunto;
+    ImageView imvpunto;
+    TextView txvcomollegar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,9 @@ public class UbicacionAct extends AppCompatActivity {
         rlinfopunto=(RelativeLayout)findViewById(R.id.rlinfopunto);
         txvcerrarinfo=(TextView)findViewById(R.id.txvcerrarinfo);
         txvinfomar=(TextView)findViewById(R.id.txvinfomar);
+        txvnpunto=(TextView)findViewById(R.id.txvnpunto);
+        imvpunto=(ImageView)findViewById(R.id.imvpunto);
+        txvcomollegar=(TextView)findViewById(R.id.txvcomollegar);
         rlinfopunto.setVisibility(View.GONE);
         Consulta_Estados();
     }
@@ -133,13 +143,19 @@ public class UbicacionAct extends AppCompatActivity {
                         try {
                             Elementos = response;
                             latLngs= new String[Elementos.length()];
+                            idpuntoventa= new String[Elementos.length()];
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 latLngs[i]= datos.getString("lat")+","+datos.getString("lon");
+                                idpuntoventa[i]=datos.getString("idpuntoventa");
                             }
                             if(latLngs.length>0) {
                                 llenardatosmapa();
+                                msj_alerta("Deberá seleccionar un marcador para ver los detalles del punto de venta");
                             }else {
+                                if(FRLYMapa!=null){
+                                    FRLYMapa.removeAllViews();
+                                }
                                 getSupportFragmentManager().beginTransaction().detach(mapsfr).commit();
                                 Toast.makeText(getApplicationContext(),"No hay tiendas disponibles en "+Edo_Sel+" por el momento",Toast.LENGTH_SHORT).show();
                             }
@@ -154,6 +170,7 @@ public class UbicacionAct extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Toast.makeText(getApplicationContext(),"Ha ocurrido un error en la consulta: \n"+error.toString(),Toast.LENGTH_SHORT).show();
+                        cerrar_cargando();
                     }
                 }
         );
@@ -170,6 +187,20 @@ public class UbicacionAct extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().detach(mapsfr).commit();
         getSupportFragmentManager().beginTransaction().attach(mapsfr).commit();
     }
+
+    void msj_alerta(String txt){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(txt)
+                .setCancelable(false)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 
     public void regresar(View view) {
         finish();

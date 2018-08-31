@@ -42,7 +42,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/azulmb"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -53,8 +52,9 @@
             android:background="@android:color/transparent"
             android:text="Selecciona la ciudad donde deseas visualizar un punto de venta"
             android:textAlignment="center"
-            android:textColor="#fff"
-            android:textSize="22sp" />
+            android:textColor="@color/negro"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"/>
 
     </LinearLayout>
 
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:paddingHorizontal="5dp">
 
         <Spinner
             android:id="@+id/spEstados"
@@ -73,6 +73,12 @@
             android:entries="@array/EstadosRep"
             android:spinnerMode="dialog" />
 
+        <View
+            android:id="@+id/view5"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/verdemb" />
+
         <FrameLayout
             android:id="@+id/FRLYMapa"
             android:layout_width="match_parent"
@@ -80,31 +86,81 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/spEstados"
-            android:layout_weight="2"></FrameLayout>
+            android:layout_weight="2"
+            android:animateLayoutChanges="true"></FrameLayout>
 
         <RelativeLayout
             android:id="@+id/rlinfopunto"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingVertical="3dp">
+            android:animateLayoutChanges="true">
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/verdemb"/>
 
             <TextView
                 android:id="@+id/txvcerrarinfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:textColor="@color/negro"
+                android:layout_below="@id/view4"
+                android:paddingHorizontal="6dp"
+                android:textColor="@color/verdemb"
                 android:text="Cerrar"
+                android:textStyle="bold"
                 android:layout_alignParentRight="true" />
 
             <TextView
                 android:id="@+id/txvinfomar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/txvnpunto"
+                android:layout_below="@+id/txvnpunto"
                 android:text="Info Marcador"
-                android:textColor="@color/negro" />
+                android:textColor="@color/negro"
+                android:textSize="14sp"
+                android:layout_alignLeft="@+id/txvnpunto" />
+
+            <ImageView
+                android:id="@+id/imvpunto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="60dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_local"
+                android:layout_alignParentLeft="true"
+                android:layout_marginHorizontal="7dp"/>
+
+            <TextView
+                android:id="@+id/txvnpunto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txvcerrarinfo"
+                android:layout_toEndOf="@+id/imvpunto"
+                android:text="TextView"
+                android:textColor="@color/negro"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/imvpunto" />
+
+            <TextView
+                android:id="@+id/txvcomollegar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@color/verdemb"
+                android:padding="8dp"
+                android:text="¿Cómo llegar?"
+                android:textColor="@color/blanco"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="3dp"/>
         </RelativeLayout>
 
     </LinearLayout>

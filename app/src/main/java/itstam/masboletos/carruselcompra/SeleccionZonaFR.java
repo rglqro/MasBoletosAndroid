@@ -320,62 +320,71 @@ public class SeleccionZonaFR extends Fragment {
 
     void Mejor_Disponible(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento; Log.e("URL",URL);
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            try {
-                                Elementos = new JSONArray("["+resultado+"]");
-                                for (int i=0;i<Elementos.length();i++){
-                                    JSONObject datos = Elementos.getJSONObject(i);
-                                    seccion_compra=datos.getString("mensagesetDescripcion");
-                                    costo_compra=datos.getString("mensagesetImporteBoleto");
-                                    asiento_compra=datos.getString("mensagesetAsientos");
-                                    tipomsj=datos.getString("mensagesetTipo");
-                                    msj=datos.getString("mensagesetMensage");
-                                    fila=datos.getString("mensagesetFila") ;
-                                    if(cbvermapaas.isChecked()) {
-                                        idzona = datos.getString("mensagesetIdZona");
-                                    }
-                                    idfila=datos.getString("idfila");
-                                    inicolumna=datos.getString("mensagesetIniColumna");
-                                    fincolumna=datos.getString("mensagesetFinColumna");
-                                    if(fila.equals("0")){
-                                        fila="*";
-                                    }
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                seccion_compra=datos.getString("mensagesetDescripcion");
+                                costo_compra=datos.getString("mensagesetImporteBoleto");
+                                asiento_compra=datos.getString("mensagesetAsientos");
+                                tipomsj=datos.getString("mensagesetTipo");
+                                msj=datos.getString("mensagesetMensage");
+                                fila=datos.getString("mensagesetFila") ;
+                                if(cbvermapaas.isChecked()) {
+                                    idzona = datos.getString("mensagesetIdZona");
                                 }
-                                if(tipomsj.equals("1")) {
-                                        set_DatosCompra("idsubzona",idsubzonas[indicesubzona]);
-                                        set_DatosCompra("zona",zonas[indiceZona]);
-                                        set_DatosCompra("idzona",idzona);
-                                        set_DatosCompra("precio",precios[indiceZona]);
-                                        set_DatosCompra("comision",comision[indiceZona]);
-                                        set_DatosCompra("fila",fila);
-                                        set_DatosCompra("asientos",fila+": "+asiento_compra);
-                                        set_DatosCompra("valornumerado",indicenumerzona);
-                                        set_DatosCompra("subzona",subzonas[indicesubzona]);
-                                        set_DatosCompra("idvermapa",idvermapa);
-                                        set_DatosCompra("idfila",idfila);
-                                        set_DatosCompra("inicolumna",inicolumna);
-                                        set_DatosCompra("fincolumna",fincolumna);
-                                        ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
-                                    }else {
-                                    ((DetallesEventos)getActivity()).cerrar_cargando();
-                                    Toast.makeText(getActivity(),msj+"\nSolicite una cantidad diferente o verifique la zona",Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                idfila=datos.getString("idfila");
+                                inicolumna=datos.getString("mensagesetIniColumna");
+                                fincolumna=datos.getString("mensagesetFinColumna");
+                                if(fila.equals("0")){
+                                    fila="*";
                                 }
                             }
-                    }});  //permite trabajar con la interfaz grafica
-               }};
-        tr.start();
+                            if(tipomsj.equals("1")) {
+                                set_DatosCompra("idsubzona",idsubzonas[indicesubzona]);
+                                set_DatosCompra("zona",zonas[indiceZona]);
+                                set_DatosCompra("idzona",idzona);
+                                set_DatosCompra("precio",precios[indiceZona]);
+                                set_DatosCompra("comision",comision[indiceZona]);
+                                set_DatosCompra("fila",fila);
+                                set_DatosCompra("asientos",fila+": "+asiento_compra);
+                                set_DatosCompra("valornumerado",indicenumerzona);
+                                set_DatosCompra("subzona",subzonas[indicesubzona]);
+                                set_DatosCompra("idvermapa",idvermapa);
+                                set_DatosCompra("idfila",idfila);
+                                set_DatosCompra("inicolumna",inicolumna);
+                                set_DatosCompra("fincolumna",fincolumna);
+                                ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
+                            }else {
+                                ((DetallesEventos)getActivity()).cerrar_cargando();
+                                Toast.makeText(getActivity(),msj+"\nSolicite una cantidad diferente o verifique la zona",Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
     }
 
     public void set_DatosCompra(String ndato,String dato){
@@ -406,43 +415,6 @@ public class SeleccionZonaFR extends Fragment {
     public void onDestroyView() {
         Log.e(TAG,"onDestroyView");
         super.onDestroyView();
-    }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.d("Enlace ",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
     }
 
 }

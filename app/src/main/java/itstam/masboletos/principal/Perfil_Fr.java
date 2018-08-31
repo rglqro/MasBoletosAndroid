@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import itstam.masboletos.R;
+import itstam.masboletos.acciones_perfil.MisEventos;
 
 public class Perfil_Fr extends Fragment {
     View vista;
@@ -33,7 +34,7 @@ public class Perfil_Fr extends Fragment {
     TextView txvnuser;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
-    Button btcerrarsesion;
+    Button btcerrarsesion,btmeventos;
 
     public Perfil_Fr() {
         // Required empty public constructor
@@ -51,6 +52,7 @@ public class Perfil_Fr extends Fragment {
         LLPrincipal =(LinearLayout) vista.findViewById(R.id.LLPrincipal);
         LLDatosPerfil=(LinearLayout)vista.findViewById(R.id.LLDatosPerfil);
         btcerrarsesion=(Button)vista.findViewById(R.id.btcerrarsesion);
+        btmeventos=(Button)vista.findViewById(R.id.BtMEventos);
         txvnuser=(TextView)vista.findViewById(R.id.txvnuser);
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
         nuser=prefe_sesion.getString("usuario_s", "");
@@ -64,6 +66,13 @@ public class Perfil_Fr extends Fragment {
                     RLDatosPerfil.setVisibility(View.GONE);
                     vista_no_sesion();
                     btcerrarsesion.setVisibility(View.GONE);
+                }
+            });
+            btmeventos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent mainIntent = new Intent().setClass(getActivity(), MisEventos.class);
+                    startActivity(mainIntent);
                 }
             });
         }else {

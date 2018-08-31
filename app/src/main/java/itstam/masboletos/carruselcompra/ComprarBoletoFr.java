@@ -123,10 +123,15 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                             funciones[0]="..Selecciona.."; idevento_funcion[0]="000";
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
-                                funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
                                 idevento_funcion[i+1]=datos.getString("idevento_funcion");
                                 fechaevento[i+1]=datos.getString("FechaLarga");
-                                horaevento[i + 1] = datos.getString("hora");
+                                if(datos.getString("hora").equals("null")){
+                                    horaevento[i+1] = "n/a";
+                                    funciones[i+1]=datos.getString("FechaLarga");
+                                }else{
+                                    funciones[i+1]=datos.getString("FechaLarga")+" "+datos.getString("hora");
+                                    horaevento[i+1]=datos.getString("hora");
+                                }
                             }
                             spinner_funcion();
                         } catch (JSONException e) {

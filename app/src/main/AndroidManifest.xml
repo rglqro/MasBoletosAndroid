@@ -56,7 +56,8 @@
 
         <activity android:name=".DescEntregas" />
         <activity android:name=".perfil.LoginActivity" />
-        <activity android:name=".principal.LoginActivity"></activity>
+        <activity android:name=".principal.LoginActivity" />
+        <activity android:name=".acciones_perfil.MisEventos"></activity>
     </application>
 
 </manifest>
