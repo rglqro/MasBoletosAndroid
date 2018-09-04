@@ -3,13 +3,18 @@ package itstam.masboletos;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
+import android.location.LocationManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -46,6 +51,7 @@ public class UbicacionAct extends AppCompatActivity {
     Spinner spin_edos;
     FrameLayout FRLYMapa;
     JSONArray Elementos=null;
+    int ancho,alto;
     String [] Estados,IDEdo,latLngs,idpuntoventa;
     MAPSFR mapsfr= new MAPSFR();
     String Edo_Sel; ProgressDialog dialogcarg;
@@ -67,8 +73,55 @@ public class UbicacionAct extends AppCompatActivity {
         imvpunto=(ImageView)findViewById(R.id.imvpunto);
         txvcomollegar=(TextView)findViewById(R.id.txvcomollegar);
         rlinfopunto.setVisibility(View.GONE);
-        Consulta_Estados();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
+
+        imvpunto.getLayoutParams().width=ancho/4;
+        status_gps();
     }
+
+    public void status_gps() {
+        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("Ubicación no activa, ¿Desea activarla?");
+            dialog.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                    finish();
+                }
+            });
+            dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    finish();
+                }
+            });
+            dialog.show();
+        }else {
+            Consulta_Estados();
+        }
+    }
+
 
     void Consulta_Estados(){
         // Initialize a new RequestQueue instance
@@ -218,4 +271,5 @@ public class UbicacionAct extends AppCompatActivity {
     public void cerrar_cargando(){
         dialogcarg.dismiss();
     }
+
 }

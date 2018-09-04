@@ -57,9 +57,7 @@ public class MyAdapter extends PagerAdapter {
                     if(position==i){
                         Intent mainIntent = new Intent().setClass(
                                 context, DetallesEventos.class);
-                        mainIntent.putExtra("indiceimagen",listaImagBoton.get(i).toString());
                         set_DatosCompra("idevento",IDEvento.get(i).toString());
-                        set_DatosCompra("NombreEvento",nombresEvento.get(i).toString());
                         set_DatosCompra("eventogrupo",eventosGrupo.get(i).toString());
                         context.startActivity(mainIntent);
                     }

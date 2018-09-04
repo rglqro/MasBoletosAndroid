@@ -15,7 +15,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -104,6 +102,7 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
             }
         });
         mimapa.setMyLocationEnabled(true);
+        mimapa.getUiSettings().setZoomControlsEnabled(true);
     }
 
     void consulta_puntoventa(final int indice){
@@ -195,7 +194,7 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
     public void onLocationChanged(Location location) {
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         if(getlocate==0) {//Se activa cuando detecta tu ubicacion por primera vez
-            mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 10.0));
+            mimapa.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, (float) 11.0));
             getlocate=1;
             Geocoder geocoder;
             List<Address> addresses;

@@ -91,7 +91,7 @@
                 <HorizontalScrollView
                     android:id="@+id/SCVOrg"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_alignParentStart="true"
                     android:background="@color/azul2"
                     android:layout_below="@+id/pager"
@@ -105,16 +105,59 @@
                         android:layout_gravity="center"/>
                 </HorizontalScrollView>
 
-
-                <TableLayout
-                    android:id="@+id/tabla_imagenes"
+                <TabHost
+                    android:id="@+id/thboletopaq"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/SCVOrg"
-                    android:layout_alignParentLeft="true">
+                    android:layout_below="@id/SCVOrg"
+                    android:layout_marginTop="1dp">
 
-                </TableLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TabWidget
+                            android:id="@android:id/tabs"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/azulmb"
+                            android:backgroundTint="@color/azulmboscuro" />
+
+                        <FrameLayout
+                            android:id="@android:id/tabcontent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <LinearLayout
+                                android:id="@+id/llboletos"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <TableLayout
+                                    android:id="@+id/tabla_imagenes"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_below="@+id/SCVOrg">
+
+                                </TableLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/llpaquetes"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:padding="2dp">
+
+                            </LinearLayout>
+
+                        </FrameLayout>
+                    </LinearLayout>
+                </TabHost>
 
 
             </RelativeLayout>

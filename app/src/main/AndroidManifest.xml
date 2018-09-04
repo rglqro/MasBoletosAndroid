@@ -54,10 +54,14 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAWmX332HyLMA5OAKBQprhcEePrphXuPUE" />
 
-        <activity android:name=".DescEntregas" />
-        <activity android:name=".perfil.LoginActivity" />
-        <activity android:name=".principal.LoginActivity" />
-        <activity android:name=".acciones_perfil.MisEventos"></activity>
+        <activity android:name=".DescEntregas"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".principal.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".acciones_perfil.MisEventos"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".principal.PaquetesAct"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

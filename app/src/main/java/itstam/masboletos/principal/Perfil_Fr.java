@@ -98,9 +98,9 @@ public class Perfil_Fr extends Fragment {
         TXVMsj = new TextView(getActivity());
         TXVMsj.setTextColor(Color.WHITE);
         TXVMsj.setGravity(Gravity.CENTER);
-        TXVMsj.setPadding(dpToPx(10),0,dpToPx(10),0);
+        TXVMsj.setPadding(25,0,25,0);
         TXVMsj.setText("Únete a Mas Boletos \n\nY comieza a gozar de todos los beneficios que tenemos para ti");
-        TXVMsj.setTextSize(dpToPx(5));
+        TXVMsj.setTextSize(15);
         TXVMsj.setLayoutParams(lp);
         llinisesion.addView(TXVMsj);
 
@@ -109,7 +109,7 @@ public class Perfil_Fr extends Fragment {
         btcrearcta.setText("CREAR UN PERFIL AHORA");
         btcrearcta.setTextColor(Color.BLACK);
         btcrearcta.setLayoutParams(lp);
-        btcrearcta.setTextSize(dpToPx(5));
+        btcrearcta.setTextSize(15);
         btcrearcta.setPadding(50,15,50,15);
         btcrearcta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +124,7 @@ public class Perfil_Fr extends Fragment {
         txvtengocta= new TextView(getActivity());
         txvtengocta.setText("YA TENGO CUENTA");
         txvtengocta.setTextColor(Color.WHITE);
-        txvtengocta.setTextSize(dpToPx(5));
+        txvtengocta.setTextSize(15);
         txvtengocta.setLayoutParams(lp);
         txvtengocta.setPadding(50,15,50,15);
         txvtengocta.setOnClickListener(new View.OnClickListener() {
@@ -180,13 +180,5 @@ public class Perfil_Fr extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-
-    public int dpToPx(int dp) {
-        float density = getActivity().getResources()
-                .getDisplayMetrics()
-                .density;
-        return Math.round((float) dp * density);
     }
 }

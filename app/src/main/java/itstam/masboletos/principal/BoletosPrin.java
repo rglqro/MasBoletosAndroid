@@ -15,17 +15,21 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -54,13 +58,15 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     private static HeightWrappingViewPager mPager;
 
     Activity activity=getActivity();
-    int currentPage = 0;
+    int currentPage = 0,alto,ancho;
 
     JSONArray Elementos = null;
     ArrayList<ImageButton> ImBotonEvento;
+    ArrayList<ImageView> ImPaquete; ArrayList<View> lineasep;
+    ArrayList<TextView> txvPaquete,btpaquete;
     ImageButton[] BtsOrganizadores;
     String[]ListaImagOrg;
-    ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos,NombresEvento,EventosGrupo;
+    ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos,NombresEvento,EventosGrupo,listaidorgpaq,listanombrepaq,listaimapaq,listadireccionpaq;
     Spinner spcategorias;
     Handler handler;
     Runnable Update;
@@ -68,8 +74,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     View vista;
     TableRow row;
     Timer swipeTimer;
-    LinearLayout LLImagOrg;
+    LinearLayout LLImagOrg,llpaquetes,llinfopaquetes;
     private SwipeRefreshLayout swipeContainer;
+    TabHost thboletopaq;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,11 +85,33 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         swipeContainer = (SwipeRefreshLayout) vista.findViewById(R.id.SWRLY);
         tabla_imagenes = (TableLayout) vista.findViewById(R.id.tabla_imagenes);
         LLImagOrg=(LinearLayout)vista.findViewById(R.id.LLImagOrg);
-
-        Consulta_Imagen_Botones();
-
+        thboletopaq=(TabHost)vista.findViewById(R.id.thboletopaq);
+        llpaquetes=(LinearLayout)vista.findViewById(R.id.llpaquetes);
+        iniciar_tabhost();
         swipeContainer.setOnRefreshListener(this);
         return vista;
+    }
+
+    void iniciar_tabhost(){
+        thboletopaq.setup();
+        TabHost.TabSpec tab1 = thboletopaq.newTabSpec("thboletos");  //aspectos de cada Tab (pestaña)
+        TabHost.TabSpec tab2 = thboletopaq.newTabSpec("thpaquetes");
+
+        tab1.setIndicator("Compra Hoy");    //qué queremos que aparezca en las pestañas
+        tab1.setContent(R.id.llboletos); //definimos el id de cada Tab (pestaña)
+
+        tab2.setIndicator("Venta de Paquetes");
+        tab2.setContent(R.id.llpaquetes);
+
+        thboletopaq.addTab(tab1); //añadimos los tabs ya programados
+        thboletopaq.addTab(tab2);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
+
+        Consulta_Imagen_Botones();
     }
 
     void Consulta_Imagen_Botones(){
@@ -119,7 +148,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                             iniciar_listas_spinner();
                             iniciar_Carrusel2();
                             generarBotonesEvento();
-                            ((MainActivity)getActivity()).cerrar_cargando();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -130,6 +158,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((MainActivity)getActivity()).cerrar_cargando();
                     }
                 }
         );
@@ -148,7 +177,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         for (int j=0;j<Tam_ListaImEve/2;j++){
             row = new TableRow(getActivity());
             TableRow.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,1);
-            TableRow.LayoutParams lp2 = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams lp2 = new TableRow.LayoutParams(ancho/2, ViewGroup.LayoutParams.WRAP_CONTENT);
             row.setLayoutParams(lp);
             for (int i=0;i<2;i++){
                 if(pos_arr_ima==ListaImagBoton.size()) break;
@@ -165,9 +194,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent mainIntent = new Intent().setClass(
-                                getActivity(), DetallesEventos.class);
-                        mainIntent.putExtra("indiceimagen",ListaImagBoton.get(v.getId()).toString());
+                        Intent mainIntent = new Intent().setClass(getActivity(), DetallesEventos.class);
+                        set_DatosCompra("indiceimagen",ListaImagBoton.get(v.getId()).toString());
                         set_DatosCompra("idevento",IDEventos.get(v.getId()).toString());
                         set_DatosCompra("NombreEvento",NombresEvento.get(v.getId()).toString());
                         set_DatosCompra("eventogrupo",EventosGrupo.get(v.getId()).toString());
@@ -199,6 +227,32 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         spcategorias.setAdapter(adapter);
     }
 
+    void iniciar_Carrusel2(){
+        currentPage=0;
+        mPager = (HeightWrappingViewPager) vista.findViewById(R.id.pager);
+        activity=getActivity();
+        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo,ListaImagBoton));
+        CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
+        indicator.setViewPager(mPager);
+        // Auto start of viewpager
+        handler= new Handler();
+        Update = new Runnable() {
+            public void run() {
+                if (currentPage == ListaImagCarrusel.size()) {
+                    currentPage = 0;
+                }
+                mPager.setCurrentItem(currentPage++, true);
+            }
+        };
+        swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, 2500, 2500);
+    }
+
     void Consulta_Imagen_Organizadores(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
@@ -228,6 +282,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((MainActivity)getActivity()).cerrar_cargando();
                     }
                 }
         );
@@ -251,32 +306,101 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
             BtsOrganizadores[i].setAdjustViewBounds(true);
             LLImagOrg.addView(BtsOrganizadores[i]);
         }
+        consulta_paquete_evento();
     }
 
-    void iniciar_Carrusel2(){
-        currentPage=0;
-        mPager = (HeightWrappingViewPager) vista.findViewById(R.id.pager);
-        activity=getActivity();
-        mPager.setAdapter(new MyAdapter(getActivity(),ListaImagCarrusel,IDEventos,NombresEvento,EventosGrupo,ListaImagBoton));
-        CircleIndicator indicator = (CircleIndicator) vista.findViewById(R.id.indicator);
-        indicator.setViewPager(mPager);
-        // Auto start of viewpager
-        handler= new Handler();
-        Update = new Runnable() {
-            public void run() {
-                if (currentPage == ListaImagCarrusel.size()) {
-                    currentPage = 0;
+    void consulta_paquete_evento(){
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador.php"; Log.e("Enlace", URL);
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos=response;
+                            listaimapaq=new ArrayList<String>();
+                            listanombrepaq=new ArrayList<String>();
+                            listadireccionpaq=new ArrayList<String>();
+                            listaidorgpaq=new ArrayList<String>();
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                listaimapaq.add("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner"));
+                                listanombrepaq.add(datos.getString("nombre"));
+                                listadireccionpaq.add(datos.getString("domicilio"));
+                                listaidorgpaq.add(datos.getString("idorganizador"));
+                            }
+                            genera_datos_paquetes();
+                            ((MainActivity)getActivity()).cerrar_cargando();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((MainActivity)getActivity()).cerrar_cargando();
+                    }
                 }
-                mPager.setCurrentItem(currentPage++, true);
-            }
-        };
-        swipeTimer = new Timer();
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 2500, 2500);
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    void genera_datos_paquetes(){
+        ImPaquete= new ArrayList<ImageView>();
+        txvPaquete= new ArrayList<TextView>();
+        btpaquete= new ArrayList<TextView>();
+        lineasep= new ArrayList<View>();
+        for(int i=0;i<listaidorgpaq.size();i++){
+            llinfopaquetes= new LinearLayout(getActivity());
+            llinfopaquetes.setOrientation(LinearLayout.HORIZONTAL);
+
+            LinearLayout.LayoutParams lpinfo= new LinearLayout.LayoutParams(ancho/3, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+            lpinfo.setMargins(5,2,5,2);
+
+            ImPaquete.add(new ImageButton(getActivity()));
+            ImPaquete.get(i).setLayoutParams(lpinfo);
+            Picasso.get().load(listaimapaq.get(i)).error(R.mipmap.logo_masboletos).into(ImPaquete.get(i)); Log.e("foto",listaimapaq.get(i));
+            ImPaquete.get(i).setBackgroundColor(Color.TRANSPARENT);
+            ImPaquete.get(i).setScaleType(ImageView.ScaleType.CENTER);
+            ImPaquete.get(i).setTag(i);
+            ImPaquete.get(i).setId(i);
+            ImPaquete.get(i).setPadding(5,5,5,5);
+            ImPaquete.get(i).setAdjustViewBounds(true);
+            llinfopaquetes.addView(ImPaquete.get(i));
+
+            txvPaquete.add(new TextView(getActivity()));
+            txvPaquete.get(i).setText(listanombrepaq.get(i));
+            txvPaquete.get(i).setLayoutParams(lpinfo);
+            txvPaquete.get(i).setTextColor(Color.BLACK);
+            llinfopaquetes.addView(txvPaquete.get(i));
+
+            btpaquete.add(new Button(getActivity()));
+            btpaquete.get(i).setText("Ver Paquetes");
+            btpaquete.get(i).setLayoutParams(lpinfo);
+            btpaquete.get(i).setId(i);
+            btpaquete.get(i).setBackgroundResource(R.color.verdemb);
+            btpaquete.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent mainIntent = new Intent().setClass(getActivity(), PaquetesAct.class);
+                    set_DatosCompra("idorgpaq",listaidorgpaq.get(view.getId()));
+                    startActivity(mainIntent);
+                }
+            });
+            llinfopaquetes.addView(btpaquete.get(i));
+
+            lineasep.add(new View(getActivity()));
+            lineasep.get(i).setLayoutParams(new LinearLayout.LayoutParams(3, ViewGroup.LayoutParams.MATCH_PARENT));
+            llpaquetes.addView(llinfopaquetes);
+        }
     }
 
     public void set_DatosCompra(String ndato,String dato){

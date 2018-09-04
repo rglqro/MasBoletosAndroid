@@ -29,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
@@ -52,13 +53,13 @@ import uk.co.senab.photoview.PhotoView;
 public class SeleccionZonaFR extends Fragment {
     View vista;
     public static final String TAG = SeleccionZonaFR.class.getSimpleName();
-    String [] funciones, zonas,colores, precios, disponibilidad, subzonas,numerado,idsubzonas,comision,zona_precio,numeradozona;
+    String [] zonas,colores, precios, disponibilidad, subzonas,numerado,idsubzonas,comision,zona_precio,numeradozona;
     JSONArray Elementos=null;
     String idevento,_zona,id_seccionXevento, URLMapa,indicenumerzona,idvermapa,idzona;
     int indiceZona,indicesubzona;
     Spinner spzona,spseccion;
     Button btContinuar;
-    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila,idfila,inicolumna,fincolumna,filaasientos;
+    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila,idfila,inicolumna,fincolumna,filaasientos,ideventopack="";
     ImageView IMVMApa;
     Dialog customDialog = null;
     CheckBox cbvermapaas;
@@ -84,14 +85,20 @@ public class SeleccionZonaFR extends Fragment {
         SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=(prefe.getString("idevento",""));
         cantidadBoletos=(prefe.getString("Cant_boletos",""));
-        obtener_zonas();
+        URLMapa=prefe.getString("eventomapa","");
+        if(idevento.equals("0")){
+            ideventopack=prefe.getString("ideventopack","0");
+            obtener_zonas("https://www.masboletos.mx/appMasboletos/getPaquetesZonas.php?idpaquete="+ideventopack);
+        }else{
+            obtener_zonas("https://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento);
+        }
     }
 
-    void obtener_zonas(){
+    void obtener_zonas(String URL){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento; Log.e("Enlace", URL);
+        Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -110,15 +117,24 @@ public class SeleccionZonaFR extends Fragment {
                             zona_precio= new String[Elementos.length()];
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
-                                zonas[i]=datos.getString("grupo");
-                                zona_precio[i]=datos.getString("grupo")+" $"+datos.getString("precio")+" c/u" +
-                                        "\nDisponibles: "+datos.getString("disponibilidad");
-                                colores[i]=datos.getString("color");
-                                precios[i]=datos.getString("precio");
-                                disponibilidad[i]=datos.getString("disponibilidad");
-                                numerado[i]=datos.getString("numerado");
-                                comision[i]=datos.getString("comision");
-                                URLMapa="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapam");
+                                if(idevento.equals("0")){
+                                    zonas[i] = datos.getString("zona");
+                                    zona_precio[i] = datos.getString("zona") + " $" + datos.getString("precio") + " c/u";
+                                    colores[i] = datos.getString("color");
+                                    precios[i] = datos.getString("precio");
+                                    numerado[i] = datos.getString("numerado");
+                                    comision[i] = datos.getString("comision");
+                                }else {
+                                    zonas[i] = datos.getString("grupo");
+                                    zona_precio[i] = datos.getString("grupo") + " $" + datos.getString("precio") + " c/u" +
+                                            "\nDisponibles: " + datos.getString("disponibilidad");
+                                    colores[i] = datos.getString("color");
+                                    precios[i] = datos.getString("precio");
+                                    disponibilidad[i] = datos.getString("disponibilidad");
+                                    numerado[i] = datos.getString("numerado");
+                                    comision[i] = datos.getString("comision");
+                                    URLMapa = "https://www.masboletos.mx/sica/imgEventos/" + datos.getString("EventoMapam");
+                                }
                             }
                             if(Elementos.length()>0) {
                                 spinner_zonas();
@@ -200,7 +216,6 @@ public class SeleccionZonaFR extends Fragment {
                 .into(imag);
     }
 
-
     public void spinner_zonas(){
         ArrayAdapter adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item_2,zona_precio);
         adapter.setDropDownViewResource(R.layout.spinner_lista2);
@@ -213,7 +228,11 @@ public class SeleccionZonaFR extends Fragment {
                 String txtsel="";
                 txtsel=(String) zonas[position];
                 _zona=txtsel.replace(" ","%20");
-                obtener_secciones();
+                if(idevento.equals("0")){
+                    obtener_secciones("https://www.masboletos.mx/appMasboletos/getCargandoSubzonasxGrupoPaquete.php?idpaquete="+ideventopack+"&grupo="+_zona);
+                }else {
+                    obtener_secciones("https://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);
+                }
             }
 
             @Override
@@ -223,10 +242,10 @@ public class SeleccionZonaFR extends Fragment {
         });
     }
 
-    void obtener_secciones(){
+    void obtener_secciones(String URL){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona; Log.e("Enlace", URL);
+        Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -243,9 +262,14 @@ public class SeleccionZonaFR extends Fragment {
                             idsubzonas[0]="0";
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
-                                subzonas[i+1]=datos.getString("nombre");
-                                idsubzonas[i+1]=datos.getString("idzona");
-                                numeradozona[i+1]=datos.getString("numerado");
+                                if(idevento.equals("0")){
+                                    subzonas[i+1]=datos.getString("descripcion");
+                                    idsubzonas[i+1]=datos.getString("value");
+                                }else {
+                                    subzonas[i+1]=datos.getString("nombre");
+                                    idsubzonas[i+1]=datos.getString("idzona");
+                                    numeradozona[i+1]=datos.getString("numerado");
+                                }
                             }
                             spinner_seccion();
                         } catch (JSONException e) {
@@ -313,16 +337,20 @@ public class SeleccionZonaFR extends Fragment {
         btContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Mejor_Disponible();
+                if(idevento.equals("0")){
+                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&CantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
+                }else {
+                    Mejor_Disponible("https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);
+                }
             }
         });
     }
 
-    void Mejor_Disponible(){
+    void Mejor_Disponible(String URL){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento; Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -387,6 +415,30 @@ public class SeleccionZonaFR extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
+    void Mejor_disponible_Pack(String URL){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                        Log.e("Response: " , response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                    }
+                });
+        // Access the RequestQueue through your singleton class.
+        requestQueue.add(jsonObjectRequest);
+    }
+
     public void set_DatosCompra(String ndato,String dato){
         SharedPreferences preferencias=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=preferencias.edit();
@@ -397,12 +449,6 @@ public class SeleccionZonaFR extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-
-        } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
     }
 
     @Override

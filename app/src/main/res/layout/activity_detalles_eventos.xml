@@ -66,6 +66,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/rlimagsevento"
                 android:layout_width="match_parent"
                 android:layout_height="130dp">
 
@@ -75,7 +76,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_toEndOf="@+id/IMVEvento"
-                    android:adjustViewBounds="false"
+                    android:adjustViewBounds="true"
                     app:srcCompat="@mipmap/logo_masboletos"
                     android:layout_toRightOf="@+id/IMVEvento" />
 
@@ -90,67 +91,62 @@
                     android:layout_alignParentLeft="true"
                     android:maxWidth="130dp"/>
 
-                <TextView
-                    android:id="@+id/txvNombreEve"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/IMVEvento"
-                    android:layout_toRightOf="@+id/IMVEvento"
-                    android:paddingHorizontal="8dp"
-                    android:shadowColor="@color/negro"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:text="Nombre del Evento"
-                    android:textColor="#fff"
-                    android:textSize="18sp" />
+                    android:layout_alignStart="@+id/IMVFondo"
+                    android:layout_alignLeft="@+id/IMVFondo">
 
-                <TextView
-                    android:id="@+id/TXVDireccion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txvNombreEve"
-                    android:layout_toEndOf="@+id/IMVEvento"
-                    android:layout_toRightOf="@+id/IMVEvento"
-                    android:paddingHorizontal="8dp"
-                    android:shadowColor="@color/negro"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:text="Dirección"
-                    android:textColor="#fff"
-                    android:textSize="16sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/TXVPoliticas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/TXVDireccion"
-                    android:layout_toEndOf="@+id/IMVEvento"
-                    android:layout_toRightOf="@+id/IMVEvento"
-                    android:paddingHorizontal="8dp"
-                    android:shadowColor="@color/negro"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:text="Politicas"
-                    android:textColor="#fff" />
+                        <TextView
+                            android:id="@+id/txvnombreevepaq"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:shadowColor="@color/negro"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="10"
+                            android:text="Nombre del Evento"
+                            android:textAllCaps="false"
+                            android:textColor="#fff"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/TXVDescripcion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/TXVPoliticas"
-                    android:layout_toEndOf="@+id/IMVEvento"
-                    android:layout_toRightOf="@+id/IMVEvento"
-                    android:paddingHorizontal="8dp"
-                    android:shadowColor="@color/negro"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:text="Descripción del Evento"
-                    android:textColor="#fff" />
+                        <TextView
+                            android:id="@+id/txvinfoevepac"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:shadowColor="@color/negro"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="10"
+                            android:text="Dirección"
+                            android:textAllCaps="false"
+                            android:textColor="#fff"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/TXVDescripcion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:gravity="right|left|center"
+                            android:shadowColor="@color/negro"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="10"
+                            android:text="Descripción del Evento"
+                            android:textColor="#fff" />
+
+                    </LinearLayout>
+                </ScrollView>
 
             </RelativeLayout>
 

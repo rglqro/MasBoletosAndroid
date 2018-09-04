@@ -86,7 +86,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/spEstados"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:animateLayoutChanges="true"></FrameLayout>
 
         <RelativeLayout

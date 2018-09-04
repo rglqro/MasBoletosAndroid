@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import java.io.IOException;
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton BTInicio,BTUbic,BTPerfil;
     ProgressDialog dialogcarg;
 
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BTInicio=(ImageButton)findViewById(R.id.BTInicio);
         BTUbic=(ImageButton)findViewById(R.id.BTUbicacion);
         BTPerfil=(ImageButton)findViewById(R.id.BTPerfil);
-
 
             if(NetworkUtils.isNetworkConnected(this)){
                 Menu_Navegacion();

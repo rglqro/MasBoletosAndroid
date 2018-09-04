@@ -14,38 +14,55 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.jackandphantom.blurimage.BlurImage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import itstam.masboletos.R;
-import itstam.masboletos.carruselcompra.ComprarBoletoFr;
 
 
-public class DetallesEventos extends AppCompatActivity implements  View.OnClickListener {
+public class DetallesEventos extends AppCompatActivity {
 
     ImageView IMVFondo,IMVEvento;
-    String indiceimagen,nombreEvento;
+    String idevento="",ideventopack="";
+    String imgevento="",direevento="",nomevento="",lugarevento="",fechaevento="",horaevento="",descevento="",eventomapa="";
     TabLayout tabLayout;
     String[] FRNombres;
     ImageButton IMBTRegresar;
-    TextView TXVNEvento;
-    int contadorTab=0;
+    TextView TXVNEvento,txvinfoevepac,txvdescripcionevepac;
+    int contadorTab=0,ancho,alto;
     TabLayout.Tab tab;
     ProgressDialog dialogcarg;
+    RelativeLayout rlimagsevento;
+    JSONArray Elementos;
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -55,18 +72,91 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_eventos);
-        TXVNEvento=(TextView)findViewById(R.id.txvNombreEve);
+        TXVNEvento=(TextView)findViewById(R.id.txvnombreevepaq);
+        txvinfoevepac=findViewById(R.id.txvinfoevepac);
+        txvdescripcionevepac=findViewById(R.id.TXVDescripcion);
         IMVFondo=(ImageView)findViewById(R.id.IMVFondo);
         IMVEvento=(ImageView)findViewById(R.id.IMVEvento);
         IMBTRegresar=(ImageButton)findViewById(R.id.imBtRegresar);
-        Bundle bundle = getIntent().getExtras();
-        indiceimagen=bundle.getString("indiceimagen");
+        rlimagsevento=findViewById(R.id.rlimagsevento);
         SharedPreferences prefe=this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
-        TXVNEvento.setText((prefe.getString("NombreEvento","")));
+        idevento=prefe.getString("idevento","0");
 
-        IniciarFragments();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
+        rlimagsevento.getLayoutParams().height=alto/5;
+
+        if(idevento.equals("0")){
+            ideventopack=prefe.getString("ideventopack","");
+            consulta_info("https://www.masboletos.mx/appMasboletos/getPaqueteEncabezado.php?IdEventoPack="+ideventopack);
+        }else {
+            consulta_info("https://www.masboletos.mx/appMasboletos/getEventoEncabezado.php?idevento="+idevento);
+        }
         set_DatosCompra("Cant_boletos","0");
         set_DatosCompra("posEve","0");
+    }
+
+    void consulta_info(String URL){
+        iniciar_cargando();
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.e("URL",URL);
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @TargetApi(Build.VERSION_CODES.O)
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                if(idevento.equals("0")){
+                                    imgevento="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen");
+                                    nomevento=datos.getString("nombre");
+                                    descevento=datos.getString("descripcion");
+                                    eventomapa="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapa");
+                                    set_DatosCompra("eventomapa",eventomapa);
+                                }else {
+                                    imgevento="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen");
+                                    direevento=datos.getString("direccion");
+                                    nomevento=datos.getString("evento");
+                                    lugarevento=datos.getString("lugar");
+                                    fechaevento=datos.getString("FechaLarga");
+                                    horaevento=datos.getString("hora");
+                                    descevento=datos.getString("descripcion");
+                                }
+                            }
+                            pintar_info();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        cerrar_cargando();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    void pintar_info(){
+        cerrar_cargando();
+        TXVNEvento.setText(nomevento);
+        String txt=lugarevento+", "+direevento+"<br><b>Fecha y Hora:</b> "+fechaevento+", "+horaevento;
+        txvinfoevepac.setText(Html.fromHtml(txt));
+        txvdescripcionevepac.setText("Información del evento: "+descevento);
+        IniciarFragments();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -112,41 +202,11 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         difuminar_imagen();
     }
 
-    public void pagina_anterior(){
-        if(contadorTab>0) {
-            contadorTab--;
-            TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
-            tab.select();
-        }else if(contadorTab==0) {
-            finish();
-        }
-        if(contadorTab==6){
-            finish();
-        }
-    }
-
-    public void regresar(View view){
-        onBackPressed();
-    }
-
-    @Override
-    public void onClick(View v) {
-    }
-
-    public void intent_compartir(View v){
-        Intent compartir = new Intent(Intent.ACTION_SEND);
-        compartir.setType("text/plain");
-        String mensaje = "Asiste a '"+nombreEvento+"' que se llevará a cabo el/los día(s): "+"\nVisita el siguiente enlace: ";
-        compartir.putExtra(Intent.EXTRA_SUBJECT, nombreEvento);
-        compartir.putExtra(Intent.EXTRA_TEXT, mensaje);
-        startActivity(Intent.createChooser(compartir, "Compartir vía"));
-    }
-
     Bitmap imageBlur;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
-        Log.e("ImagenEventourl",indiceimagen);
-        Picasso.get().load(indiceimagen).error(R.mipmap.logo_masboletos).into(IMVEvento, new Callback() {
+        Log.e("ImagenEventourl",imgevento);
+        Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
             @Override
             public void onSuccess() {
                 imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
@@ -159,6 +219,15 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
             }
         });
 
+    }
+
+    public void intent_compartir(View v){
+        Intent compartir = new Intent(Intent.ACTION_SEND);
+        compartir.setType("text/plain");
+        String mensaje = "Asiste a '"+nomevento+"' que se llevará a cabo el/los día(s): "+"\nVisita el siguiente enlace: ";
+        compartir.putExtra(Intent.EXTRA_SUBJECT, nomevento);
+        compartir.putExtra(Intent.EXTRA_TEXT, mensaje);
+        startActivity(Intent.createChooser(compartir, "Compartir vía"));
     }
 
     public void iniciar_cargando(){
@@ -197,6 +266,23 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         tab.select();
     }
 
+    public void tab_anterior(){
+        if(contadorTab>0) {
+            contadorTab--;
+            TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
+            tab.select();
+        }else if(contadorTab==0) {
+            finish();
+        }
+        if(contadorTab==6){
+            finish();
+        }
+    }
+
+    public void regresar(View view){
+        onBackPressed();
+    }
+
     public AlertDialog AlertaBoton(String titulo,String mensaje) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(titulo)
@@ -229,14 +315,9 @@ public class DetallesEventos extends AppCompatActivity implements  View.OnClickL
         editor.commit();
     }
 
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
-
-
     @Override
     public void onBackPressed() {
-        pagina_anterior();
+        tab_anterior();
         super.onBackPressed();
     }
 }
