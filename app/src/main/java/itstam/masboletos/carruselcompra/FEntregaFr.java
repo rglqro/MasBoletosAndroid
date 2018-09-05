@@ -50,7 +50,7 @@ import itstam.masboletos.RevisionFR;
 public class FEntregaFr extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,datoscargos,idevento="",fentregas="",asiento="",numerado="";
+    String seccion,fila,ideventopack,idevento="",fentregas="",asiento="",numerado="";
     Double precio=0.00,total=0.00,CargoFEntr=0.00,Sumafentr=0.00;
     Double cargoseg=0.00,sumaseg=0.00;
     int cant_datos=0,cant_boletos;
@@ -117,15 +117,19 @@ public class FEntregaFr extends Fragment {
         txvfentr.setText("MX $0.00"+" x "+cant_boletos);
         txvseccion.setText("MX $"+df.format(total));
         txvtotal.setText("MX $"+df.format(total));
-        consulta_formas_entrega();
-
+        if(idevento.equals("0")){
+            ideventopack=prefe.getString("ideventopack","0");
+            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
+        }else{
+            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);
+        }
     }
 
-    void consulta_formas_entrega(){
+    void consulta_formas_entrega(String URL){
         ((DetallesEventos)getActivity()).dialogcarg.show();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento;
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

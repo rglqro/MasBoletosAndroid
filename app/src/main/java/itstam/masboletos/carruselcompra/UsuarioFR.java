@@ -25,6 +25,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
@@ -43,6 +44,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import itstam.masboletos.R;
 
@@ -54,8 +57,8 @@ public class UsuarioFR extends Fragment {
     SharedPreferences prefe,prefe_sesion;
     View vista;
     public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
-    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml;
-    String idzona, cant_boletos,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa;
+    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml,comisionpack,ideventopack="";
+    String idzona,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa,dataevento;
     Button entrar;
     TextView txvinfocrearcta;
     JSONArray Elementos;
@@ -63,7 +66,7 @@ public class UsuarioFR extends Fragment {
     String URL="";
     boolean resp=false,validasesion=false;
     String msj,usuario,id_cliente;
-    int bloqueo_boton=0;
+    int bloqueo_boton=0,dataeventosize=0,cantidadeventosxpaquete,cant_boletos;
     private static final int PAYPAL_REQUEST_CODE=7171;
     private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
     .clientId(PAYPAL_CLIENT_ID);
@@ -139,14 +142,21 @@ public class UsuarioFR extends Fragment {
         totalpago=prefe.getString("total","0.00");
         nombreevento=prefe.getString("NombreEvento","");
         idevento=prefe.getString("idevento","");
+        ideventopack=prefe.getString("ideventopack","0");
         idzona=prefe.getString("idsubzona","");
-        cant_boletos=prefe.getString("Cant_boletos","");
+        cant_boletos= Integer.parseInt(prefe.getString("Cant_boletos","0"));
         numerado=prefe.getString("valornumerado","");
         precio=prefe.getString("precio","");
         idformaentrega=prefe.getString("idformaentrega","");
         cargoxservicio=prefe.getString("cargoxservicio","");
         edtusuario.setText(prefe.getString("email",""));
         idvermapa=prefe.getString("idvermapa","0");
+        dataevento=prefe.getString("dataevento",null);
+        dataeventosize= Integer.parseInt(prefe.getString("dataeventosize","0"));
+        comisionpack=prefe.getString("comisionpack","0");
+
+        cantidadeventosxpaquete=dataeventosize*cant_boletos;
+
         if(numerado.equals("1")){
             idfila=prefe.getString("idfila","");
             inicolumna=prefe.getString("inicolumna","");
@@ -238,19 +248,23 @@ public class UsuarioFR extends Fragment {
             Intent intent= new Intent(getActivity(),PayPalService.class);
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
             getActivity().startService(intent);
-            preregistro_paypal();
+            if(idevento.equals("0")){
+                pre_registro_paypal_post("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php");
+            }else{
+                preregistro_paypal("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
+                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
+                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
+                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);
+            }
         }
     }
 
-    private void preregistro_paypal(){
-        ((DetallesEventos)getActivity()).iniciar_cargando();
+    private void preregistro_paypal(final String URL){
+        ((DetallesEventos)getActivity()).iniciar_cargando(); Log.e("URL",URL);
         Thread tr=new Thread(){
             @Override
             public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
-                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
-                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
-                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);  //para que la variable sea reconocida en todos los metodos
+                final String resultado = inserta(URL);  //para que la variable sea reconocida en todos los metodos
                 getActivity().runOnUiThread(new Runnable() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
@@ -264,6 +278,66 @@ public class UsuarioFR extends Fragment {
                     }});  //permite trabajar con la interfaz grafica
             }};
         tr.start();
+    }
+
+    private void pre_registro_paypal_post(String url){
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response","error");
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<>();
+                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
+                params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("seccion", "BRONCE");
+                params.put("fila", "GENERAL");
+                params.put("importe", precio);Log.e("dato",precio);
+                params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("cargoxservicio", comisionpack);
+                params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
+                params.put("zona", idzona);Log.e("dato",idzona);
+                params.put("numerado", "0");
+                params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
+                //params.put("idfila", "0");
+                //params.put("inicolumna", "0");
+                //params.put("fincolumna", "0");
+                //params.put("filaasientos", "");
+                //params.put("idfilafilaasiento", "");
+                params.put("formadepago", fpago);Log.e("dato",fpago);
+                params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
+                params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
+                params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
+                params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
+                params.put("datafilasiento", "[]");
+                params.put("dataeventozonafilasiento", "[]");
+
+
+                /*preregistro_paypal("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php?idpaquete="+ideventopack+"&numerado="
+                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
+                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
+                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento+"&cantidadeventosxpaquete="+cantidadeventosxpaquete
+                        +"&Comisionpaquete="+comisionpack+"&dataEventos="+dataevento);*/
+                return params;
+            }
+        };
+        queue.add(postRequest);
     }
 
     private void preregistroTCTD(){

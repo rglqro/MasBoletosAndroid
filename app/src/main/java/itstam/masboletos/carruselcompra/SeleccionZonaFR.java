@@ -55,7 +55,7 @@ public class SeleccionZonaFR extends Fragment {
     public static final String TAG = SeleccionZonaFR.class.getSimpleName();
     String [] zonas,colores, precios, disponibilidad, subzonas,numerado,idsubzonas,comision,zona_precio,numeradozona;
     JSONArray Elementos=null;
-    String idevento,_zona,id_seccionXevento, URLMapa,indicenumerzona,idvermapa,idzona;
+    String idevento,_zona,id_seccionXevento, URLMapa,indicenumerzona,idvermapa,idsubzona;
     int indiceZona,indicesubzona;
     Spinner spzona,spseccion;
     Button btContinuar;
@@ -299,7 +299,6 @@ public class SeleccionZonaFR extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 id_seccionXevento=idsubzonas[position];
                 indicesubzona=position;
-                idzona=idsubzonas[position];
                 if(!id_seccionXevento.equalsIgnoreCase("0")&& !indicenumerzona.equalsIgnoreCase("0")) { // si e
                     btContinuar.setText("Buscar Mejor Disponible");
                     cbvermapaas.setVisibility(View.VISIBLE);
@@ -338,7 +337,7 @@ public class SeleccionZonaFR extends Fragment {
             @Override
             public void onClick(View v) {
                 if(idevento.equals("0")){
-                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&CantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
+                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&cantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
                 }else {
                     Mejor_Disponible("https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);
                 }
@@ -368,9 +367,7 @@ public class SeleccionZonaFR extends Fragment {
                                 tipomsj=datos.getString("mensagesetTipo");
                                 msj=datos.getString("mensagesetMensage");
                                 fila=datos.getString("mensagesetFila") ;
-                                if(cbvermapaas.isChecked()) {
-                                    idzona = datos.getString("mensagesetIdZona");
-                                }
+                                idsubzona= datos.getString("mensagesetIdZona");
                                 idfila=datos.getString("idfila");
                                 inicolumna=datos.getString("mensagesetIniColumna");
                                 fincolumna=datos.getString("mensagesetFinColumna");
@@ -379,9 +376,8 @@ public class SeleccionZonaFR extends Fragment {
                                 }
                             }
                             if(tipomsj.equals("1")) {
-                                set_DatosCompra("idsubzona",idsubzonas[indicesubzona]);
+                                set_DatosCompra("idsubzona",idsubzona);
                                 set_DatosCompra("zona",zonas[indiceZona]);
-                                set_DatosCompra("idzona",idzona);
                                 set_DatosCompra("precio",precios[indiceZona]);
                                 set_DatosCompra("comision",comision[indiceZona]);
                                 set_DatosCompra("fila",fila);
@@ -416,19 +412,62 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void Mejor_disponible_Pack(String URL){
+        final String[] dataevento = {""};
+        final Boolean[] disponibilidad = {false};
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
+        Log.e("URL",URL);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
                         ((DetallesEventos)getActivity()).cerrar_cargando();
                         Log.e("Response: " , response.toString());
+                        try {
+                            dataevento[0] = response.getString("dataEvento");
+                            disponibilidad[0] =response.getBoolean("disponibilidad");
+                            if(disponibilidad[0]){
+                                Elementos = new JSONArray(dataevento[0]);
+                                Log.e("jsondata",Elementos.toString());
+                                for (int i=0;i<Elementos.length();i++){
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    seccion_compra=datos.getString("mensagesetDescripcion");
+                                    asiento_compra=datos.getString("mensagesetAsientos");
+                                    tipomsj=datos.getString("mensagesetTipo");
+                                    msj=datos.getString("mensagesetMensage");
+                                    fila=datos.getString("mensagesetFila") ;
+                                    idsubzona = datos.getString("mensagesetIdZona");
+                                    idfila=datos.getString("idfila");
+                                    inicolumna=datos.getString("mensagesetIniColumna");
+                                    fincolumna=datos.getString("mensagesetFinColumna");
+                                    if(fila.equals("0")){
+                                        fila="*";
+                                    }
+                                }
+                                set_DatosCompra("idsubzona",idsubzona);
+                                set_DatosCompra("dataevento",Elementos.toString());
+                                set_DatosCompra("dataeventosize",String.valueOf(Elementos.length()));
+                                set_DatosCompra("zona",zonas[indiceZona]);
+                                set_DatosCompra("precio",precios[indiceZona]);
+                                set_DatosCompra("comision",comision[indiceZona]);
+                                set_DatosCompra("fila",fila);
+                                set_DatosCompra("asientos",fila+": "+asiento_compra);
+                                set_DatosCompra("valornumerado",indicenumerzona);
+                                set_DatosCompra("subzona",subzonas[indicesubzona]);
+                                set_DatosCompra("idvermapa",idvermapa);
+                                set_DatosCompra("idfila",idfila);
+                                set_DatosCompra("inicolumna",inicolumna);
+                                set_DatosCompra("fincolumna",fincolumna);
+                                ((DetallesEventos)getActivity()).replaceFragment(new FRMejDisp());
+                            }else{
+                                Toast.makeText(getActivity(),"No hay disponibildad para este evento, verifique sus peticiones",Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error

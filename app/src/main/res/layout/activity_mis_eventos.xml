@@ -50,16 +50,18 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TableLayout
+                android:id="@+id/tblmisboletos"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -70,58 +72,59 @@
                         android:id="@+id/textView33"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mis Boletos"
-                        android:textSize="18sp"
                         android:padding="10dp"
-                        android:textColor="@color/blanco"/>
+                        android:text="Mis Boletos"
+                        android:textColor="@color/blanco"
+                        android:textSize="18sp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/textView34"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/negro"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Cantidad"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
 
                     <TextView
                         android:id="@+id/textView35"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/negro"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Evento"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
 
                     <TextView
                         android:id="@+id/textView36"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/negro"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Fecha"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
 
                     <TextView
                         android:id="@+id/textView37"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:textColor="@color/negro"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Status"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
                 </TableRow>
 
             </TableLayout>
 
             <TableLayout
+                android:id="@+id/tblmiseventospas"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp">
 
                 <TableRow
@@ -149,8 +152,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Cantidad"
-                        android:textColor="@color/negro"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
 
                     <TextView
                         android:id="@+id/textView27"
@@ -158,8 +161,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Evento"
-                        android:textColor="@color/negro"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
 
                     <TextView
                         android:id="@+id/textView26"
@@ -167,8 +170,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Fecha"
-                        android:textColor="@color/negro"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
 
                     <TextView
                         android:id="@+id/textView23"
@@ -176,8 +179,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Status"
-                        android:textColor="@color/negro"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/negro" />
                 </TableRow>
             </TableLayout>
         </LinearLayout>

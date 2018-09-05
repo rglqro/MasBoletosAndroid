@@ -46,7 +46,7 @@ public class FRMejDisp extends Fragment {
     int Cant_Boletos,cont_asientos=1;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
-    String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt,idfilaasientotxt;
+    String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt,idfilaasientotxt,ideventopack;
     View vista;
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
     TextView[][] txvnombreasiento;
@@ -87,6 +87,7 @@ public class FRMejDisp extends Fragment {
         asientos=prefe.getString("asientos","");
         numerado=prefe.getString("valornumerado", "");
         idevento=prefe.getString("idevento","");
+        ideventopack=prefe.getString("ideventopack","0");
         idsubzona=prefe.getString("idsubzona","0");
         comision=Double.parseDouble(prefe.getString("comision","0.00"));
         zona=prefe.getString("zona","");
@@ -111,7 +112,11 @@ public class FRMejDisp extends Fragment {
         }else{
             if(idvermapa.equals("1")) {
                 TXVAsientos.setText("");
-                consulta_asientos();
+                if(idevento.equals("0")) {// si es el idevento es 0 significa que se va a trabajar con el idpaquete
+                    consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacasPaquete.php?idpaquete="+ideventopack+"&idzona="+idsubzona);
+                }else{
+                    consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);
+                }
             }else{
                 llleyendaasientos.setVisibility(View.GONE);
                 btComprar.setBackgroundResource(R.color.verdemb);
@@ -133,11 +138,11 @@ public class FRMejDisp extends Fragment {
         TXVTotal.setText(TxTotal);
     }
 
-    void consulta_asientos(){
+    void consulta_asientos(String URL){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona; Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

@@ -398,8 +398,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
             llinfopaquetes.addView(btpaquete.get(i));
 
             lineasep.add(new View(getActivity()));
-            lineasep.get(i).setLayoutParams(new LinearLayout.LayoutParams(3, ViewGroup.LayoutParams.MATCH_PARENT));
+            lineasep.get(i).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 3));
+            lineasep.get(i).setBackgroundResource(R.color.grisclaro);
             llpaquetes.addView(llinfopaquetes);
+            llpaquetes.addView(lineasep.get(i));
         }
     }
 
@@ -447,6 +449,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                     ImBotonEvento.clear();
                     LLImagOrg.removeAllViews();
                     tabla_imagenes.removeAllViews();
+                    llpaquetes.removeAllViews();
                 }
                     Consulta_Imagen_Botones();
                     swipeContainer.setRefreshing(false);

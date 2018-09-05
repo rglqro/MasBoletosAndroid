@@ -69,37 +69,52 @@
             android:maxHeight="130dp"
             app:srcCompat="@drawable/mbiconor" />
 
-        <TextView
-            android:id="@+id/txvnombrepaq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/IMVPaq"
-            android:layout_toRightOf="@+id/IMVPaq"
-            android:paddingHorizontal="5dp"
-            android:shadowColor="@color/negro"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="10"
-            android:text="Nombre del Evento"
-            android:textColor="#fff"
-            android:textSize="18sp" />
+            android:layout_alignStart="@+id/IMVFondopaq">
 
-        <TextView
-            android:id="@+id/txvinfopaq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txvnombrepaq"
-            android:layout_toEndOf="@+id/IMVPaq"
-            android:layout_toRightOf="@+id/IMVPaq"
-            android:paddingHorizontal="5dp"
-            android:shadowColor="@color/negro"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="10"
-            android:text="Información del Paquete"
-            android:textColor="#fff"
-            android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txvnombrepaq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/IMVPaq"
+                    android:layout_toRightOf="@+id/IMVPaq"
+                    android:paddingHorizontal="5dp"
+                    android:shadowColor="@color/negro"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="10"
+                    android:text="Nombre del Evento"
+                    android:textColor="#fff"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txvinfopaq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txvnombrepaq"
+                    android:layout_toEndOf="@+id/IMVPaq"
+                    android:layout_toRightOf="@+id/IMVPaq"
+                    android:paddingHorizontal="5dp"
+                    android:shadowColor="@color/negro"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="10"
+                    android:text="Información del Paquete"
+                    android:textColor="#fff"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </RelativeLayout>
 

@@ -1,21 +1,242 @@
 package itstam.masboletos.acciones_perfil;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import itstam.masboletos.R;
+import itstam.masboletos.carruselcompra.DetallesEventos;
 
 public class MisEventos extends AppCompatActivity {
 
+    JSONArray Elementos;
+    ProgressDialog dialogcarg;
+    int ancho,alto;
+    View view;
+    Boolean validasesion=false;
+    SharedPreferences prefeuser;
+    String idcliente;
+    TableLayout tblmiseventos,tblmiseventospas;
+    TextView[][] infomiseventos,infomiseventospass;
+    ArrayList<String> cantidadlist,eventolist,fechalist,statuslist,cantidadlistpass,eventolistpass,fechalistpass,statuslistpass;
+    TableRow filatbl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_eventos);
+        prefeuser= getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
+        idcliente=prefeuser.getString("id_cliente","0");
+        validasesion=prefeuser.getBoolean("validasesion",false);
+        tblmiseventos=findViewById(R.id.tblmisboletos);
+        tblmiseventospas=findViewById(R.id.tblmiseventospas);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
+        if(validasesion){
+            iniciar_cargando();
+            consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosUsuario.php?idcliente=5685",1);
+        }else{
+            AlertaBoton("Inicio de Sesión","Debe iniciar sesion para poder ver este contenido").show();
+        }
+    }
+
+    void consulta_miseventos(String URL, final int numconsult){
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.e("URL",URL);
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
+                new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.e("Respuesta Json",response.toString());
+                        try {
+                            Elementos = response;
+                            if (numconsult==1) {
+                                cantidadlist = new ArrayList<>();
+                                eventolist = new ArrayList<>();
+                                fechalist = new ArrayList<>();
+                                statuslist = new ArrayList<>();
+                                for (int i = 0; i < Elementos.length(); i++) {
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    cantidadlist.add(datos.getString("cantidad"));
+                                    eventolist.add(datos.getString("evento"));
+                                    fechalist.add(datos.getString("fechaevento"));
+                                    statuslist.add(datos.getString("estatus"));
+
+                                }
+                                consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosPasadosUsuario.php?idcliente=5685",2);
+                            }else{
+                                cantidadlistpass = new ArrayList<>();
+                                eventolistpass = new ArrayList<>();
+                                fechalistpass = new ArrayList<>();
+                                statuslistpass = new ArrayList<>();
+                                for (int i = 0; i < Elementos.length(); i++) {
+                                    JSONObject datos = Elementos.getJSONObject(i);
+                                    cantidadlistpass.add(datos.getString("cantidad"));
+                                    eventolistpass.add(datos.getString("evento"));
+                                    fechalistpass.add(datos.getString("fechaevento"));
+                                    statuslistpass.add(datos.getString("estatus"));
+
+                                }
+                                pintar_mis_boletos();
+                                pintar_miseventos_pass();
+                                cerrar_cargando();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Snackbar.make(view,"Error...",Snackbar.LENGTH_LONG).show();
+                        cerrar_cargando();
+                    }
+                }
+        );
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    void pintar_mis_boletos(){
+        infomiseventos= new TextView[eventolist.size()][4];
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(ancho/4, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        for (int i=0;i<eventolist.size();i++){
+            filatbl= new TableRow(this);
+            infomiseventos[i][0]=new TextView(this);
+            infomiseventos[i][0].setText(cantidadlist.get(i));
+            infomiseventos[i][0].setTextColor(Color.BLACK);
+            infomiseventos[i][0].setLayoutParams(lp);
+            infomiseventos[i][0].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventos[i][0]);
+
+            infomiseventos[i][1]=new TextView(this);
+            infomiseventos[i][1].setText(eventolist.get(i));
+            infomiseventos[i][1].setTextColor(Color.BLACK);
+            infomiseventos[i][1].setLayoutParams(lp);
+            infomiseventos[i][1].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventos[i][1]);
+
+            infomiseventos[i][2]=new TextView(this);
+            infomiseventos[i][2].setText(fechalist.get(i));
+            infomiseventos[i][2].setTextColor(Color.BLACK);
+            infomiseventos[i][2].setLayoutParams(lp);
+            infomiseventos[i][2].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventos[i][2]);
+
+            infomiseventos[i][3]=new TextView(this);
+            infomiseventos[i][3].setText(statuslist.get(i));
+            infomiseventos[i][3].setTextColor(Color.BLACK);
+            infomiseventos[i][3].setLayoutParams(lp);
+            infomiseventos[i][3].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventos[i][3]);
+
+            tblmiseventos.addView(filatbl,i+2);
+        }
+    }
+
+    void pintar_miseventos_pass(){
+        infomiseventospass= new TextView[eventolistpass.size()][4];
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        for (int i=0;i<eventolistpass.size();i++){
+            filatbl= new TableRow(this);
+            infomiseventospass[i][0]=new TextView(this);
+            infomiseventospass[i][0].setText(cantidadlistpass.get(i));
+            infomiseventospass[i][0].setTextColor(Color.BLACK);
+            infomiseventospass[i][0].setLayoutParams(lp);
+            infomiseventospass[i][0].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventospass[i][0]);
+
+            infomiseventospass[i][1]=new TextView(this);
+            infomiseventospass[i][1].setText(eventolistpass.get(i));
+            infomiseventospass[i][1].setTextColor(Color.BLACK);
+            infomiseventospass[i][1].setLayoutParams(lp);
+            infomiseventospass[i][1].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventospass[i][1]);
+
+            infomiseventospass[i][2]=new TextView(this);
+            infomiseventospass[i][2].setText(fechalistpass.get(i));
+            infomiseventospass[i][2].setTextColor(Color.BLACK);
+            infomiseventospass[i][2].setLayoutParams(lp);
+            infomiseventospass[i][2].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventospass[i][2]);
+
+            infomiseventospass[i][3]=new TextView(this);
+            infomiseventospass[i][3].setText(statuslistpass.get(i));
+            infomiseventospass[i][3].setTextColor(Color.BLACK);
+            infomiseventospass[i][3].setLayoutParams(lp);
+            infomiseventospass[i][3].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventospass[i][3]);
+
+            tblmiseventospas.addView(filatbl,i+2);
+        }
     }
 
     public void regresar(View view) {
         finish();
+    }
+
+    public AlertDialog AlertaBoton(String titulo, String mensaje) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+        return builder.create();
+    }
+
+    public void iniciar_cargando(){
+        dialogcarg= new ProgressDialog(this);
+        dialogcarg.setTitle("Cargando información");
+        dialogcarg.setMessage("  Espere...");
+        dialogcarg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialogcarg.setCancelable(false);
+        dialogcarg.show();
+    }
+
+    public void cerrar_cargando(){
+        dialogcarg.dismiss();
     }
 
 }

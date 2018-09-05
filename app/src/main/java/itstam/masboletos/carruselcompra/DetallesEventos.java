@@ -52,8 +52,8 @@ import itstam.masboletos.R;
 public class DetallesEventos extends AppCompatActivity {
 
     ImageView IMVFondo,IMVEvento;
-    String idevento="",ideventopack="";
-    String imgevento="",direevento="",nomevento="",lugarevento="",fechaevento="",horaevento="",descevento="",eventomapa="";
+    String idevento="",ideventopack="",comisionpack="0";
+    String imgevento="",direevento="S/D",nomevento="",lugarevento="S/L",fechaevento="N/D",horaevento="N/D",descevento="",eventomapa="";
     TabLayout tabLayout;
     String[] FRNombres;
     ImageButton IMBTRegresar;
@@ -120,6 +120,8 @@ public class DetallesEventos extends AppCompatActivity {
                                     nomevento=datos.getString("nombre");
                                     descevento=datos.getString("descripcion");
                                     eventomapa="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapa");
+                                    comisionpack=datos.getString("Comision");
+                                    set_DatosCompra("comisionpack",comisionpack);
                                     set_DatosCompra("eventomapa",eventomapa);
                                 }else {
                                     imgevento="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen");
@@ -157,6 +159,8 @@ public class DetallesEventos extends AppCompatActivity {
         txvinfoevepac.setText(Html.fromHtml(txt));
         txvdescripcionevepac.setText("Información del evento: "+descevento);
         IniciarFragments();
+        set_DatosCompra("fechaevento",fechaevento);
+        set_DatosCompra("horaevento",horaevento);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)

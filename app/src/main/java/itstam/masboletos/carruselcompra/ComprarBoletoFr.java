@@ -99,6 +99,8 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             BtMas.setClickable(false);
             BtMenos.setClickable(false);
             Consulta_Funciones_Evento();
+            set_DatosCompra("fechaevento",fecha);
+            set_DatosCompra("horaevento",hora);
         }
     }
 
@@ -254,8 +256,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
                 set_DatosCompra("idevento", idevento);
                 set_DatosCompra("Cant_boletos", txvCantidad.getText().toString());
-                set_DatosCompra("fechaevento",fecha);
-                set_DatosCompra("horaevento",hora);
             }else if(spfuncion.getSelectedItemPosition()==0 && !eventogrupo.equals("0")){
                 ((DetallesEventos)getActivity()).AlertaBoton("Evento","Debe elegir un Evento").show();
             }else{

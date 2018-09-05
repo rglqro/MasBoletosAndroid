@@ -36,7 +36,7 @@ import itstam.masboletos.SpinnerAdater;
 
 public class FPagoFR extends Fragment {
     View vista;
-    String datoscargos;
+    String datoscargos,ideventopack;
     ArrayList<String>idtipopagom,ptajecargo,itefijo,spTitFP,spDescFP,spTitFP2,spDescFP2;
     ArrayList<Integer>spImagesFP,spImagesFP2;
     ListView lvfpago;
@@ -68,15 +68,21 @@ public class FPagoFR extends Fragment {
         spTitFP.add("Pago en punto de venta"); spTitFP.add("Tarjeta de Crédito "); spTitFP.add("Tarjeta de Débito"); spTitFP.add("Oxxo "); spTitFP.add("PayPal");
         spDescFP= new ArrayList<String>();
         spDescFP.add("Paga y recoje en punto de venta"); spDescFP.add("Compra con tarjeta de crédito..."); spDescFP.add("Compra con tarjeta de débito..."); spDescFP.add("Paga en efectivo con oxxo"); spDescFP.add("Compra con PayPal");
-        ConsultaFormasPago();
+
+        if(idevento.equals("0")){
+            ideventopack=prefe.getString("ideventopack","0");
+            ConsultaFormasPago("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
+        }else{
+            ConsultaFormasPago("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);
+        }
         return vista;
     }
 
-    void ConsultaFormasPago(){
+    void ConsultaFormasPago(String URL){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento;
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

@@ -68,18 +68,17 @@ public class Perfil_Fr extends Fragment {
                     btcerrarsesion.setVisibility(View.GONE);
                 }
             });
-            btmeventos.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent mainIntent = new Intent().setClass(getActivity(), MisEventos.class);
-                    startActivity(mainIntent);
-                }
-            });
         }else {
             vista_no_sesion();
             btcerrarsesion.setVisibility(View.GONE);
         }
-
+        btmeventos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), MisEventos.class);
+                startActivity(mainIntent);
+            }
+        });
         return vista;
     }
 
@@ -148,6 +147,7 @@ public class Perfil_Fr extends Fragment {
                 nuser = data.getStringExtra("validasesion");
                 Toast.makeText(getActivity(),nuser,Toast.LENGTH_LONG).show();
                 sesion_iniciada();
+
             }else {
                 Toast.makeText(getActivity(),"Aun no ha iniciado sesión",Toast.LENGTH_SHORT).show();
             }
@@ -159,6 +159,13 @@ public class Perfil_Fr extends Fragment {
         llinisesion.setVisibility(View.GONE);
         RLDatosPerfil.setVisibility(View.VISIBLE);
         txvnuser.setText(nuser);
+        btmeventos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), MisEventos.class);
+                startActivity(mainIntent);
+            }
+        });
     }
 
     void cierra_sesion() {
