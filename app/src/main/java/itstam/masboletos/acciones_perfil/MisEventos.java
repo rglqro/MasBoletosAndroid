@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -48,8 +49,9 @@ public class MisEventos extends AppCompatActivity {
     String idcliente;
     TableLayout tblmiseventos,tblmiseventospas;
     TextView[][] infomiseventos,infomiseventospass;
+    ArrayList<View>separadores;
     ArrayList<String> cantidadlist,eventolist,fechalist,statuslist,cantidadlistpass,eventolistpass,fechalistpass,statuslistpass;
-    TableRow filatbl;
+    TableRow filatbl,rowsep,rowsep2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +137,7 @@ public class MisEventos extends AppCompatActivity {
 
     void pintar_mis_boletos(){
         infomiseventos= new TextView[eventolist.size()][4];
+        separadores= new ArrayList<>();
         TableRow.LayoutParams lp = new TableRow.LayoutParams(ancho/4, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         for (int i=0;i<eventolist.size();i++){
             filatbl= new TableRow(this);
@@ -142,6 +145,7 @@ public class MisEventos extends AppCompatActivity {
             infomiseventos[i][0].setText(cantidadlist.get(i));
             infomiseventos[i][0].setTextColor(Color.BLACK);
             infomiseventos[i][0].setLayoutParams(lp);
+            infomiseventos[i][0].setPadding(20,0,0,0);
             infomiseventos[i][0].setGravity(Gravity.CENTER);
             filatbl.addView(infomiseventos[i][0]);
 
@@ -149,7 +153,7 @@ public class MisEventos extends AppCompatActivity {
             infomiseventos[i][1].setText(eventolist.get(i));
             infomiseventos[i][1].setTextColor(Color.BLACK);
             infomiseventos[i][1].setLayoutParams(lp);
-            infomiseventos[i][1].setGravity(Gravity.CENTER);
+            infomiseventos[i][1].setGravity(Gravity.CENTER_VERTICAL);
             filatbl.addView(infomiseventos[i][1]);
 
             infomiseventos[i][2]=new TextView(this);
@@ -166,12 +170,20 @@ public class MisEventos extends AppCompatActivity {
             infomiseventos[i][3].setGravity(Gravity.CENTER);
             filatbl.addView(infomiseventos[i][3]);
 
-            tblmiseventos.addView(filatbl,i+2);
+            tblmiseventos.addView(filatbl);
+
+            rowsep= new TableRow(this);
+            separadores.add(new View(this));
+            separadores.get(i).setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3,1));
+            separadores.get(i).setBackgroundResource(R.color.gris);
+            rowsep.addView(separadores.get(i));
+            tblmiseventos.addView(rowsep);
         }
     }
 
     void pintar_miseventos_pass(){
         infomiseventospass= new TextView[eventolistpass.size()][4];
+        separadores= new ArrayList<>();
         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         for (int i=0;i<eventolistpass.size();i++){
             filatbl= new TableRow(this);
@@ -179,6 +191,7 @@ public class MisEventos extends AppCompatActivity {
             infomiseventospass[i][0].setText(cantidadlistpass.get(i));
             infomiseventospass[i][0].setTextColor(Color.BLACK);
             infomiseventospass[i][0].setLayoutParams(lp);
+            infomiseventospass[i][0].setPadding(20,0,0,0);
             infomiseventospass[i][0].setGravity(Gravity.CENTER);
             filatbl.addView(infomiseventospass[i][0]);
 
@@ -186,7 +199,7 @@ public class MisEventos extends AppCompatActivity {
             infomiseventospass[i][1].setText(eventolistpass.get(i));
             infomiseventospass[i][1].setTextColor(Color.BLACK);
             infomiseventospass[i][1].setLayoutParams(lp);
-            infomiseventospass[i][1].setGravity(Gravity.CENTER);
+            infomiseventospass[i][1].setGravity(Gravity.CENTER_VERTICAL);
             filatbl.addView(infomiseventospass[i][1]);
 
             infomiseventospass[i][2]=new TextView(this);
@@ -203,7 +216,14 @@ public class MisEventos extends AppCompatActivity {
             infomiseventospass[i][3].setGravity(Gravity.CENTER);
             filatbl.addView(infomiseventospass[i][3]);
 
-            tblmiseventospas.addView(filatbl,i+2);
+            tblmiseventospas.addView(filatbl);
+
+            rowsep2= new TableRow(this);
+            separadores.add(new View(this));
+            separadores.get(i).setLayoutParams(new TableRow.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3,1));
+            separadores.get(i).setBackgroundResource(R.color.gris);
+            rowsep2.addView(separadores.get(i));
+            tblmiseventospas.addView(rowsep2);
         }
     }
 

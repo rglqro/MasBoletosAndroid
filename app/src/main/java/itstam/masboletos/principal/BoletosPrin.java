@@ -61,13 +61,14 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     int currentPage = 0,alto,ancho;
 
     JSONArray Elementos = null;
+    TextView txvacceder_nombre;
     ArrayList<ImageButton> ImBotonEvento;
     ArrayList<ImageView> ImPaquete; ArrayList<View> lineasep;
     ArrayList<TextView> txvPaquete,btpaquete;
     ImageButton[] BtsOrganizadores;
     String[]ListaImagOrg;
+    SharedPreferences prefe_user;
     ArrayList<String> ListaImagCarrusel,ListaImagBoton,IDEventos,NombresEvento,EventosGrupo,listaidorgpaq,listanombrepaq,listaimapaq,listadireccionpaq;
-    Spinner spcategorias;
     Handler handler;
     Runnable Update;
     TableLayout tabla_imagenes;
@@ -77,6 +78,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     LinearLayout LLImagOrg,llpaquetes,llinfopaquetes;
     private SwipeRefreshLayout swipeContainer;
     TabHost thboletopaq;
+    String nombreuser; Boolean validasesion=false;
+    ImageView imvlogoarriba;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,7 +90,25 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         LLImagOrg=(LinearLayout)vista.findViewById(R.id.LLImagOrg);
         thboletopaq=(TabHost)vista.findViewById(R.id.thboletopaq);
         llpaquetes=(LinearLayout)vista.findViewById(R.id.llpaquetes);
+        txvacceder_nombre=vista.findViewById(R.id.txvacceder);
+        imvlogoarriba=vista.findViewById(R.id.imvlogoarriba);
+
+        prefe_user=getActivity().getSharedPreferences("datos_sesion",Context.MODE_PRIVATE);
+        validasesion=prefe_user.getBoolean("validasesion",false);
+
         iniciar_tabhost();
+        if(validasesion){
+            txvacceder_nombre.setText(prefe_user.getString("usuario_s",""));
+        }else{
+            txvacceder_nombre.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent mainIntent = new Intent().setClass(getActivity(), LoginActivity.class);
+                    //startActivity(mainIntent);
+                    startActivityForResult(mainIntent,1014);
+                }
+            });
+        }
         swipeContainer.setOnRefreshListener(this);
         return vista;
     }
@@ -110,6 +131,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         alto = displayMetrics.heightPixels;
         ancho = displayMetrics.widthPixels;
+
+        imvlogoarriba.getLayoutParams().height=alto/10;
 
         Consulta_Imagen_Botones();
     }
@@ -145,7 +168,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                                 IDEventos.add(datos.getString("idevento"));
                                 EventosGrupo.add(datos.getString("eventogrupo"));
                             }
-                            iniciar_listas_spinner();
                             iniciar_Carrusel2();
                             generarBotonesEvento();
                         } catch (JSONException e) {
@@ -218,13 +240,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         tabla_imagenes.setStretchAllColumns(true);
         Log.d("Total Botones",String.valueOf(ImBotonEvento.size()));
         Consulta_Imagen_Organizadores();
-    }
-
-    void iniciar_listas_spinner(){
-        spcategorias=(Spinner) vista.findViewById(R.id.spcategorias);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.Cat_Evento, R.layout.spinner_item);
-        adapter.setDropDownViewResource(R.layout.spinner_lista);
-        spcategorias.setAdapter(adapter);
     }
 
     void iniciar_Carrusel2(){
@@ -411,14 +426,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         editor.putString(ndato, dato);
         editor.commit();
     }
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
-
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -490,5 +497,17 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         super.onPause();
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1014) {
+            if(resultCode == Activity.RESULT_OK) {
+                String nuser = data.getStringExtra("validasesion");
+                txvacceder_nombre.setText(nuser);
+                txvacceder_nombre.setClickable(false);
+            }else {
+                Toast.makeText(getActivity(),"Aun no ha iniciado sesión",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

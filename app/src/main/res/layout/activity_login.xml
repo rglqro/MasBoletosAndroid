@@ -52,58 +52,63 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
-                android:gravity="center">
+                android:layout_marginTop="25dp">
+
+                <ImageView
+                    android:id="@+id/imvavatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/avatar" />
 
                 <TextView
                     android:id="@+id/textView21"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingVertical="7dp"
                     android:text="Inicia sesión con tu cuenta de Mas Boletos"
-                    android:textSize="16sp"
-                    android:textColor="@color/negro"
                     android:textAlignment="center"
-                    android:paddingVertical="7dp"/>
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Correo"
-                    android:textColor="#000"
-                    android:textSize="11sp"/>
-
-                <EditText
-                    android:id="@+id/edtcorreologin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/azulmb"
-                    android:ems="10"
-                    android:hint="Ingresa tu correo"
-                    android:inputType="textEmailAddress"
                     android:textColor="@color/negro"
-                    android:textColorHint="@color/grisclaro" />
+                    android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/textView20"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Contraseña"
-                    android:textColor="#000"
-                    android:textSize="11sp"/>
+                    android:layout_height="match_parent"
+                    android:theme="@style/txtinputlabel"
+                    android:backgroundTint="@color/azulmboscuro">
 
-                <EditText
-                    android:id="@+id/edtcontrasenalogin"
+                    <EditText
+                        android:id="@+id/edtcorreologin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/azulmb"
+                        android:ems="10"
+                        android:hint="Correo Electrónico"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/negro" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/azulmb"
-                    android:ems="10"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    android:textColor="@color/negro"
-                    android:textColorHint="@color/grisclaro" />
+                    android:layout_height="match_parent"
+                    android:theme="@style/txtinputlabel">
+
+                    <EditText
+                        android:id="@+id/edtcontrasenalogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/azulmb"
+                        android:ems="10"
+                        android:hint="Contraseña"
+                        android:inputType="textPassword"
+                        android:textColor="@color/negro"/>
+                </android.support.design.widget.TextInputLayout>
 
                 <Button
                     android:id="@+id/btsesionlog"

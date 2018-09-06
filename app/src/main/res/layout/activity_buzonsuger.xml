@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".acciones_perfil.buzonsuger"
+    android:orientation="vertical"
+    android:background="@color/blanco">
+
+    <LinearLayout
+        android:id="@+id/LYBarra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azulmboscuro"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imBtRegresarlogin"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@color/azulmboscuro"
+            android:cropToPadding="false"
+            android:onClick="regresar"
+            android:tint="@android:color/background_light"
+            app:srcCompat="@drawable/ic_regresar" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Buzón"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <Spinner
+                android:id="@+id/sptipomsj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/Cat_Evento"
+                android:backgroundTint="@color/azulmboscuro"
+                android:layout_marginVertical="5dp"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/txtinputlabel">
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:backgroundTint="@color/azulmboscuro"
+                    android:hint="Nombre"
+                    android:inputType="text|textAutoComplete|textPersonName"
+                    android:textColor="@color/negro"
+                    android:textColorHint="@color/gris" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/txtinputlabel">
+
+                <EditText
+                    android:id="@+id/editText2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:hint="Correo Electrónico"
+                    android:backgroundTint="@color/azulmboscuro"
+                    android:textColor="@color/negro"
+                    android:textColorHint="@color/gris" />/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/txtinputlabel">
+
+                <EditText
+                    android:id="@+id/editText3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="phone"
+                    android:hint="Télefono"
+                    android:backgroundTint="@color/azulmboscuro"
+                    android:textColor="@color/negro" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/spciudad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/azulmboscuro"
+                android:layout_marginVertical="5dp"/>
+
+            <Spinner
+                android:id="@+id/spservicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/azulmboscuro"
+                android:layout_marginVertical="5dp"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/txtinputlabel">
+
+                <EditText
+                    android:id="@+id/editText4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/azulmboscuro"
+                    android:ems="10"
+                    android:hint="Mensaje"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/negro" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/azulmb"
+                android:text="Enviar"
+                android:paddingHorizontal="50dp"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,14 +1,19 @@
 package itstam.masboletos;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,7 +23,11 @@ import itstam.masboletos.principal.MainActivity;
 public class Splash_Principal extends AppCompatActivity {
 
     private static final long SPLASH_SCREEN_DELAY = 3000;
-    static public final int REQUEST_LOCATION = 1;
+    final int PERMISSION_ALL = 112;
+    String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CALL_PHONE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +41,10 @@ public class Splash_Principal extends AppCompatActivity {
     }
 
     void permisos(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Check permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION);
-        } else {
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+        else {
             iniciar_activity();
         }
     }
@@ -64,13 +70,29 @@ public class Splash_Principal extends AppCompatActivity {
         timer.schedule(task,SPLASH_SCREEN_DELAY);
     }
 
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION) {
-            if(grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                iniciar_activity();
-            } else {
-                System.exit(0);
+        switch (requestCode) {
+            case PERMISSION_ALL: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("TAG","@@@ PERMISSIONS grant");
+                    iniciar_activity();
+                } else {
+                    Log.d("TAG","@@@ PERMISSIONS Denied");
+                    Toast.makeText(getApplicationContext(), "PERMISSIONS Denied", Toast.LENGTH_LONG).show();
+                    System.exit(0);
+                }
             }
         }
 

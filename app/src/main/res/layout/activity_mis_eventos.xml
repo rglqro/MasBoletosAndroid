@@ -70,12 +70,14 @@
 
                     <TextView
                         android:id="@+id/textView33"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:padding="10dp"
                         android:text="Mis Boletos"
                         android:textColor="@color/blanco"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
@@ -89,7 +91,8 @@
                         android:layout_weight="1"
                         android:text="Cantidad"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView35"
@@ -98,7 +101,8 @@
                         android:layout_weight="1"
                         android:text="Evento"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView36"
@@ -107,7 +111,8 @@
                         android:layout_weight="1"
                         android:text="Fecha"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView37"
@@ -116,7 +121,20 @@
                         android:layout_weight="1"
                         android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <View
+                        android:id="@+id/view11"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_weight="1"
+                        android:background="@color/gris" />
                 </TableRow>
 
             </TableLayout>
@@ -139,7 +157,8 @@
                         android:padding="10dp"
                         android:text="Mis Eventos Pasados"
                         android:textColor="@color/blanco"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
@@ -153,7 +172,8 @@
                         android:layout_weight="1"
                         android:text="Cantidad"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView27"
@@ -162,7 +182,8 @@
                         android:layout_weight="1"
                         android:text="Evento"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView26"
@@ -171,7 +192,8 @@
                         android:layout_weight="1"
                         android:text="Fecha"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView23"
@@ -180,7 +202,20 @@
                         android:layout_weight="1"
                         android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/negro" />
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <View
+                        android:id="@+id/view12"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_weight="1"
+                        android:background="@color/gris" />
                 </TableRow>
             </TableLayout>
         </LinearLayout>

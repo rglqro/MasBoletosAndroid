@@ -10,10 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,9 +31,10 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edtcorreo,edtcontrasena;
-    int bloqueo_boton=0;
+    int bloqueo_boton=0,ancho,alto;
     Button btisesion;
     JSONArray Elementos=null;
+    ImageView imvavatar;
     String msj,usuario,id_cliente,correo,contrasena;
     Boolean resp;
 
@@ -42,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         edtcorreo=(EditText)findViewById(R.id.edtcorreologin);
         edtcontrasena=(EditText)findViewById(R.id.edtcontrasenalogin);
+        imvavatar=findViewById(R.id.imvavatar);
         btisesion=(Button)findViewById(R.id.btsesionlog); btisesion.setBackgroundResource(R.color.grisclaro);
         cambio_texto();
         btisesion.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +58,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
+
+        imvavatar.getLayoutParams().height=alto/4;
     }
 
     void cambio_texto(){

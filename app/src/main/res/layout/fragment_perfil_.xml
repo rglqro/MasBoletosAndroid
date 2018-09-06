@@ -103,22 +103,15 @@
                 android:textStyle="bold"
                 android:gravity="center_vertical" />
 
-            <Button
-                android:id="@+id/button4"
+
+            <View
+                android:id="@+id/view6"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
-                android:text="Chat de ayuda"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
+                android:layout_height="2dp"
+                android:background="@color/grisclaro"/>
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/btavisopriv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -131,25 +124,13 @@
                 android:textSize="15sp" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/btayuda"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginLeft="20dp"
                 android:background="@android:color/transparent"
-                android:text="Historial de compras"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
-
-            <Button
-                android:id="@+id/button7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
+                android:onClick="avisopriv"
                 android:text="¿Necesitas ayuda?"
                 android:textAlignment="textStart"
                 android:textAllCaps="false"
@@ -157,7 +138,7 @@
                 android:textSize="15sp" />
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/bttutorial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -170,7 +151,7 @@
                 android:textSize="15sp" />
 
             <Button
-                android:id="@+id/button9"
+                android:id="@+id/btbuzon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -183,7 +164,7 @@
                 android:textSize="15sp" />
 
             <Button
-                android:id="@+id/button10"
+                android:id="@+id/btacercade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -194,6 +175,12 @@
                 android:textAllCaps="false"
                 android:textColor="#000"
                 android:textSize="15sp" />
+
+            <View
+                android:id="@+id/view7"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/grisclaro"/>
 
             <Button
                 android:id="@+id/btcerrarsesion"

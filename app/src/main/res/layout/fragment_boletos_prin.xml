@@ -8,39 +8,43 @@
     android:background="@color/verdemb">
 
 
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/cabecera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="@color/azulmboscuro"
         android:gravity="center"
         android:orientation="horizontal"
-        android:id="@+id/cabecera">
+        android:layout_alignParentLeft="true">
 
-        <ImageButton
-            android:id="@+id/imageView"
+
+        <ImageView
+            android:id="@+id/imvlogoarriba"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@color/azulmboscuro"
-            android:cropToPadding="false"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/logo_masboletos" />
-
-        <Spinner
-            android:id="@+id/spcategorias"
-            android:layout_width="250dp"
-            android:layout_height="52dp"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:dropDownWidth="match_parent"
-            android:entries="@array/Cat_Evento"
-            android:popupBackground="@color/azulmb"
-            android:textAlignment="center"
-            android:backgroundTint="#fff" />
-    </LinearLayout>
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:src="@mipmap/logo_masboletos"
+            android:padding="10dp"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/txvacceder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imvlogoarriba"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="3dp"
+            android:text="Acceder a tu Cuenta"
+            android:visibility="invisible"
+            android:textAllCaps="true"
+            android:textColor="@color/blanco" />
+    </RelativeLayout>
 
 
     <android.support.v4.widget.SwipeRefreshLayout

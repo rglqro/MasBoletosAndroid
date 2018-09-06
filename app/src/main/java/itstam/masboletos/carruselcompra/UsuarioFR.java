@@ -20,10 +20,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -41,6 +45,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -249,7 +254,7 @@ public class UsuarioFR extends Fragment {
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
             getActivity().startService(intent);
             if(idevento.equals("0")){
-                pre_registro_paypal_post("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php");
+                pre_registro_paypal_post("https://www.masboletos.mx/appMasboletos/prueba.php");
             }else{
                 preregistro_paypal("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
                         +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
@@ -281,30 +286,32 @@ public class UsuarioFR extends Fragment {
     }
 
     private void pre_registro_paypal_post(String url){
+
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
                     @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
+                    public void onResponse(String response)
+                    {
+                        Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener()
                 {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Error.Response","error");
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
-                }
-        ) {
+                })
+        {
             @Override
-            protected Map<String, String> getParams()
+            protected Map<String, String> getParams() throws AuthFailureError
             {
-                Map<String, String>  params = new HashMap<>();
-                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
+                Map<String, String> params = new HashMap<String, String>();
+                /*params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
                 params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
                 params.put("seccion", "BRONCE");
                 params.put("fila", "GENERAL");
@@ -326,18 +333,13 @@ public class UsuarioFR extends Fragment {
                 params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
                 params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
                 params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", "[]");
-
-
-                /*preregistro_paypal("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php?idpaquete="+ideventopack+"&numerado="
-                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
-                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
-                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento+"&cantidadeventosxpaquete="+cantidadeventosxpaquete
-                        +"&Comisionpaquete="+comisionpack+"&dataEventos="+dataevento);*/
+                params.put("dataeventozonafilasiento", "[]");*/
+                params.put("kk","hola perro");
                 return params;
             }
         };
-        queue.add(postRequest);
+
+        queue.add(strRequest);
     }
 
     private void preregistroTCTD(){

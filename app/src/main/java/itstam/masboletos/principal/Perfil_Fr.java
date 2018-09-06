@@ -2,7 +2,9 @@ package itstam.masboletos.principal;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import itstam.masboletos.R;
-import itstam.masboletos.acciones_perfil.MisEventos;
+import itstam.masboletos.acciones_perfil.*;
 
 public class Perfil_Fr extends Fragment {
     View vista;
@@ -34,7 +36,7 @@ public class Perfil_Fr extends Fragment {
     TextView txvnuser;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
-    Button btcerrarsesion,btmeventos;
+    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade;
 
     public Perfil_Fr() {
         // Required empty public constructor
@@ -54,6 +56,11 @@ public class Perfil_Fr extends Fragment {
         btcerrarsesion=(Button)vista.findViewById(R.id.btcerrarsesion);
         btmeventos=(Button)vista.findViewById(R.id.BtMEventos);
         txvnuser=(TextView)vista.findViewById(R.id.txvnuser);
+        btavisopriv=vista.findViewById(R.id.btavisopriv);
+        btayuda=vista.findViewById(R.id.btayuda);
+        btbuzon=vista.findViewById(R.id.btbuzon);
+        btacercade=vista.findViewById(R.id.btacercade);
+
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
         nuser=prefe_sesion.getString("usuario_s", "");
         valida_sesion=prefe_sesion.getBoolean("validasesion",false);
@@ -79,7 +86,64 @@ public class Perfil_Fr extends Fragment {
                 startActivity(mainIntent);
             }
         });
+        eventos_botones();
         return vista;
+    }
+
+    void eventos_botones(){
+        btavisopriv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://www.masboletos.mx/politicascompra.php");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+        btayuda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alerta_llamada();
+            }
+        });
+        btbuzon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        btbuzon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), buzonsuger.class);
+                startActivity(mainIntent);
+            }
+        });
+        btacercade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), acercade.class);
+                startActivity(mainIntent);
+            }
+        });
+    }
+
+    void alerta_llamada(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("¿Deseas comunicarte con Mas Boletos?")
+                .setCancelable(false)
+                .setPositiveButton("Llamar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+"4422122496")));
+                    }
+                }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @SuppressLint("ResourceType")
