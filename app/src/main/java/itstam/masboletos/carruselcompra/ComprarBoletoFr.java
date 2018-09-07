@@ -96,11 +96,10 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             TXVEFuncion.setVisibility(View.GONE);
             spfuncion.setVisibility(View.GONE);
         }else{
+
             BtMas.setClickable(false);
             BtMenos.setClickable(false);
             Consulta_Funciones_Evento();
-            set_DatosCompra("fechaevento",fecha);
-            set_DatosCompra("horaevento",hora);
         }
     }
 
@@ -168,6 +167,8 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                     idevento=idevento_funcion[position];
                     fecha=fechaevento[position];
                     hora=horaevento[position];
+                    set_DatosCompra("fechaevento",fecha);
+                    set_DatosCompra("horaevento",hora);
                     indice=position;
                     set_DatosCompra("posEve",String.valueOf(position));
                     BtMas.setClickable(true);

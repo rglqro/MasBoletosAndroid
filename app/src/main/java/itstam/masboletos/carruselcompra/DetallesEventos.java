@@ -161,6 +161,7 @@ public class DetallesEventos extends AppCompatActivity {
         IniciarFragments();
         set_DatosCompra("fechaevento",fechaevento);
         set_DatosCompra("horaevento",horaevento);
+        set_DatosCompra("NombreEvento",nomevento);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -271,14 +272,12 @@ public class DetallesEventos extends AppCompatActivity {
     }
 
     public void tab_anterior(){
-        if(contadorTab>0) {
+        if(contadorTab>0 && contadorTab!=7) {
             contadorTab--;
             TabLayout.Tab tab = tabLayout.getTabAt(contadorTab);
             tab.select();
-        }else if(contadorTab==0) {
-            finish();
-        }
-        if(contadorTab==6){
+            super.onBackPressed();
+        }else if(contadorTab==0 || contadorTab==7) {
             finish();
         }
     }
@@ -322,6 +321,5 @@ public class DetallesEventos extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         tab_anterior();
-        super.onBackPressed();
     }
 }

@@ -246,7 +246,11 @@ public class UsuarioFR extends Fragment {
 
     void checar_tipo_pago(){
         if (fpago.equals("2")||fpago.equals("3")){
-            preregistroTCTD();
+            if(idevento.equals("0")){
+                pre_registro_tctd_post("https://www.masboletos.mx/masBoletosEnviaDatosPaqueteMovil.php");
+            }else {
+                preregistroTCTD();
+            }
             ((DetallesEventos)getActivity()).FRNombres[7]="8. Pago con TC";
         }
         if(fpago.equals("5")){
@@ -254,7 +258,7 @@ public class UsuarioFR extends Fragment {
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
             getActivity().startService(intent);
             if(idevento.equals("0")){
-                pre_registro_paypal_post("https://www.masboletos.mx/appMasboletos/prueba.php");
+                pre_registro_paypal_post("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php");
             }else{
                 preregistro_paypal("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
                         +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
@@ -286,16 +290,18 @@ public class UsuarioFR extends Fragment {
     }
 
     private void pre_registro_paypal_post(String url){
-
+        ((DetallesEventos)getActivity()).iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
                     @Override
                     public void onResponse(String response)
                     {
-                        Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                        folio=response.toString();
+                        folio=folio.replace(" ","").replace("\n","");
+                        procesar_pagoPP();
+                        Log.e("respenvia",response);
                     }
                 },
                 new Response.ErrorListener()
@@ -311,30 +317,30 @@ public class UsuarioFR extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError
             {
                 Map<String, String> params = new HashMap<String, String>();
-                /*params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
-                params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
-                params.put("seccion", "BRONCE");
-                params.put("fila", "GENERAL");
+                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
+                /*params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("seccion", "BRONCE");*/
+                params.put("fila", fila);Log.e("fila",fila);
                 params.put("importe", precio);Log.e("dato",precio);
                 params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
                 params.put("cargoxservicio", comisionpack);
                 params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
                 params.put("zona", idzona);Log.e("dato",idzona);
-                params.put("numerado", "0");
+                params.put("numerado", numerado);
                 params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
-                //params.put("idfila", "0");
-                //params.put("inicolumna", "0");
-                //params.put("fincolumna", "0");
-                //params.put("filaasientos", "");
-                //params.put("idfilafilaasiento", "");
+                params.put("idfila", idfila); Log.e("idfila",idfila);
+                params.put("inicolumna", inicolumna); Log.e("inicolumna",inicolumna);
+                params.put("fincolumna", fincolumna); Log.e("fincolumna",fincolumna);
+                params.put("filaasientos", filaasientos); Log.e("filaasientos",filaasientos);
+                params.put("idfilafilaasiento", idfilafilaasiento);Log.e("idfilafilaasiento",idfilafilaasiento);
                 params.put("formadepago", fpago);Log.e("dato",fpago);
                 params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
                 params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
                 params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
                 params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
                 params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", "[]");*/
-                params.put("kk","hola perro");
+                params.put("dataeventozonafilasiento", "[]");
+                //params.put("kk","hola perro");
                 return params;
             }
         };
@@ -349,6 +355,65 @@ public class UsuarioFR extends Fragment {
                         +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);  //para que la variable sea reconocida en todos los metodos
         ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",URL);
         ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+    }
+
+    private void pre_registro_tctd_post(String url){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response)
+                    {
+                        Log.e("respenvia",response);
+                        ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",response);
+                        ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
+                /*params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("seccion", "BRONCE");*/
+                params.put("fila", fila);
+                params.put("importe", precio);Log.e("dato",precio);
+                params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("cargoxservicio", comisionpack);
+                params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
+                params.put("zona", idzona);Log.e("dato",idzona);
+                params.put("numerado", numerado);
+                params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
+                params.put("idfila", idfila); Log.e("idfila",idfila);
+                params.put("inicolumna", inicolumna); Log.e("inicolumna",inicolumna);
+                params.put("fincolumna", fincolumna); Log.e("fincolumna",fincolumna);
+                params.put("filaasientos", filaasientos); Log.e("filaasientos",filaasientos);
+                params.put("idfilafilaasiento", idfilafilaasiento);Log.e("idfilafilaasiento",idfilafilaasiento);
+                params.put("formadepago", fpago);Log.e("dato",fpago);
+                params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
+                params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
+                params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
+                params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
+                params.put("datafilasiento", "[]");
+                params.put("dataeventozonafilasiento", "[]");
+                //params.put("kk","hola perro");
+                return params;
+            }
+        };
+
+        queue.add(strRequest);
     }
 
     private void procesar_pagoPP(){

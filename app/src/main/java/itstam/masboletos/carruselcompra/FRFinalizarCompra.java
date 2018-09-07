@@ -36,7 +36,7 @@ public class FRFinalizarCompra extends Fragment {
 
     TextView txvtitulofc,txvmsjfinal,txvntran,txvfolios;
     View vista;
-    String titulo,msjfinal,ntransac,folios,fpago;
+    String titulo,msjfinal,ntransac,folios,fpago,idevento;
     SharedPreferences prefe;
     Button btseguir;
     WebView myWebView;
@@ -70,6 +70,7 @@ public class FRFinalizarCompra extends Fragment {
         titulo="<b>"+prefe.getString("nombreuser","")+"</b>, SU COMPRA SE HA REALIZADO CORRECTAMENTE";
         ntransac=prefe.getString("foliocompra","");
         fpago=prefe.getString("idformapago","");
+        idevento=prefe.getString("idevento","0");
         if(fpago.equals("5")) {
             msjfinal = "<br>" +
                     "GRACIAS POR HACER USOS DE NUESTROS SERVICIOS <br><br><br>" +
@@ -80,7 +81,11 @@ public class FRFinalizarCompra extends Fragment {
             consulta_folios();
         }else if(fpago.equals("2")||fpago.equals("3")){
             rlinfofinal.setVisibility(View.GONE);
-            myWebView.loadUrl(prefe.getString("URLTC","www.google.com.mx"));
+            if(idevento.equals("0")){
+                myWebView.loadData(prefe.getString("URLTC", "www.google.com.mx"),"text/html","BASE64");
+            }else {
+                myWebView.loadUrl(prefe.getString("URLTC", "www.google.com.mx"));
+            }
             myWebView.setWebViewClient(new WebViewClient());
             WebSettings webSettings = myWebView.getSettings();
             webSettings.setJavaScriptEnabled(true);

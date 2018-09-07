@@ -91,6 +91,7 @@ public class PaquetesAct extends AppCompatActivity {
         consulta_paqxorg();
 
         rlimagspaq.getLayoutParams().height=alto/5;
+        imvpaq.setMaxWidth(ancho/3);
     }
 
     void consulta_info_org(){
@@ -109,10 +110,10 @@ public class PaquetesAct extends AppCompatActivity {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
-                                nombrepaq=datos.getString("nombre");
-                                domiciliopaq=datos.getString("domicilio");
-                                telpaq=datos.getString("telefono");
-                                mailpaq=datos.getString("mail");
+                                nombrepaq=datos.getString("nombre");        if(nombrepaq.equals("null")) nombrepaq="";
+                                domiciliopaq=datos.getString("domicilio");  if(domiciliopaq.equals("null")) domiciliopaq="";
+                                telpaq=datos.getString("telefono");         if(telpaq.equals("null")) telpaq="";
+                                mailpaq=datos.getString("mail");            if(mailpaq.equals("null")) mailpaq="";
                                 imapaq="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner");
                             }
                             pintar_detalles();

@@ -46,7 +46,7 @@ public class FRMejDisp extends Fragment {
     int Cant_Boletos,cont_asientos=1;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
-    String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt,idfilaasientotxt,ideventopack;
+    String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
     View vista;
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
     TextView[][] txvnombreasiento;
@@ -97,6 +97,7 @@ public class FRMejDisp extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     void llenar_info(){
+        set_DatosCompra("filaasientos","");
         if(numerado.equals("0")) {
             asientos= String.valueOf(Cant_Boletos);
             set_DatosCompra("asientos",asientos);
