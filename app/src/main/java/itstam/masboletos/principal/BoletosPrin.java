@@ -22,9 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableLayout;
@@ -76,6 +78,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     TableRow row;
     Timer swipeTimer;
     LinearLayout LLImagOrg,llpaquetes,llinfopaquetes;
+    HorizontalScrollView scvorg;
     private SwipeRefreshLayout swipeContainer;
     TabHost thboletopaq;
     String nombreuser; Boolean validasesion=false;
@@ -92,6 +95,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         llpaquetes=(LinearLayout)vista.findViewById(R.id.llpaquetes);
         txvacceder_nombre=vista.findViewById(R.id.txvacceder);
         imvlogoarriba=vista.findViewById(R.id.imvlogoarriba);
+        scvorg=vista.findViewById(R.id.SCVOrg);
 
         prefe_user=getActivity().getSharedPreferences("datos_sesion",Context.MODE_PRIVATE);
         validasesion=prefe_user.getBoolean("validasesion",false);
@@ -308,8 +312,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     @SuppressLint("ResourceAsColor")
     void genera_Imag_Orga(){
         int tam_lista=ListaImagOrg.length;
+        scvorg.getLayoutParams().height=alto/9;
         BtsOrganizadores = new ImageButton[tam_lista];
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT,1);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.setMargins(15,0,5,0);
         for(int i=0;i<BtsOrganizadores.length;i++){
             BtsOrganizadores[i]=new ImageButton(getActivity());

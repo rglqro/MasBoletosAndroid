@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,15 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -35,7 +39,9 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import itstam.masboletos.R;
 
@@ -43,10 +49,11 @@ import itstam.masboletos.R;
 public class FRMejDisp extends Fragment {
 
     Double precio, subtotal,comision, cargoTC;
-    int Cant_Boletos,cont_asientos=1;
+    int Cant_Boletos,cont_asientos=1,ancho,alto;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
     String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
+    String ideventoasientopack,idzonapack,filapack,asientopack,seccionpack,idfilapack;
     View vista;
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
     TextView[][] txvnombreasiento;
@@ -55,8 +62,10 @@ public class FRMejDisp extends Fragment {
     JSONArray Elementos=null;
     TableLayout TBLasientos; TableRow rowasientos; LinearLayout llasientotexto,llleyendaasientos;
     ImageButton[][] btasientos;
-    ArrayList<String>asientosmar,idfilaasiento;
+    ArrayList<String>asientosmar,idfilaasiento,datalugaresobtenidos;
     String asientosel;
+    JSONObject jodataastospack;
+    JSONArray jadataatospack= new JSONArray();
     public FRMejDisp() {
         // Required empty public constructor
     }
@@ -74,6 +83,12 @@ public class FRMejDisp extends Fragment {
         btComprar.setBackgroundResource(R.color.grisclaro);
         TBLasientos=(TableLayout)vista.findViewById(R.id.TBLAsientos);
         llleyendaasientos=(LinearLayout)vista.findViewById(R.id.llyLeyendaAsientos);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
+
         RecibirDatos();
         return vista;
     }
@@ -91,6 +106,7 @@ public class FRMejDisp extends Fragment {
         idsubzona=prefe.getString("idsubzona","0");
         comision=Double.parseDouble(prefe.getString("comision","0.00"));
         zona=prefe.getString("zona","");
+        seccionpack=prefe.getString("subzona","");
         idvermapa=prefe.getString("idvermapa","");
         llenar_info();
     }
@@ -134,7 +150,7 @@ public class FRMejDisp extends Fragment {
         subtotal=Cant_Boletos*precio;
         subtotal+=comision*Cant_Boletos;
         cargoTC=subtotal*0.03;
-                String TxTotal="$"+String.valueOf(df.format(subtotal));
+        String TxTotal="$"+String.valueOf(df.format(subtotal));
         TXVInfoCompra.setText("$"+precio+" x "+Cant_Boletos);
         TXVTotal.setText(TxTotal);
     }
@@ -170,6 +186,8 @@ public class FRMejDisp extends Fragment {
                                 termina[i]=datos.getInt("termina");
                                 dispfila[i]=datos.getString("asientos");
                                 idfila[i]=datos.getString("id");
+                                ideventoasientopack=datos.getString("idevento");
+                                idzonapack=datos.getString("idzona");
                             }
                             pintar_asientos();
                         } catch (JSONException e) {
@@ -194,10 +212,11 @@ public class FRMejDisp extends Fragment {
         btasientos= new ImageButton[fila.length][termina[0]];
         txvnombreasiento = new TextView[fila.length][termina[0]];
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lptbra.setMargins(1,0,1,0);
         asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));
         idfilaasiento= new ArrayList<String>();
+        datalugaresobtenidos= new ArrayList<>();
         for (int j=0;j<fila.length;j++) {
             rowasientos = new TableRow(getActivity());
             rowasientos.setLayoutParams(lptbl); cont_asientos=0;
@@ -209,7 +228,7 @@ public class FRMejDisp extends Fragment {
                 btasientos[j][i - 1].setId(j*100+i);
                 btasientos[j][i-1].setTag(j+","+i+",0");
                 btasientos[j][i - 1].setBackgroundColor(Color.TRANSPARENT);
-                btasientos[j][i - 1].setLayoutParams(new LinearLayout.LayoutParams(60,100));
+                btasientos[j][i - 1].setLayoutParams(new LinearLayout.LayoutParams(ancho/15, alto/15));
                 //btasientos[j][i - 1].setAdjustViewBounds(true);
                 btasientos[j][i - 1].setScaleType(ImageView.ScaleType.FIT_XY);
                 btasientos[j][i - 1].setOnClickListener(new View.OnClickListener() {
@@ -223,6 +242,10 @@ public class FRMejDisp extends Fragment {
                             if(asientosmar.size()<Cant_Boletos) {
                                 btasientos[f][a].setImageResource(R.drawable.asiento_sel);
                                 btasientos[f][a].setTag(f + "," + (a + 1) + ",1");
+                                if(idevento.equals("0")){
+                                    filapack=fila[f]; asientopack= String.valueOf(a+1); idfilapack=idfila[f];
+                                    consulta_lugares_paquete();
+                                }
                                 asientosel = fila[f] + String.valueOf(a + 1); Log.e("AsientoSel",asientosel);
                                 asientosmar.add(asientosel); Log.e("# asientos", String.valueOf(asientosmar.size()));
                                 asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; Log.e("AsientoSel",asientosel);
@@ -237,27 +260,34 @@ public class FRMejDisp extends Fragment {
                             btasientos[f][a].setTag(f+","+(a+1)+",0");
                             asientosel=fila[f]+String.valueOf(a+1);
                             Log.e("AsientoSel",asientosel);
-                            for(int i =0;i<asientosmar.size();i++){
-                                if(asientosmar.size()==1){
-                                    asientosmar.clear();
-                                }else if(asientosmar.get(i).equals(asientosel)){
+                            for(int i =asientosmar.size()-1;i>=0;i--){
+                                if(asientosmar.get(i).equals(asientosel)){
                                     asientosmar.remove(i);
                                 }
                             }
                             Log.e("# asientos", String.valueOf(asientosmar.size()));
                             ver_asientos_sel();
 
+                            if(idevento.equals("0")){
+                                for(int i=datalugaresobtenidos.size()-1;i>=0;i--){
+                                    String[] parts = datalugaresobtenidos.get(i).split(","); Log.e("idfilaasientopackget",parts[4]);
+                                    if(asientosel.equals(parts[4])){
+                                        datalugaresobtenidos.remove(i);
+                                    }
+                                }
+                                genera_arreglo_lugarespack();
+                            }
+
                             asientosel=fila[f]+"-"+String.valueOf(a+1)+"-"+idfila[f];
                             Log.e("idAsientoSel",asientosel);
-                            for(int i =0;i<idfilaasiento.size();i++){
-                                if(idfilaasiento.size()==1){
-                                    idfilaasiento.clear();
-                                }else if(idfilaasiento.get(i).equals(asientosel)){
+                            for(int i =idfilaasiento.size()-1 ;i>=0;i--){
+                                if(idfilaasiento.get(i).equals(asientosel)){
                                     idfilaasiento.remove(i);
                                 }
                             }
                             Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
                             id_asientos_sel();
+
                         }
                         if(asientosmar.size()==Cant_Boletos){
                             btComprar.setBackgroundResource(R.color.verdemb);
@@ -328,28 +358,85 @@ public class FRMejDisp extends Fragment {
         Log.e("idfilaasiento",idfilaasientotxt);
     }
 
+    void consulta_lugares_paquete(){
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        String url="https://www.masboletos.mx/phps/obtengolugareseventospaquete.php";
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response)
+                    {
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                        Log.e("respenvia",response);
+                        try {
+                            Elementos= new JSONArray(response);
+                            datalugaresobtenidos.add(asientopack+","+filapack+","+ideventoasientopack+","+idfilapack+","+filapack+asientopack+","+
+                                    (filapack+"-"+asientopack+"-"+idfilapack)+","+idzonapack);
+                            for(int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                datalugaresobtenidos.add(asientopack+","+filapack+","+datos.getString("idevento")+","+datos.getString("idfila")+","+filapack+asientopack+
+                                        ","+(filapack+"-"+asientopack+"-"+idfilapack)+","+datos.getString("idzona"));
+                            }
+                            Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
+                            genera_arreglo_lugarespack();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("idevento", ideventoasientopack);
+                params.put("idzona", idzonapack);
+                params.put("fila", filapack);
+                params.put("asiento", asientopack);
+                params.put("idpaquete", ideventopack);
+                params.put("nombre", seccionpack);
+                return params;
+            }
+        };
+        queue.add(strRequest);
+    }
+
+    void genera_arreglo_lugarespack(){
+        jadataatospack=new JSONArray();
+        for(int i=0;i<datalugaresobtenidos.size();i++){
+            String[] parts = datalugaresobtenidos.get(i).split(",");
+            try {
+                jodataastospack=new JSONObject();
+                jodataastospack.put("asientos",parts[0]);
+                jodataastospack.put("fila",parts[1]);
+                jodataastospack.put("idevento",parts[2]);
+                jodataastospack.put("idfila",parts[3]);
+                jodataastospack.put("idfilaasiento",parts[4]);
+                jodataastospack.put("idfilafilasiento",parts[5]);
+                jodataastospack.put("idzona",parts[6]);
+                jadataatospack.put(jodataastospack);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.e("arrayhecho",jadataatospack.toString());
+    }
+
     public void set_DatosCompra(String ndato,String dato){
         SharedPreferences preferencias=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
     }
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        try {
-
-        }catch (Exception e){}
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
 
 }

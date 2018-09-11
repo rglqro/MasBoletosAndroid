@@ -430,7 +430,7 @@ public class SeleccionZonaFR extends Fragment {
                             if(disponibilidad[0]){
                                 Elementos = new JSONArray(dataevento[0]);
                                 Log.e("jsondata",Elementos.toString());
-                                for (int i=0;i<Elementos.length();i++){
+                                for (int i=0;i<1;i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     seccion_compra=datos.getString("mensagesetDescripcion");
                                     asiento_compra=datos.getString("mensagesetAsientos");
