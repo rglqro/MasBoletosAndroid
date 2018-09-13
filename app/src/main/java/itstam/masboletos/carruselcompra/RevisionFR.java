@@ -1,4 +1,4 @@
-package itstam.masboletos;
+package itstam.masboletos.carruselcompra;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,6 +19,7 @@ import android.widget.ToggleButton;
 
 import java.text.DecimalFormat;
 
+import itstam.masboletos.R;
 import itstam.masboletos.carruselcompra.DetallesEventos;
 import itstam.masboletos.carruselcompra.UsuarioFR;
 

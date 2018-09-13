@@ -24,7 +24,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -75,16 +75,32 @@
                     android:textColor="#000" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/verdemb"
-                android:paddingVertical="5dp"
-                android:text="Aquí está el escenario"
-                android:textAlignment="center"
-                android:textColor="@color/blanco"
-                android:layout_marginTop="5dp"/>
+                android:orientation="horizontal"
+                android:background="@color/verdemb">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp"
+                    android:text="Aquí está el escenario"
+                    android:textAlignment="center"
+                    android:textColor="@color/blanco" />
+
+                <TextView
+                    android:id="@+id/txvtotalasientos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingVertical="5dp"
+                    android:text="No. Asientos: "
+                    android:textAlignment="center"
+                    android:textColor="@color/blanco" />
+            </LinearLayout>
 
         </LinearLayout>
 

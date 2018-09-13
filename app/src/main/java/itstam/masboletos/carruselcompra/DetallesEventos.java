@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.android.volley.Request;
@@ -46,6 +48,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import itstam.masboletos.R;
 
 
@@ -57,11 +61,12 @@ public class DetallesEventos extends AppCompatActivity {
     TabLayout tabLayout;
     String[] FRNombres;
     ImageButton IMBTRegresar;
-    TextView TXVNEvento,txvinfoevepac,txvdescripcionevepac;
+    TextView TXVNEvento,txvinfoevepac,txvdescripcionevepac,txvcrono;
     int contadorTab=0,ancho,alto;
     TabLayout.Tab tab;
     ProgressDialog dialogcarg;
     RelativeLayout rlimagsevento;
+    CountDownTimer cdtcrono;
     JSONArray Elementos;
 
 
@@ -79,6 +84,7 @@ public class DetallesEventos extends AppCompatActivity {
         IMVEvento=(ImageView)findViewById(R.id.IMVEvento);
         IMBTRegresar=(ImageButton)findViewById(R.id.imBtRegresar);
         rlimagsevento=findViewById(R.id.rlimagsevento);
+        txvcrono=findViewById(R.id.txvcrono); txvcrono.setVisibility(View.INVISIBLE);
         SharedPreferences prefe=this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=prefe.getString("idevento","0");
 
@@ -116,15 +122,15 @@ public class DetallesEventos extends AppCompatActivity {
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 if(idevento.equals("0")){
-                                    imgevento="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen");
+                                    imgevento=datos.getString("imagen");
                                     nomevento=datos.getString("nombre");
                                     descevento=datos.getString("descripcion");
-                                    eventomapa="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("EventoMapa");
+                                    eventomapa=datos.getString("EventoMapa");
                                     comisionpack=datos.getString("Comision");
                                     set_DatosCompra("comisionpack",comisionpack);
                                     set_DatosCompra("eventomapa",eventomapa);
                                 }else {
-                                    imgevento="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen");
+                                    imgevento=datos.getString("imagen");
                                     direevento=datos.getString("direccion");
                                     nomevento=datos.getString("evento");
                                     lugarevento=datos.getString("lugar");
@@ -176,7 +182,7 @@ public class DetallesEventos extends AppCompatActivity {
         ComprarBoletoFr comprarBoletoFr= new ComprarBoletoFr();
         getSupportFragmentManager().beginTransaction().add(R.id.pagerfragmets2,comprarBoletoFr).commit();
         FRNombres=new String[tabLayout.getTabCount()];
-        FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mas Boletos te recomienda";FRNombres[3]="4. Forma de Pago";
+        FRNombres[0]="1. Cantidad de Boletos";FRNombres[1]="2. Selección de Zona";FRNombres[2]="3. Mas Boletos te recomienda";FRNombres[3]="4. Elige tu Forma de Pago";
         FRNombres[4]="5. Forma de Entrega"; FRNombres[5]="6. Revisión"; FRNombres[6]="7. Usuario"; FRNombres[7]="8. Finalización de compra";
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -255,6 +261,13 @@ public class DetallesEventos extends AppCompatActivity {
         transaction.addToBackStack(null);
         transaction.commit();
         contadorTab++;
+        if(contadorTab==1){
+            cronometro_comra();
+            AlertaBoton("Tiempo de Compra","A partir de este momento cuentas con 7 minutos para comprar tu boletos, continua con tu proceso").show();
+        }
+        if(contadorTab==7 && cdtcrono!=null){
+            txvcrono.setVisibility(View.INVISIBLE); cdtcrono.cancel();
+        }
         Log.e("posicion tab",String.valueOf(contadorTab));
         cambiar_tab(contadorTab);
     }
@@ -279,6 +292,9 @@ public class DetallesEventos extends AppCompatActivity {
             super.onBackPressed();
         }else if(contadorTab==0 || contadorTab==7) {
             finish();
+        }
+        if(contadorTab==0 && cdtcrono!=null){
+            txvcrono.setVisibility(View.INVISIBLE); cdtcrono.cancel();
         }
     }
 
@@ -318,6 +334,27 @@ public class DetallesEventos extends AppCompatActivity {
         editor.commit();
     }
 
+    public void cronometro_comra(){
+        txvcrono.setVisibility(View.VISIBLE);
+        if(cdtcrono!=null){
+            cdtcrono.cancel();
+        }
+        cdtcrono= new CountDownTimer(420000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                txvcrono.setText("("+String.format("%02d:%02d",
+                        TimeUnit.MILLISECONDS.toMinutes( millisUntilFinished),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)))+")");
+            }
+
+            @Override
+            public void onFinish() {
+                Toast.makeText(getApplicationContext(),"Se ha terminado su tiempo de compra, vuelva a intentarlo",Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }.start();
+    }
     @Override
     public void onBackPressed() {
         tab_anterior();

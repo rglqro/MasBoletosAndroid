@@ -68,7 +68,8 @@
             android:name=".principal.PaquetesAct"
             android:screenOrientation="portrait" />
         <activity android:name=".acciones_perfil.acercade" />
-        <activity android:name=".acciones_perfil.buzonsuger"></activity>
+        <activity android:name=".acciones_perfil.buzonsuger" />
+        <activity android:name=".acciones_perfil.BoletoElectronico"></activity>
     </application>
 
 </manifest>

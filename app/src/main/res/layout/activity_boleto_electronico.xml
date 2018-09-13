@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blanco"
+    android:orientation="vertical"
+    tools:context=".acciones_perfil.BoletoElectronico"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:id="@+id/LYBarraEventos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azulmboscuro"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imBtRegresareventos"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@color/azulmboscuro"
+            android:cropToPadding="false"
+            android:onClick="regresar"
+            android:paddingHorizontal="15dp"
+            android:tint="@android:color/background_light"
+            app:srcCompat="@drawable/ic_regresar" />
+
+        <TextView
+            android:id="@+id/txvtituloeventos"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Boleto Electrónico"
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/textView52"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:text="Detalles del Evento"
+                android:textAlignment="center"
+                android:textColor="#f000"
+                android:textSize="18sp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/grisclaro"
+                    android:paddingHorizontal="5dp">
+
+                    <TextView
+                        android:id="@+id/textView51"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Evento: "
+                        android:textColor="@color/negro"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvneventobe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="end"
+                        android:text="TextView"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="5dp">
+
+                    <TextView
+                        android:id="@+id/textView53"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Fecha: "
+                        android:textColor="@color/negro"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvfechabe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="end"
+                        android:text="TextView"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/grisclaro"
+                    android:paddingHorizontal="5dp">
+
+                    <TextView
+                        android:id="@+id/textView54"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Hora: "
+                        android:textColor="@color/negro"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvhorabe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="end"
+                        android:text="TextView"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="5dp">
+
+                    <TextView
+                        android:id="@+id/textView57"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Boletos: "
+                        android:textColor="@color/negro"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvboletosbe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="end"
+                        android:text="TextView"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/negro"
+                        android:textSize="16sp" />
+                </TableRow>
+            </TableLayout>
+
+            <ImageView
+                android:id="@+id/imvbolele_be"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="7dp"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/mbiconor" />
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:background="@color/azulmboscuro"
+                android:onClick="regresar"
+                android:paddingHorizontal="25dp"
+                android:text="Regresar" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

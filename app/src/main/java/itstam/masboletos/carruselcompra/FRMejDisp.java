@@ -49,13 +49,13 @@ import itstam.masboletos.R;
 public class FRMejDisp extends Fragment {
 
     Double precio, subtotal,comision, cargoTC;
-    int Cant_Boletos,cont_asientos=1,ancho,alto;
+    int Cant_Boletos,cont_asientos=1,ancho,alto,asientosxsel;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
     String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
     String ideventoasientopack,idzonapack,filapack,asientopack,seccionpack,idfilapack;
     View vista;
-    TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal;
+    TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal,txvtotalasientos;
     TextView[][] txvnombreasiento;
     Button btComprar;
     DecimalFormat df = new DecimalFormat("#.00");
@@ -64,7 +64,7 @@ public class FRMejDisp extends Fragment {
     ImageButton[][] btasientos;
     ArrayList<String>asientosmar,idfilaasiento,datalugaresobtenidos;
     String asientosel;
-    JSONObject jodataastospack;
+    JSONObject jodataastospack =new JSONObject();
     JSONArray jadataatospack= new JSONArray();
     public FRMejDisp() {
         // Required empty public constructor
@@ -83,6 +83,7 @@ public class FRMejDisp extends Fragment {
         btComprar.setBackgroundResource(R.color.grisclaro);
         TBLasientos=(TableLayout)vista.findViewById(R.id.TBLAsientos);
         llleyendaasientos=(LinearLayout)vista.findViewById(R.id.llyLeyendaAsientos);
+        txvtotalasientos=vista.findViewById(R.id.txvtotalasientos);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -108,6 +109,7 @@ public class FRMejDisp extends Fragment {
         zona=prefe.getString("zona","");
         seccionpack=prefe.getString("subzona","");
         idvermapa=prefe.getString("idvermapa","");
+        asientosxsel=Cant_Boletos;
         llenar_info();
     }
 
@@ -209,6 +211,7 @@ public class FRMejDisp extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void pintar_asientos(){
+        txvtotalasientos.setText("No. Asientos: "+asientosxsel);
         btasientos= new ImageButton[fila.length][termina[0]];
         txvnombreasiento = new TextView[fila.length][termina[0]];
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -239,6 +242,7 @@ public class FRMejDisp extends Fragment {
                         int f=0,a=0;
                         f=Integer.parseInt(coord[0]); a=Integer.parseInt(coord[1])-1;
                         if (coord[2].equals("0")) { // recibe texto de la sig forma 0,51,0 siendo fila,asiento,estado seleccion donde 0 es no pulsado y 1 lo es
+                            asientosxsel--;
                             if(asientosmar.size()<Cant_Boletos) {
                                 btasientos[f][a].setImageResource(R.drawable.asiento_sel);
                                 btasientos[f][a].setTag(f + "," + (a + 1) + ",1");
@@ -255,7 +259,9 @@ public class FRMejDisp extends Fragment {
                             }else{
                                 ((DetallesEventos)getActivity()).AlertaBoton("Limite Alcanzado","Ya ha seleccionado todos sus boletos").show();
                             }
+                            txvtotalasientos.setText("No. Asientos: "+asientosxsel);
                         }else{
+                            asientosxsel++;
                             btasientos[f][a].setImageResource(R.drawable.asiento_disp);
                             btasientos[f][a].setTag(f+","+(a+1)+",0");
                             asientosel=fila[f]+String.valueOf(a+1);
@@ -287,7 +293,7 @@ public class FRMejDisp extends Fragment {
                             }
                             Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
                             id_asientos_sel();
-
+                            txvtotalasientos.setText("No. Asientos: "+asientosxsel);
                         }
                         if(asientosmar.size()==Cant_Boletos){
                             btComprar.setBackgroundResource(R.color.verdemb);
@@ -322,6 +328,7 @@ public class FRMejDisp extends Fragment {
                     set_DatosCompra("fila","");
                     set_DatosCompra("filaasientos",asientosmartxt);
                     set_DatosCompra("idfilafilaasiento",idfilaasientotxt);
+                    set_DatosCompra("datalugarespack",jadataatospack.toString());
                     ((DetallesEventos) getActivity()).replaceFragment(new FPagoFR());
                 }else{
                     ((DetallesEventos)getActivity()).AlertaBoton("Selección de Boletos","No ha seleccionado todos sus lugares aún").show();

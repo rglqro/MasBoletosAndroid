@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,17 +15,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rlinfofinal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txvtitulofc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:background="@color/gris2"
                 android:padding="10dp"
                 android:text="Nombre, SU COMPRA SE HA REALIZADO CORRECTAMENTE"
@@ -35,18 +35,12 @@
                 android:id="@+id/view"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/txvtitulofc"
                 android:background="@color/negro" />
 
             <TextView
                 android:id="@+id/txvnuser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/view"
                 android:background="@color/gris2"
                 android:padding="10dp"
                 android:text="ACUDA A CUALQUIERA DE NUESTROS PUNTOS DE VENTA "
@@ -57,8 +51,6 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txvnuser"
-                android:layout_centerHorizontal="true"
                 android:layout_margin="5dp"
                 android:text="DETALLES DE LA COMPRA"
                 android:textAlignment="center"
@@ -68,9 +60,6 @@
                 android:id="@+id/tbldatos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/textView3"
                 android:layout_marginVertical="5dp"
                 android:paddingHorizontal="5dp">
 
@@ -124,9 +113,6 @@
                 android:id="@+id/txvmensajefnal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/tbldatos"
                 android:background="@color/gris2"
                 android:clickable="true"
                 android:padding="10dp"
@@ -134,13 +120,42 @@
                 android:textAlignment="center"
                 android:textColor="@color/negro" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/llqro"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/textView48"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Muestra este código al momento de llegar al evento "
+                    android:textColor="@color/negro" />
+
+                <ImageView
+                    android:id="@+id/imvqrcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/mbiconor" />
+
+                <TextView
+                    android:id="@+id/textView49"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:textAlignment="center"
+                    android:text="IMPORTANTE: Para poder ver de nuevo este código puedes ingresar a la sección 'Mis Eventos'\n O puedes tomar una captura de pantalla de esta sección"
+                    android:textColor="@color/gris"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btseguir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/txvmensajefnal"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="15dp"
                 android:background="@color/azulmb"
@@ -152,7 +167,6 @@
                 android:id="@+id/btmisboletos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btseguir"
                 android:layout_centerHorizontal="true"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="15dp"
@@ -163,7 +177,7 @@
                 android:textColor="#fff"
                 android:textSize="17sp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <WebView
             android:id="@+id/wb1"

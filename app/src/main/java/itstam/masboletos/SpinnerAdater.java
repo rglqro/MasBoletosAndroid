@@ -3,6 +3,7 @@ package itstam.masboletos;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,17 @@ public class SpinnerAdater extends ArrayAdapter<String> {
     ArrayList<String> spinnerTitles,DescFP;
     ArrayList<Integer> spinnerImages;
     Context mContext;
+    int alto,ancho;
 
-    public SpinnerAdater(@NonNull Context context, ArrayList<String> titles, ArrayList<Integer> images, ArrayList<String> DescFP) {
+    public SpinnerAdater(@NonNull Context context, ArrayList<String> titles, ArrayList<Integer> images, ArrayList<String> DescFP,int ancho,int alto) {
         super(context, R.layout.spinner_item3);
         this.spinnerTitles = titles;
         this.spinnerImages = images;
         this.DescFP=DescFP;
         this.mContext = context;
+        this.alto=alto;
+        this.ancho=ancho;
+
     }
 
     @Override
@@ -47,6 +52,8 @@ public class SpinnerAdater extends ArrayAdapter<String> {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
         mViewHolder.IMVFpago.setImageResource(spinnerImages.get(position));
+        mViewHolder.IMVFpago.getLayoutParams().width=ancho/4;
+        mViewHolder.IMVFpago.getLayoutParams().height=alto/13;
         mViewHolder.mName.setText(spinnerTitles.get(position));
         mViewHolder.TXVDescFP.setText(DescFP.get(position));
 

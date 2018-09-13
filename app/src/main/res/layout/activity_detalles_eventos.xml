@@ -15,16 +15,19 @@
         android:background="@color/azulmboscuro">
 
         <TextView
-            android:id="@+id/textView16"
-            android:layout_width="match_parent"
+            android:id="@+id/txvcrono"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:text="Comprar Boletos"
+            android:layout_marginHorizontal="15dp"
+            android:layout_toEndOf="@+id/textView47"
+            android:text="06:00"
             android:textAlignment="center"
-            android:textColor="#fff"
-            android:textSize="20sp" />
+            android:textColor="@color/verdemb"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            android:layout_toRightOf="@+id/textView47" />
 
         <ImageButton
             android:id="@+id/imBtRegresar"
@@ -53,6 +56,18 @@
             android:paddingHorizontal="10dp"
             app:layout_collapseMode="pin"
             app:srcCompat="@drawable/ic_compartir" />
+
+        <TextView
+            android:id="@+id/textView47"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/imBtRegresar"
+            android:text="Comprar Boletos"
+            android:textColor="@color/blanco"
+            android:textSize="20sp"
+            android:layout_marginLeft="25dp"
+            android:layout_toRightOf="@+id/imBtRegresar" />
     </RelativeLayout>
 
     <ScrollView
@@ -87,9 +102,9 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     app:srcCompat="@drawable/mbiconor"
-                    android:layout_alignParentLeft="true"
-                    android:maxWidth="130dp"/>
+                    android:layout_alignParentLeft="true" />
 
                 <ScrollView
                     android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package itstam.masboletos.carruselcompra;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -16,8 +17,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -36,11 +45,12 @@ public class FRFinalizarCompra extends Fragment {
 
     TextView txvtitulofc,txvmsjfinal,txvntran,txvfolios;
     View vista;
-    String titulo,msjfinal,ntransac,folios,fpago,idevento;
+    String titulo,msjfinal,ntransac,folios,fpago,idevento,idfpago;
     SharedPreferences prefe;
     Button btseguir;
     WebView myWebView;
-    RelativeLayout rlinfofinal;
+    ImageView imvqrcode;
+    LinearLayout llqr,llinfofinal;
 
 
     public FRFinalizarCompra() {
@@ -54,13 +64,14 @@ public class FRFinalizarCompra extends Fragment {
         vista= inflater.inflate(R.layout.fragment_frfinalizar_compra, container, false);
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         txvtitulofc=(TextView)vista.findViewById(R.id.txvtitulofc);
-        rlinfofinal=(RelativeLayout)vista.findViewById(R.id.rlinfofinal);
+        llinfofinal=vista.findViewById(R.id.rlinfofinal);
         txvmsjfinal=(TextView)vista.findViewById(R.id.txvmensajefnal);
         txvntran=(TextView)vista.findViewById(R.id.txvntran);
         txvfolios=(TextView)vista.findViewById(R.id.txvfolios);
         btseguir=(Button)vista.findViewById(R.id.btseguir);
-
+        imvqrcode=vista.findViewById(R.id.imvqrcode);
         myWebView = (WebView) vista.findViewById(R.id.wb1);
+        llqr=vista.findViewById(R.id.llqro); llqr.setVisibility(View.GONE);
 
         recibir_datos();
         return vista;
@@ -71,6 +82,7 @@ public class FRFinalizarCompra extends Fragment {
         ntransac=prefe.getString("foliocompra","");
         fpago=prefe.getString("idformapago","");
         idevento=prefe.getString("idevento","0");
+        idfpago=prefe.getString("idformaentrega","0");
         if(fpago.equals("5")) {
             msjfinal = "<br>" +
                     "GRACIAS POR HACER USOS DE NUESTROS SERVICIOS <br><br><br>" +
@@ -78,9 +90,22 @@ public class FRFinalizarCompra extends Fragment {
             txvtitulofc.setText(Html.fromHtml(titulo));
             txvmsjfinal.setText(Html.fromHtml(msjfinal));
             txvmsjfinal.setClickable(true);
+            if(idfpago.equals("2")){
+                llqr.setVisibility(View.VISIBLE);
+                MultiFormatWriter mfwQR = new MultiFormatWriter();
+                BitMatrix bmtxQR = null;
+                try {
+                    bmtxQR = mfwQR.encode(ntransac, BarcodeFormat.QR_CODE,400,400);
+                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                    Bitmap bitmapqr= barcodeEncoder.createBitmap(bmtxQR);
+                    imvqrcode.setImageBitmap(bitmapqr);
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+            }
             consulta_folios();
         }else if(fpago.equals("2")||fpago.equals("3")){
-            rlinfofinal.setVisibility(View.GONE);
+            llinfofinal.setVisibility(View.GONE);
             if(idevento.equals("0")){
                 myWebView.loadData(prefe.getString("URLTC", "www.google.com.mx"),"text/html","BASE64");
             }else {

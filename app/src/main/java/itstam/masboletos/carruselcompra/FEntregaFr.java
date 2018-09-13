@@ -44,7 +44,6 @@ import java.util.ArrayList;
 
 import itstam.masboletos.DescEntregas;
 import itstam.masboletos.R;
-import itstam.masboletos.RevisionFR;
 
 
 public class FEntregaFr extends Fragment {

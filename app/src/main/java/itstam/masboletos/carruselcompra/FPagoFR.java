@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,12 +43,11 @@ public class FPagoFR extends Fragment {
     ArrayList<String>idtipopagom,ptajecargo,itefijo,spTitFP,spDescFP,spTitFP2,spDescFP2;
     ArrayList<Integer>spImagesFP,spImagesFP2;
     ListView lvfpago;
-    int cant_datos=0,idsel=0,pos=0;
+    int cant_datos=0,idsel=0,pos=0,alto,ancho;
     Button btContinuar4;
     JSONArray Elementos;
     SharedPreferences prefe;
     String idevento;
-    TextView txvtitulofp;
 
     public FPagoFR() {
         // Required empty public constructor
@@ -58,16 +60,14 @@ public class FPagoFR extends Fragment {
         vista=inflater.inflate(R.layout.fragment_fpago_fr, container, false);
         lvfpago=(ListView)vista.findViewById(R.id.lvfpago);
         btContinuar4=(Button)vista.findViewById(R.id.btContinuar4);
-        txvtitulofp=(TextView)vista.findViewById(R.id.txvtitulofp);
         btContinuar4.setBackgroundResource(R.color.grisclaro);
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=prefe.getString("idevento","");
         spImagesFP= new ArrayList<Integer>();
-        spImagesFP.add(R.drawable.puntoventa); spImagesFP.add(R.drawable.mcpago); spImagesFP.add(R.drawable.mcpago); spImagesFP.add(R.drawable.oxxopago); spImagesFP.add(R.drawable.pppago);
+        spImagesFP.add(R.drawable.puntoventa); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.drawable.oxxopago); spImagesFP.add(R.mipmap.paypal);
         spTitFP= new ArrayList<String>();
         spTitFP.add("Pago en punto de venta"); spTitFP.add("Tarjeta de Crédito "); spTitFP.add("Tarjeta de Débito"); spTitFP.add("Oxxo "); spTitFP.add("PayPal");
         spDescFP= new ArrayList<String>();
-        spDescFP.add("Paga y recoje en punto de venta"); spDescFP.add("Compra con tarjeta de crédito..."); spDescFP.add("Compra con tarjeta de débito..."); spDescFP.add("Paga en efectivo con oxxo"); spDescFP.add("Compra con PayPal");
 
         if(idevento.equals("0")){
             ideventopack=prefe.getString("ideventopack","0");
@@ -75,6 +75,11 @@ public class FPagoFR extends Fragment {
         }else{
             ConsultaFormasPago("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);
         }
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
         return vista;
     }
 
@@ -110,8 +115,8 @@ public class FPagoFR extends Fragment {
                                     idtipopagom.add( datos.getString("IdTipoPago"));
                                     ptajecargo.add(cargopte);
                                     itefijo.add(cargofijo);
-                                    spTitFP2.add(datos.getString("texto")+" - % Cargo "+cargopte+" + Cargo $"+cargofijo);
-                                    spDescFP2.add(spDescFP.get(Integer.parseInt(datos.getString("IdTipoPago"))-1));
+                                    spTitFP2.add(datos.getString("texto"));
+                                    spDescFP2.add("% Cargo "+cargopte+" + Cargo $"+cargofijo);
                                     spImagesFP2.add(spImagesFP.get(Integer.parseInt(datos.getString("IdTipoPago"))-1));
                                     cant_datos++;
                                 }
@@ -119,7 +124,7 @@ public class FPagoFR extends Fragment {
                             if(Elementos.length()>0) {
                                 LlenadoLista();
                             }else{
-                                txvtitulofp.setText("Lo sentimos por el momento no contamos con una forma de pago para este evento");
+                                Toast.makeText(getActivity(),"Lo sentimos por el momento no contamos con una forma de pago para este evento",Toast.LENGTH_LONG).show();
                                 btContinuar4.setText("Selecciona otro evento");
                                 ((DetallesEventos)getActivity()).cerrar_cargando();
                                 btContinuar4.setBackgroundResource(R.color.verdemb);
@@ -152,7 +157,7 @@ public class FPagoFR extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void LlenadoLista(){
-        SpinnerAdater adapter= new SpinnerAdater(getActivity(),spTitFP2,spImagesFP2,spDescFP2);
+        SpinnerAdater adapter= new SpinnerAdater(getActivity(),spTitFP2,spImagesFP2,spDescFP2,ancho,alto);
         lvfpago.setAdapter(null);
         lvfpago.setAdapter(adapter);
         ((DetallesEventos)getActivity()).cerrar_cargando();

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -50,7 +51,7 @@ public class MisEventos extends AppCompatActivity {
     TableLayout tblmiseventos,tblmiseventospas;
     TextView[][] infomiseventos,infomiseventospass;
     ArrayList<View>separadores;
-    ArrayList<String> cantidadlist,eventolist,fechalist,statuslist,cantidadlistpass,eventolistpass,fechalistpass,statuslistpass;
+    ArrayList<String> cantidadlist,eventolist,fechalist,statuslist,cantidadlistpass,eventolistpass,fechalistpass,statuslistpass,fentregalis,transaccionlist;
     TableRow filatbl,rowsep,rowsep2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class MisEventos extends AppCompatActivity {
         ancho = displayMetrics.widthPixels;
         if(validasesion){
             iniciar_cargando();
-            consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosUsuario.php?idcliente=5685",1);
+            consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosUsuario.php?idcliente="+idcliente,1);
         }else{
             AlertaBoton("Inicio de Sesión","Debe iniciar sesion para poder ver este contenido").show();
         }
@@ -91,15 +92,18 @@ public class MisEventos extends AppCompatActivity {
                                 eventolist = new ArrayList<>();
                                 fechalist = new ArrayList<>();
                                 statuslist = new ArrayList<>();
+                                fentregalis = new ArrayList<>();
+                                transaccionlist= new ArrayList<>();
                                 for (int i = 0; i < Elementos.length(); i++) {
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     cantidadlist.add(datos.getString("cantidad"));
                                     eventolist.add(datos.getString("evento"));
                                     fechalist.add(datos.getString("fechaevento"));
                                     statuslist.add(datos.getString("estatus"));
-
+                                    fentregalis.add(datos.getString("idforma"));
+                                    transaccionlist.add(datos.getString("transaccion"));
                                 }
-                                consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosPasadosUsuario.php?idcliente=5685",2);
+                                consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosPasadosUsuario.php?idcliente="+idcliente,2);
                             }else{
                                 cantidadlistpass = new ArrayList<>();
                                 eventolistpass = new ArrayList<>();
@@ -136,7 +140,7 @@ public class MisEventos extends AppCompatActivity {
     }
 
     void pintar_mis_boletos(){
-        infomiseventos= new TextView[eventolist.size()][4];
+        infomiseventos= new TextView[eventolist.size()][5];
         separadores= new ArrayList<>();
         TableRow.LayoutParams lp = new TableRow.LayoutParams(ancho/4, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         for (int i=0;i<eventolist.size();i++){
@@ -169,6 +173,27 @@ public class MisEventos extends AppCompatActivity {
             infomiseventos[i][3].setLayoutParams(lp);
             infomiseventos[i][3].setGravity(Gravity.CENTER);
             filatbl.addView(infomiseventos[i][3]);
+
+            infomiseventos[i][4]=new TextView(this);
+            if(fentregalis.get(i).equals("2")){
+                infomiseventos[i][4].setText("Visualizar");
+                infomiseventos[i][4].setTextColor(Color.BLUE);
+                infomiseventos[i][4].setId(i);
+                infomiseventos[i][4].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(MisEventos.this, BoletoElectronico.class);
+                        intent.putExtra("transaccion", transaccionlist.get(view.getId()));
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                infomiseventos[i][3].setTextColor(Color.BLACK);
+                infomiseventos[i][4].setText("N/D");
+            }
+            infomiseventos[i][4].setLayoutParams(lp);
+            infomiseventos[i][4].setGravity(Gravity.CENTER);
+            filatbl.addView(infomiseventos[i][4]);
 
             tblmiseventos.addView(filatbl);
 

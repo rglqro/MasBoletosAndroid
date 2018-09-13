@@ -61,8 +61,8 @@ public class UsuarioFR extends Fragment {
 
     SharedPreferences prefe,prefe_sesion;
     View vista;
-    public static final String PAYPAL_CLIENT_ID="AYlSJbea6ruWz6FAn1X0ZXRKYTcY19Y0t_niLDKQRdBRn3gF5znxBzMaYa2km9CBrd-6qC0Zq6IRjFIx";
-    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml,comisionpack,ideventopack="";
+    public static final String PAYPAL_CLIENT_ID="Ac-oT41cQCMClEGy9WjrvNgLS4JC7cPDICsLdjTmJEVn_-C-jMQ0Zs9mOZMA7omBrSK0w4p8kvVbO2iu";
+    String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml,comisionpack,ideventopack="",datalugarespack="";
     String idzona,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa,dataevento;
     Button entrar;
     TextView txvinfocrearcta;
@@ -71,7 +71,7 @@ public class UsuarioFR extends Fragment {
     String URL="";
     boolean resp=false,validasesion=false;
     String msj,usuario,id_cliente;
-    int bloqueo_boton=0,dataeventosize=0,cantidadeventosxpaquete,cant_boletos;
+    int bloqueo_boton=0,dataeventosize=0,cant_boletos;
     private static final int PAYPAL_REQUEST_CODE=7171;
     private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
     .clientId(PAYPAL_CLIENT_ID);
@@ -159,8 +159,8 @@ public class UsuarioFR extends Fragment {
         dataevento=prefe.getString("dataevento",null);
         dataeventosize= Integer.parseInt(prefe.getString("dataeventosize","0"));
         comisionpack=prefe.getString("comisionpack","0");
+        datalugarespack=prefe.getString("datalugarespack","");
 
-        cantidadeventosxpaquete=dataeventosize*cant_boletos;
 
         if(numerado.equals("1")){
             idfila=prefe.getString("idfila","");
@@ -247,18 +247,17 @@ public class UsuarioFR extends Fragment {
     void checar_tipo_pago(){
         if (fpago.equals("2")||fpago.equals("3")){
             if(idevento.equals("0")){
-                pre_registro_tctd_post("https://www.masboletos.mx/masBoletosEnviaDatosPaqueteMovil.php");
+                pre_registro_packs("https://www.masboletos.mx/masBoletosEnviaDatosPaqueteMovil.php");
             }else {
                 preregistroTCTD();
             }
             ((DetallesEventos)getActivity()).FRNombres[7]="8. Pago con TC";
-        }
-        if(fpago.equals("5")){
+        }else if(fpago.equals("5")){
             Intent intent= new Intent(getActivity(),PayPalService.class);
             intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
             getActivity().startService(intent);
             if(idevento.equals("0")){
-                pre_registro_paypal_post("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php");
+                pre_registro_packs("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php");
             }else{
                 preregistro_paypal("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
                         +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
@@ -289,7 +288,7 @@ public class UsuarioFR extends Fragment {
         tr.start();
     }
 
-    private void pre_registro_paypal_post(String url){
+    private void pre_registro_packs(String url){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
@@ -298,9 +297,15 @@ public class UsuarioFR extends Fragment {
                     @Override
                     public void onResponse(String response)
                     {
-                        folio=response.toString();
-                        folio=folio.replace(" ","").replace("\n","");
-                        procesar_pagoPP();
+                        if(fpago.equals("2") || fpago.equals("3")){
+                            ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",response);
+                            ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+                        }else if(fpago.equals("5")) {
+                            folio = response.toString();
+                            folio = folio.replace(" ", "").replace("\n", "");
+                            procesar_pagoPP();
+                        }
                         Log.e("respenvia",response);
                     }
                 },
@@ -318,8 +323,6 @@ public class UsuarioFR extends Fragment {
             {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
-                /*params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
-                params.put("seccion", "BRONCE");*/
                 params.put("fila", fila);Log.e("fila",fila);
                 params.put("importe", precio);Log.e("dato",precio);
                 params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
@@ -339,8 +342,7 @@ public class UsuarioFR extends Fragment {
                 params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
                 params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
                 params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", "[]");
-                //params.put("kk","hola perro");
+                params.put("dataeventozonafilasiento", datalugarespack); Log.e("datalugpack",datalugarespack);
                 return params;
             }
         };
@@ -355,65 +357,6 @@ public class UsuarioFR extends Fragment {
                         +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);  //para que la variable sea reconocida en todos los metodos
         ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",URL);
         ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
-    }
-
-    private void pre_registro_tctd_post(String url){
-        ((DetallesEventos)getActivity()).iniciar_cargando();
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response)
-                    {
-                        Log.e("respenvia",response);
-                        ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",response);
-                        ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
-                        ((DetallesEventos)getActivity()).cerrar_cargando();
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError
-            {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
-                /*params.put("asientos", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
-                params.put("seccion", "BRONCE");*/
-                params.put("fila", fila);
-                params.put("importe", precio);Log.e("dato",precio);
-                params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
-                params.put("cargoxservicio", comisionpack);
-                params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
-                params.put("zona", idzona);Log.e("dato",idzona);
-                params.put("numerado", numerado);
-                params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
-                params.put("idfila", idfila); Log.e("idfila",idfila);
-                params.put("inicolumna", inicolumna); Log.e("inicolumna",inicolumna);
-                params.put("fincolumna", fincolumna); Log.e("fincolumna",fincolumna);
-                params.put("filaasientos", filaasientos); Log.e("filaasientos",filaasientos);
-                params.put("idfilafilaasiento", idfilafilaasiento);Log.e("idfilafilaasiento",idfilafilaasiento);
-                params.put("formadepago", fpago);Log.e("dato",fpago);
-                params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
-                params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
-                params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
-                params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
-                params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", "[]");
-                //params.put("kk","hola perro");
-                return params;
-            }
-        };
-
-        queue.add(strRequest);
     }
 
     private void procesar_pagoPP(){
@@ -466,10 +409,6 @@ public class UsuarioFR extends Fragment {
                         if (r>0) {
                             Log.e("Resultado actualizacion",resultado);
                             if(error.equals("0")){
-                                ((DetallesEventos)getActivity()).cerrar_cargando();
-                                ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
-                                ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
-                                ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
                                 envio_mail(resultado);
                             }
                             else {
@@ -483,7 +422,6 @@ public class UsuarioFR extends Fragment {
     }
 
     public void envio_mail(final String fe){
-        ((DetallesEventos)getActivity()).iniciar_cargando();
         Thread tr=new Thread(){
             @Override
             public void run() {
@@ -496,7 +434,9 @@ public class UsuarioFR extends Fragment {
                         if (r>0) {
                             Log.e("Resultado actualizacion",resultado);
                             ((DetallesEventos)getActivity()).cerrar_cargando();
-
+                            ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
+                            ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
+                            ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
                         }
                     }});  //permite trabajar con la interfaz grafica
             }};
