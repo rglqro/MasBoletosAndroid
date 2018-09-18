@@ -63,12 +63,12 @@
                 android:theme="@style/txtinputlabel">
 
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/edtnombrebuzon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
                     android:backgroundTint="@color/azulmboscuro"
+                    android:ems="10"
                     android:hint="Nombre"
                     android:inputType="text|textAutoComplete|textPersonName"
                     android:textColor="@color/negro"
@@ -81,14 +81,14 @@
                 android:theme="@style/txtinputlabel">
 
                 <EditText
-                    android:id="@+id/editText2"
+                    android:id="@+id/edtcorreobuzon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textEmailAddress"
-                    android:hint="Correo Electrónico"
                     android:backgroundTint="@color/azulmboscuro"
+                    android:ems="10"
+                    android:hint="Correo Electrónico"
+                    android:inputType="textEmailAddress"
                     android:textColor="@color/negro"
                     android:textColorHint="@color/gris" />/>
             </android.support.design.widget.TextInputLayout>
@@ -99,14 +99,15 @@
                 android:theme="@style/txtinputlabel">
 
                 <EditText
-                    android:id="@+id/editText3"
+                    android:id="@+id/edttelbuzon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="phone"
-                    android:hint="Télefono"
                     android:backgroundTint="@color/azulmboscuro"
+                    android:ems="10"
+                    android:digits="0123456789"
+                    android:hint="Télefono"
+                    android:inputType="phone"
                     android:textColor="@color/negro" />
             </android.support.design.widget.TextInputLayout>
 
@@ -130,7 +131,7 @@
                 android:theme="@style/txtinputlabel">
 
                 <EditText
-                    android:id="@+id/editText4"
+                    android:id="@+id/edtmsjbuzon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -142,12 +143,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/btenviarbuzon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/azulmb"
-                android:text="Enviar"
-                android:paddingHorizontal="50dp"/>
+                android:paddingHorizontal="50dp"
+                android:text="Enviar" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

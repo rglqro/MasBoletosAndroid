@@ -2,6 +2,7 @@ package itstam.masboletos.carruselcompra;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -22,6 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -36,6 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import itstam.masboletos.R;
+import itstam.masboletos.acciones_perfil.MisEventos;
 
 
 /**
@@ -47,7 +55,7 @@ public class FRFinalizarCompra extends Fragment {
     View vista;
     String titulo,msjfinal,ntransac,folios,fpago,idevento,idfpago;
     SharedPreferences prefe;
-    Button btseguir;
+    Button btseguir,btmiseventos;
     WebView myWebView;
     ImageView imvqrcode;
     LinearLayout llqr,llinfofinal;
@@ -71,6 +79,7 @@ public class FRFinalizarCompra extends Fragment {
         btseguir=(Button)vista.findViewById(R.id.btseguir);
         imvqrcode=vista.findViewById(R.id.imvqrcode);
         myWebView = (WebView) vista.findViewById(R.id.wb1);
+        btmiseventos=vista.findViewById(R.id.btmisboletosfincompra);
         llqr=vista.findViewById(R.id.llqro); llqr.setVisibility(View.GONE);
 
         recibir_datos();
@@ -122,64 +131,39 @@ public class FRFinalizarCompra extends Fragment {
                 ((DetallesEventos)getActivity()).finish();
             }
         });
+        btmiseventos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), MisEventos.class);
+                startActivity(mainIntent);
+                ((DetallesEventos)getActivity()).finish();
+            }
+        });
     }
 
     void consulta_folios(){
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/appMasboletos/getFoliosxTransaccion.php?transaccion="+ntransac);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url ="https://www.masboletos.mx/appMasboletos/getFoliosxTransaccion.php?transaccion="+ntransac;
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            Log.e("Resultado actualizacion",resultado);
-                            folios=resultado;
-                            txvntran.setText(ntransac);
-                            txvfolios.setText(folios);
-                        }
-                    }});  //permite trabajar con la interfaz grafica
-            }};
-        tr.start();
-    }
+                    public void onResponse(String response) {
+                        Log.e("Resultado actualizacion",response);
+                        folios=response;
+                        txvntran.setText(ntransac);
+                        txvfolios.setText(folios);
+                    }
+                }, new Response.ErrorListener() {
 
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.d("Enlace ",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
 }

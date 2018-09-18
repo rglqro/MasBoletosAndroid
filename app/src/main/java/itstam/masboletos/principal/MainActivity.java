@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void iniciar_cargando(){
-        dialogcarg= new ProgressDialog(this);
+        dialogcarg= new ProgressDialog(this,R.style.ProgressDialogStyle);
         dialogcarg.setTitle("Cargando información");
         dialogcarg.setMessage("  Espere...");
         dialogcarg.setProgressStyle(ProgressDialog.STYLE_SPINNER);

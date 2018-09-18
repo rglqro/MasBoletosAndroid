@@ -150,7 +150,7 @@ public class FRMejDisp extends Fragment {
         }
         TXVSeccionComp.setText(zona);
         subtotal=Cant_Boletos*precio;
-        subtotal+=comision*Cant_Boletos;
+        //subtotal+=comision*Cant_Boletos;
         cargoTC=subtotal*0.03;
         String TxTotal="$"+String.valueOf(df.format(subtotal));
         TXVInfoCompra.setText("$"+precio+" x "+Cant_Boletos);
@@ -242,8 +242,8 @@ public class FRMejDisp extends Fragment {
                         int f=0,a=0;
                         f=Integer.parseInt(coord[0]); a=Integer.parseInt(coord[1])-1;
                         if (coord[2].equals("0")) { // recibe texto de la sig forma 0,51,0 siendo fila,asiento,estado seleccion donde 0 es no pulsado y 1 lo es
-                            asientosxsel--;
                             if(asientosmar.size()<Cant_Boletos) {
+                                asientosxsel--;
                                 btasientos[f][a].setImageResource(R.drawable.asiento_sel);
                                 btasientos[f][a].setTag(f + "," + (a + 1) + ",1");
                                 if(idevento.equals("0")){

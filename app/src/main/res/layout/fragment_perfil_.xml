@@ -90,19 +90,6 @@
                 android:textStyle="bold"
                 android:gravity="center_vertical" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:background="@android:color/transparent"
-                android:text="Boleto Electrónico"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:gravity="center_vertical" />
-
 
             <View
                 android:id="@+id/view6"

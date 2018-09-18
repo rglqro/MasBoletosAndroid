@@ -186,7 +186,10 @@ public class FEntregaFr extends Fragment {
         cbseguros = new CheckBox[cant_datos];
         lineasep= new View[cant_datos];
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RadioGroup.LayoutParams lprg= new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RadioGroup.LayoutParams lprg2= new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         rgentregas.setLayoutParams(lp);
+        rgentregas.setGravity(Gravity.RIGHT);
         for (int i = 0; i < cant_datos; i++) {
             Log.e("Tipoentreg2",tipoentre.get(i));
             lineasep[i]= new View(getActivity());
@@ -195,8 +198,8 @@ public class FEntregaFr extends Fragment {
             lineasep[i].setId(i);
             if(tipoentre.get(i).equalsIgnoreCase("Will Call")||tipoentre.get(i).equalsIgnoreCase("Boleto Electronico")||tipoentre.get(i).equalsIgnoreCase("Recibe tu boleto en Casa")) {
                 rbentregas[i] = new RadioButton(getActivity());
-                rbentregas[i].setLayoutParams(lp);
-                rbentregas[i].setButtonTintList(ColorStateList.valueOf(R.color.azulmboscuro));
+                rbentregas[i].setLayoutParams(lprg);
+                rbentregas[i].setButtonTintList(ColorStateList.valueOf(Color.parseColor("#000A3D")));
                 String sourceString = tipoentre.get(i)+" - <b>MX $" + costoentrega.get(i) + "</b>";
                 rbentregas[i].setText(Html.fromHtml(sourceString));
                 rbentregas[i].setTextColor(Color.BLACK);
@@ -204,9 +207,9 @@ public class FEntregaFr extends Fragment {
                 btdescentr[i]= new Button(getActivity());
                 btdescentr[i].setText("Ver descripción...");
                 btdescentr[i].setBackgroundColor(Color.TRANSPARENT);
-                btdescentr[i].setTextColor(Color.BLACK);
-                btdescentr[i].setLayoutParams(lp);
-                btdescentr[i].setGravity(Gravity.END);
+                btdescentr[i].setTextColor(Color.BLUE);
+                btdescentr[i].setLayoutParams(lprg2);
+                //btdescentr[i].setGravity(Gravity.END);
                 btdescentr[i].setId(i);
                 rgentregas.addView(rbentregas[i]);
                 rgentregas.addView(btdescentr[i]);
@@ -233,10 +236,10 @@ public class FEntregaFr extends Fragment {
                 btdescentr[i]= new Button(getActivity());
                 btdescentr[i].setText("Ver descripción...");
                 btdescentr[i].setBackgroundColor(Color.TRANSPARENT);
-                btdescentr[i].setTextColor(Color.BLACK);
-                btdescentr[i].setLayoutParams(lp);
-                btdescentr[i].setGravity(Gravity.END);
+                btdescentr[i].setTextColor(Color.BLUE);
+                btdescentr[i].setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 btdescentr[i].setId(i);
+                llseguros.setGravity(Gravity.RIGHT);
                 llseguros.addView(cbseguros[i]);
                 llseguros.addView(btdescentr[i]);
             }

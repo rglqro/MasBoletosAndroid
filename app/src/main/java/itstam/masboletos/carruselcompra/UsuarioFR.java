@@ -73,13 +73,7 @@ public class UsuarioFR extends Fragment {
     String msj,usuario,id_cliente;
     int bloqueo_boton=0,dataeventosize=0,cant_boletos;
     private static final int PAYPAL_REQUEST_CODE=7171;
-    private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
-    .clientId(PAYPAL_CLIENT_ID);
-
-    public UsuarioFR() {
-        // Required empty public constructor
-    }
-
+    private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(PAYPAL_CLIENT_ID);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -267,25 +261,29 @@ public class UsuarioFR extends Fragment {
         }
     }
 
-    private void preregistro_paypal(final String URL){
+    private void preregistro_paypal(final String url){
         ((DetallesEventos)getActivity()).iniciar_cargando(); Log.e("URL",URL);
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta(URL);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        Log.e("URL",url);
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            Log.e("Resultado registro",resultado);
-                            procesar_pagoPP();
-                            folio=resultado;
-                        }
-                    }});  //permite trabajar con la interfaz grafica
-            }};
-        tr.start();
+                    public void onResponse(String response) {
+                        Log.e("Resultado registro",response);
+                        procesar_pagoPP();
+                        folio=response;
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     private void pre_registro_packs(String url){
@@ -346,7 +344,6 @@ public class UsuarioFR extends Fragment {
                 return params;
             }
         };
-
         queue.add(strRequest);
     }
 
@@ -397,50 +394,60 @@ public class UsuarioFR extends Fragment {
 
     public void actualizaciondepago(final String error){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error);  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url="https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error; Log.e("URL",url);
+        Log.e("URL",url);
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            Log.e("Resultado actualizacion",resultado);
-                            if(error.equals("0")){
-                                envio_mail(resultado);
-                            }
-                            else {
-                                ((DetallesEventos)getActivity()).cerrar_cargando();
-                                ((DetallesEventos)getActivity()).finish();
-                            }
+                    public void onResponse(String response) {
+                        Log.e("Resultado actualizacion",response);
+                        if(error.equals("0")){
+                            envio_mail(response);
                         }
-                    }});  //permite trabajar con la interfaz grafica
-            }};
-        tr.start();
+                        else {
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+                            ((DetallesEventos)getActivity()).finish();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     public void envio_mail(final String fe){
-        Thread tr=new Thread(){
-            @Override
-            public void run() {
-                final String resultado = inserta("https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2");  //para que la variable sea reconocida en todos los metodos
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url="https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2"; Log.e("URL",url);
+        Log.e("URL",url);
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void run() {
-                        int r = validadatos(resultado); // checa si la pagina devolvio algo
-                        if (r>0) {
-                            Log.e("Resultado actualizacion",resultado);
-                            ((DetallesEventos)getActivity()).cerrar_cargando();
-                            ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
-                            ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
-                            ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
-                        }
-                    }});  //permite trabajar con la interfaz grafica
-            }};
-        tr.start();
+                    public void onResponse(String resultado) {
+                        Log.e("Resultado actualizacion",resultado);
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                        ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
+                        ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
+                        ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     @Override
@@ -457,42 +464,5 @@ public class UsuarioFR extends Fragment {
     public void onDestroy() {
         getActivity().stopService(new Intent(getActivity(),PayPalService.class));
         super.onDestroy();
-    }
-
-    public String inserta(String enlace){ // metodo que inserta los parametros en la BD
-        URL url = null;
-        Log.d("Enlace ",enlace);
-        int respuesta = 0;
-        String linea = "",valor="";
-        StringBuilder resul = null;
-        try {
-            url = new URL(enlace);
-            HttpURLConnection conection;
-            conection = (HttpURLConnection) url.openConnection();
-            respuesta = conection.getResponseCode();
-            resul = new StringBuilder();
-            if (respuesta == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conection.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                while ((linea = reader.readLine()) != null) {
-                    resul.append(linea);
-                }
-            }
-            if(resul!=null) {
-                valor = resul.toString();
-            }
-        } catch (Exception e) {
-            //resul.append("Error ----");
-        }
-        Log.d("Resultado pagina",valor);
-        return valor;
-    }
-
-    public int validadatos(String response){
-        int respuesta = 0;
-        if (response.length()>0){
-            respuesta=1;
-        }
-        return respuesta;
     }
 }

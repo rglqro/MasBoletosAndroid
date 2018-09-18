@@ -22,4 +22,10 @@
         <item name="colorControlActivated">@color/azulmboscuro</item>
     </style>
 
+    <style name="ProgressDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/negro</item>
+        <item name="android:textColorPrimary">@color/azulmboscuro</item>
+        <item name="android:background">@color/blanco</item>
+    </style>
+
 </resources>

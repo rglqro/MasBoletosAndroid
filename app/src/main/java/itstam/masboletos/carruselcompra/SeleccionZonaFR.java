@@ -195,6 +195,7 @@ public class SeleccionZonaFR extends Fragment {
         //obligamos al usuario a pulsar los botones para cerrarlo
         //establecemos el contenido de nuestro dialog
         customDialog.setContentView(R.layout.gifzoom);
+        customDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         customDialog.show();
         Window window = customDialog.getWindow();
@@ -210,9 +211,10 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void pintar_imagen(String urlMapa,ImageView imag){
+        if(urlMapa.equals("")) urlMapa="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
         Picasso.get()
                 .load(urlMapa)
-                .error(R.drawable.ic_inicio)
+                .error(R.drawable.imgmberror)
                 .into(imag);
     }
 
@@ -427,8 +429,8 @@ public class SeleccionZonaFR extends Fragment {
                         try {
                             dataevento[0] = response.getString("dataEvento");
                             disponibilidad[0] =response.getBoolean("disponibilidad");
-                            if(disponibilidad[0]){
-                                Elementos = new JSONArray(dataevento[0]);
+                            Elementos = new JSONArray(dataevento[0]);
+                            if(disponibilidad[0] && Elementos.length()>0){
                                 Log.e("jsondata",Elementos.toString());
                                 for (int i=0;i<1;i++){
                                     JSONObject datos = Elementos.getJSONObject(i);

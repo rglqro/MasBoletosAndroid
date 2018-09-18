@@ -108,12 +108,6 @@ public class Perfil_Fr extends Fragment {
         btbuzon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-            }
-        });
-        btbuzon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 Intent mainIntent = new Intent().setClass(getActivity(), buzonsuger.class);
                 startActivity(mainIntent);
             }

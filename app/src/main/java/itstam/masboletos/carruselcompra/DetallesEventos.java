@@ -216,7 +216,7 @@ public class DetallesEventos extends AppCompatActivity {
     Bitmap imageBlur;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
-        Log.e("ImagenEventourl",imgevento);
+        Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
         Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
             @Override
             public void onSuccess() {
@@ -235,14 +235,14 @@ public class DetallesEventos extends AppCompatActivity {
     public void intent_compartir(View v){
         Intent compartir = new Intent(Intent.ACTION_SEND);
         compartir.setType("text/plain");
-        String mensaje = "Asiste a '"+nomevento+"' que se llevará a cabo el/los día(s): "+"\nVisita el siguiente enlace: ";
+        String mensaje = "Asiste a '"+nomevento+"' que se llevará a cabo el/los día(s): "+fechaevento+"\nVisita el siguiente enlace: https://www.masboletos.mx/evento.php?idevento="+idevento;
         compartir.putExtra(Intent.EXTRA_SUBJECT, nomevento);
         compartir.putExtra(Intent.EXTRA_TEXT, mensaje);
         startActivity(Intent.createChooser(compartir, "Compartir vía"));
     }
 
     public void iniciar_cargando(){
-        dialogcarg= new ProgressDialog(this);
+        dialogcarg= new ProgressDialog(this,R.style.ProgressDialogStyle);
         dialogcarg.setTitle("Cargando información");
         dialogcarg.setMessage("  Espere...");
         dialogcarg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -312,7 +312,7 @@ public class DetallesEventos extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        });
+                        }).setCancelable(false);
         return builder.create();
     }
 
