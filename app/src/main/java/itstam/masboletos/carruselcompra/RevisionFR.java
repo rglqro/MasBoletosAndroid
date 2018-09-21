@@ -29,7 +29,7 @@ public class RevisionFR extends Fragment {
     String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="",cant_boletos,datoscargos;
     Double precio=0.0,total=0.00,ptecargo=0.00,imtecargo=0.00, CargosServ=0.00;
     TextView txvnevento,txvfechaeve,txvhoraeve,txvfila,txvasiento,txvseccion,txvcarserv,txvfpago,txvfentrega,txvcarfentr2,txvtotal2,txvseccion2;
-    DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormat df = new DecimalFormat("#0.00");
     Button btcontinuar6;
     CheckBox cbdeacuerdo;
     LinearLayout lldetalles;

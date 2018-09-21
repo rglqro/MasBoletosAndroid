@@ -63,7 +63,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     int currentPage = 0,alto,ancho;
 
     JSONArray Elementos = null;
-    TextView txvacceder_nombre;
     ArrayList<ImageButton> ImBotonEvento;
     ArrayList<ImageView> ImPaquete; ArrayList<View> lineasep;
     ArrayList<TextView> txvPaquete,btpaquete;
@@ -93,7 +92,6 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         LLImagOrg=(LinearLayout)vista.findViewById(R.id.LLImagOrg);
         thboletopaq=(TabHost)vista.findViewById(R.id.thboletopaq);
         llpaquetes=(LinearLayout)vista.findViewById(R.id.llpaquetes);
-        txvacceder_nombre=vista.findViewById(R.id.txvacceder);
         imvlogoarriba=vista.findViewById(R.id.imvlogoarriba);
         scvorg=vista.findViewById(R.id.SCVOrg);
 
@@ -101,18 +99,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         validasesion=prefe_user.getBoolean("validasesion",false);
 
         iniciar_tabhost();
-        if(validasesion){
-            txvacceder_nombre.setText(prefe_user.getString("usuario_s",""));
-        }else{
-            txvacceder_nombre.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent mainIntent = new Intent().setClass(getActivity(), LoginActivity.class);
-                    //startActivity(mainIntent);
-                    startActivityForResult(mainIntent,1014);
-                }
-            });
-        }
+
         swipeContainer.setOnRefreshListener(this);
         return vista;
     }
@@ -155,15 +142,10 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                         Log.e("Respuesta Json",response.toString());
                         try {
                             ListaImagBoton = new ArrayList<String>();
-                            ListaImagBoton.clear();
                             ListaImagCarrusel = new ArrayList<String>();
-                            ListaImagCarrusel.clear();
                             NombresEvento= new ArrayList<String>();
-                            NombresEvento.clear();
                             IDEventos= new ArrayList<String>();
-                            IDEventos.clear();
                             EventosGrupo= new ArrayList<String>();
-                            EventosGrupo.clear();
                             for (int i=0;i<response.length();i++){
                                 JSONObject datos = response.getJSONObject(i);
                                 ListaImagBoton.add("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
@@ -172,7 +154,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                                 IDEventos.add(datos.getString("idevento"));
                                 EventosGrupo.add(datos.getString("eventogrupo"));
                             }
-                            iniciar_Carrusel2();
+                            //iniciar_Carrusel2();
                             generarBotonesEvento();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -216,7 +198,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 ImBotonEvento.get(pos_arr_ima).setId(pos_arr_ima);
                 ImBotonEvento.get(pos_arr_ima).setPadding(5,5,5,5);
                 ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
-                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.mipmap.logo_masboletos).into(ImBotonEvento.get(pos_arr_ima)); Log.e("foto",ListaImagBoton.get(pos_arr_ima));
+                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.drawable.imgmberror).into(ImBotonEvento.get(pos_arr_ima)); Log.e("foto",ListaImagBoton.get(pos_arr_ima));
                 ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -439,7 +421,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     @Override
     public void onDetach() {
-        handler.removeCallbacks(Update);
+        if (handler!=null) {
+            handler.removeCallbacks(Update);
+        }
         super.onDetach();
         if(swipeTimer != null){
             swipeTimer.cancel();
@@ -472,7 +456,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
     @Override
     public void onDestroy() {
-        handler.removeCallbacks(Update);
+        if (handler!=null) {
+            handler.removeCallbacks(Update);
+        }
         if(swipeTimer != null){
             swipeTimer.cancel();
             //cancel timer task and assign null
@@ -502,17 +488,4 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         super.onPause();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1014) {
-            if(resultCode == Activity.RESULT_OK) {
-                String nuser = data.getStringExtra("validasesion");
-                txvacceder_nombre.setText(nuser);
-                txvacceder_nombre.setClickable(false);
-            }else {
-                Toast.makeText(getActivity(),"Aun no ha iniciado sesión",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 }

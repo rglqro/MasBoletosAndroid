@@ -61,7 +61,8 @@ public class UsuarioFR extends Fragment {
 
     SharedPreferences prefe,prefe_sesion;
     View vista;
-    public static final String PAYPAL_CLIENT_ID="Ac-oT41cQCMClEGy9WjrvNgLS4JC7cPDICsLdjTmJEVn_-C-jMQ0Zs9mOZMA7omBrSK0w4p8kvVbO2iu";
+    public static final String PAYPAL_CLIENT_ID_sandbox="Ac-oT41cQCMClEGy9WjrvNgLS4JC7cPDICsLdjTmJEVn_-C-jMQ0Zs9mOZMA7omBrSK0w4p8kvVbO2iu";
+    public static final String PAYPAL_CLIENT_ID_live="AaYUqrVFn58K9kaZ2FBsAlZNdOB5H_2-Hpy5Tlf943e4NyUeT_ceHUW2c5nGMWzVFHi5uOFRg5tJIicr";
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml,comisionpack,ideventopack="",datalugarespack="";
     String idzona,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa,dataevento;
     Button entrar;
@@ -73,7 +74,7 @@ public class UsuarioFR extends Fragment {
     String msj,usuario,id_cliente;
     int bloqueo_boton=0,dataeventosize=0,cant_boletos;
     private static final int PAYPAL_REQUEST_CODE=7171;
-    private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(PAYPAL_CLIENT_ID);
+    private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(PAYPAL_CLIENT_ID_sandbox);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

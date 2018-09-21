@@ -2,10 +2,12 @@ package itstam.masboletos.principal;
 import itstam.masboletos.R;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -35,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btisesion;
     JSONArray Elementos=null;
     ImageView imvavatar;
-    String msj,usuario,id_cliente,correo,contrasena;
+    String msj,usuario,id_cliente,correo,contrasena,tipousuario;
     Boolean resp;
 
 
@@ -80,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable txt) {
-                if (edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+") && txt.length() > 0 && edtcontrasena.getText().length()>0) {
+                if (/*edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+") && txt.length() > 0 &&*/ edtcontrasena.getText().length()>3) {
                     btisesion.setBackgroundResource(R.color.azulmb);
                     bloqueo_boton=1;
                 }
@@ -135,15 +137,21 @@ public class LoginActivity extends AppCompatActivity {
                                 msj=datos.getString("mensaje");
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
+                                tipousuario=datos.getString("tipousuario");
                             }
                             if(resp) {
                                 Intent intent = new Intent();
                                 intent.putExtra("validasesion", usuario);
+                                intent.putExtra("tipousuario",tipousuario);
                                 setResult(RESULT_OK, intent);
                                 guarda_sesion();
-                                finish();
+                                if (tipousuario.equals("2")){
+                                    alerta_inicio_sesion("Bienvenido(a) "+usuario+"\nAhora podrás consultar tus ventas por evento y MAS...");
+                                }else {
+                                    alerta_inicio_sesion("Bienvenido(a) "+usuario+" a tu cuenta \nDisfruta todos los beneficios de +Boletos");
+                                }
                             }else{
-                                Toast.makeText(LoginActivity.this,"Error: msj",Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this,msj,Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -169,7 +177,21 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("contrasena_s",contrasena);
         editor.putString("id_cliente",id_cliente);
         editor.putBoolean("validasesion",true);
+        editor.putString("tipousuario",tipousuario);
         editor.commit();
+    }
+
+    void alerta_inicio_sesion(String mensaje){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(mensaje)
+                .setCancelable(false)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void regresar(View view){

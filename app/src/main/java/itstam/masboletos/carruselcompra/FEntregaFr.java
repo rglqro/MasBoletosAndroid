@@ -54,7 +54,7 @@ public class FEntregaFr extends Fragment {
     Double cargoseg=0.00,sumaseg=0.00;
     int cant_datos=0,cant_boletos;
     TextView txvfila,txvasiento,txvseccion,txvtotal,txvfentr,txvfila2,txvasiento2,txvseccion2;
-    DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormat df = new DecimalFormat("#0.00");
     Button btcontinuar5;RadioButton[]rbentregas; RadioGroup rgentregas;
     TextView[]txventregas;
     Button[] btdescentr;

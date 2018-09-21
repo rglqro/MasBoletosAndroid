@@ -48,6 +48,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import itstam.masboletos.R;
@@ -124,7 +127,7 @@ public class DetallesEventos extends AppCompatActivity {
                                 if(idevento.equals("0")){
                                     imgevento=datos.getString("imagen");
                                     nomevento=datos.getString("nombre");
-                                    descevento=datos.getString("descripcion");
+                                    descevento= datos.getString("descripcion");
                                     eventomapa=datos.getString("EventoMapa");
                                     comisionpack=datos.getString("Comision");
                                     set_DatosCompra("comisionpack",comisionpack);
@@ -226,7 +229,9 @@ public class DetallesEventos extends AppCompatActivity {
             }
             @Override
             public void onError(Exception e) {
-
+                imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
+                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+                IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         });
 
@@ -235,7 +240,7 @@ public class DetallesEventos extends AppCompatActivity {
     public void intent_compartir(View v){
         Intent compartir = new Intent(Intent.ACTION_SEND);
         compartir.setType("text/plain");
-        String mensaje = "Asiste a '"+nomevento+"' que se llevará a cabo el/los día(s): "+fechaevento+"\nVisita el siguiente enlace: https://www.masboletos.mx/evento.php?idevento="+idevento;
+        String mensaje = "+Boletos te invita a '"+nomevento+"' que se llevará a cabo el/los día(s): "+fechaevento+"\nVisita el siguiente enlace: https://www.masboletos.mx/evento.php?idevento="+idevento;
         compartir.putExtra(Intent.EXTRA_SUBJECT, nomevento);
         compartir.putExtra(Intent.EXTRA_TEXT, mensaje);
         startActivity(Intent.createChooser(compartir, "Compartir vía"));

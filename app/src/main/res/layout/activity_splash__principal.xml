@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Splash_Principal"
-    android:background="@color/verdemb"
+    android:background="@color/blanco"
     >
 
     <ImageView
@@ -18,13 +18,4 @@
         tools:layout_editor_absoluteX="39dp"
         tools:layout_editor_absoluteY="220dp" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Version 1.0.1"
-        android:textColor="@color/azulmboscuro"
-        android:textSize="18sp" />
 </RelativeLayout>

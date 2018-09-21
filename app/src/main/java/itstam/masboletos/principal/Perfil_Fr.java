@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +32,8 @@ public class Perfil_Fr extends Fragment {
     View vista;
     RelativeLayout RLDatosPerfil; TextView TXVMsj,txvtengocta,btcrearcta;
     LinearLayout LLPrincipal,LLDatosPerfil;
-    LinearLayout llinisesion;
-    String nuser;
+    LinearLayout llinisesion,llbotonesuser1,llbotonesuser2;
+    String nuser,tipousuario;
     TextView txvnuser;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
@@ -60,12 +61,20 @@ public class Perfil_Fr extends Fragment {
         btayuda=vista.findViewById(R.id.btayuda);
         btbuzon=vista.findViewById(R.id.btbuzon);
         btacercade=vista.findViewById(R.id.btacercade);
+        llbotonesuser1=vista.findViewById(R.id.llbotonesuser1);
+        llbotonesuser2=vista.findViewById(R.id.llbotonesuser2);
 
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
         nuser=prefe_sesion.getString("usuario_s", "");
+        tipousuario=prefe_sesion.getString("tipousuario","0");
         valida_sesion=prefe_sesion.getBoolean("validasesion",false);
         if(valida_sesion){
             txvnuser.setText(nuser);
+            if(tipousuario.equals("2")){
+                llbotonesuser1.setVisibility(View.GONE);
+            }else {
+                llbotonesuser2.setVisibility(View.GONE);
+            }
             btcerrarsesion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -73,11 +82,18 @@ public class Perfil_Fr extends Fragment {
                     RLDatosPerfil.setVisibility(View.GONE);
                     vista_no_sesion();
                     btcerrarsesion.setVisibility(View.GONE);
+                    if (llbotonesuser2.getVisibility() == View.VISIBLE) {
+                        llbotonesuser2.setVisibility(View.GONE);
+                    }
+                    if(llbotonesuser1.getVisibility() == View.GONE){
+                        llbotonesuser1.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }else {
             vista_no_sesion();
             btcerrarsesion.setVisibility(View.GONE);
+            llbotonesuser2.setVisibility(View.GONE);
         }
         btmeventos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,9 +219,8 @@ public class Perfil_Fr extends Fragment {
         if (requestCode == 1014) {
             if(resultCode == Activity.RESULT_OK) {
                 nuser = data.getStringExtra("validasesion");
-                Toast.makeText(getActivity(),nuser,Toast.LENGTH_LONG).show();
+                tipousuario=data.getStringExtra("tipousuario");
                 sesion_iniciada();
-
             }else {
                 Toast.makeText(getActivity(),"Aun no ha iniciado sesión",Toast.LENGTH_SHORT).show();
             }
@@ -213,6 +228,10 @@ public class Perfil_Fr extends Fragment {
     }
 
     public void sesion_iniciada(){
+        if(tipousuario.equals("2")){
+            llbotonesuser1.setVisibility(View.GONE);
+            llbotonesuser2.setVisibility(View.VISIBLE);
+        }
         btcerrarsesion.setVisibility(View.VISIBLE);
         llinisesion.setVisibility(View.GONE);
         RLDatosPerfil.setVisibility(View.VISIBLE);
@@ -233,6 +252,7 @@ public class Perfil_Fr extends Fragment {
         editor.putString("contrasena_s","");
         editor.putBoolean("validasesion",false);
         editor.putString("id_cliente","");
+        editor.putString("tipousuario","0");
         editor.commit();
     }
 

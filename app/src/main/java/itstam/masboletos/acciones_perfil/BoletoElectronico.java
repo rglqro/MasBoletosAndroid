@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,6 +45,8 @@ public class BoletoElectronico extends AppCompatActivity {
     String evento,fecha,hora,folios="";
     TextView txvevento,txvfecha,txvhora,txvfolios;
     ImageView imvbolele;
+    int alto, ancho;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,11 @@ public class BoletoElectronico extends AppCompatActivity {
         txvhora=findViewById(R.id.txvhorabe);
         txvfolios=findViewById(R.id.txvboletosbe);
         imvbolele=findViewById(R.id.imvbolele_be);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
 
         ntransaccion=getIntent().getStringExtra("transaccion");
         consulta_boleto_electronico("https://www.masboletos.mx/appMasboletos/getInfoPorTransaccion.php?transaccion="+ntransaccion);
@@ -114,7 +122,7 @@ public class BoletoElectronico extends AppCompatActivity {
         MultiFormatWriter mfwQR = new MultiFormatWriter();
         BitMatrix bmtxQR = null;
         try {
-            bmtxQR = mfwQR.encode(ntransaccion, BarcodeFormat.QR_CODE,400,400);
+            bmtxQR = mfwQR.encode(ntransaccion, BarcodeFormat.QR_CODE, (int) (ancho/1.5),(int) (ancho/1.5));
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmapqr= barcodeEncoder.createBitmap(bmtxQR);
             imvbolele.setImageBitmap(bitmapqr);

@@ -15,8 +15,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/azulmboscuro"
-        android:gravity="center"
-        android:orientation="horizontal"
         android:layout_alignParentLeft="true">
 
 
@@ -24,26 +22,26 @@
             android:id="@+id/imvlogoarriba"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
+            android:padding="7dp"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/imbtcompartirapp"
             android:adjustViewBounds="true"
             android:scaleType="fitStart"
-            android:src="@mipmap/logo_masboletos"
-            android:padding="10dp"
-            android:layout_alignParentLeft="true" />
+            android:src="@mipmap/logo_masboletos" />
 
-        <TextView
-            android:id="@+id/txvacceder"
+        <ImageButton
+            android:id="@+id/imbtcompartirapp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imvlogoarriba"
+            android:layout_height="60dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:padding="3dp"
-            android:text="Acceder a tu Cuenta"
-            android:visibility="invisible"
-            android:textAllCaps="true"
-            android:textColor="@color/blanco" />
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:paddingHorizontal="10dp"
+            app:srcCompat="@drawable/ic_compartir"
+            android:layout_alignParentRight="true" />
+
     </RelativeLayout>
 
 
@@ -97,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_alignParentStart="true"
-                    android:background="@color/azul2"
+                    android:background="@color/azulmboscuro"
                     android:layout_below="@+id/pager"
                     android:layout_alignParentLeft="true"
                     android:fillViewport="true">

@@ -245,6 +245,9 @@ public class SeleccionZonaFR extends Fragment {
     }
 
     void obtener_secciones(String URL){
+        if (!((DetallesEventos)getActivity()).dialogcarg.isShowing()){
+            ((DetallesEventos)getActivity()).iniciar_cargando();
+        }
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         Log.e("Enlace", URL);
@@ -284,6 +287,7 @@ public class SeleccionZonaFR extends Fragment {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                     }
                 }
         );

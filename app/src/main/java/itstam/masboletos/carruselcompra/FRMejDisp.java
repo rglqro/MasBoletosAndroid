@@ -49,7 +49,7 @@ import itstam.masboletos.R;
 public class FRMejDisp extends Fragment {
 
     Double precio, subtotal,comision, cargoTC;
-    int Cant_Boletos,cont_asientos=1,ancho,alto,asientosxsel;
+    int Cant_Boletos,cont_asientos=1,ancho,alto,asientosxsel=0;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
     String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
@@ -58,7 +58,7 @@ public class FRMejDisp extends Fragment {
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal,txvtotalasientos;
     TextView[][] txvnombreasiento;
     Button btComprar;
-    DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormat df = new DecimalFormat("#0.00");
     JSONArray Elementos=null;
     TableLayout TBLasientos; TableRow rowasientos; LinearLayout llasientotexto,llleyendaasientos;
     ImageButton[][] btasientos;
@@ -109,7 +109,6 @@ public class FRMejDisp extends Fragment {
         zona=prefe.getString("zona","");
         seccionpack=prefe.getString("subzona","");
         idvermapa=prefe.getString("idvermapa","");
-        asientosxsel=Cant_Boletos;
         llenar_info();
     }
 
@@ -211,7 +210,7 @@ public class FRMejDisp extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void pintar_asientos(){
-        txvtotalasientos.setText("No. Asientos: "+asientosxsel);
+        txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
         btasientos= new ImageButton[fila.length][termina[0]];
         txvnombreasiento = new TextView[fila.length][termina[0]];
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -220,6 +219,7 @@ public class FRMejDisp extends Fragment {
         asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));
         idfilaasiento= new ArrayList<String>();
         datalugaresobtenidos= new ArrayList<>();
+        asientosxsel=0;
         for (int j=0;j<fila.length;j++) {
             rowasientos = new TableRow(getActivity());
             rowasientos.setLayoutParams(lptbl); cont_asientos=0;
@@ -243,7 +243,7 @@ public class FRMejDisp extends Fragment {
                         f=Integer.parseInt(coord[0]); a=Integer.parseInt(coord[1])-1;
                         if (coord[2].equals("0")) { // recibe texto de la sig forma 0,51,0 siendo fila,asiento,estado seleccion donde 0 es no pulsado y 1 lo es
                             if(asientosmar.size()<Cant_Boletos) {
-                                asientosxsel--;
+                                asientosxsel++;
                                 btasientos[f][a].setImageResource(R.drawable.asiento_sel);
                                 btasientos[f][a].setTag(f + "," + (a + 1) + ",1");
                                 if(idevento.equals("0")){
@@ -259,9 +259,9 @@ public class FRMejDisp extends Fragment {
                             }else{
                                 ((DetallesEventos)getActivity()).AlertaBoton("Limite Alcanzado","Ya ha seleccionado todos sus boletos").show();
                             }
-                            txvtotalasientos.setText("No. Asientos: "+asientosxsel);
+                            txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
                         }else{
-                            asientosxsel++;
+                            asientosxsel--;
                             btasientos[f][a].setImageResource(R.drawable.asiento_disp);
                             btasientos[f][a].setTag(f+","+(a+1)+",0");
                             asientosel=fila[f]+String.valueOf(a+1);
@@ -293,7 +293,7 @@ public class FRMejDisp extends Fragment {
                             }
                             Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
                             id_asientos_sel();
-                            txvtotalasientos.setText("No. Asientos: "+asientosxsel);
+                            txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
                         }
                         if(asientosmar.size()==Cant_Boletos){
                             btComprar.setBackgroundResource(R.color.verdemb);

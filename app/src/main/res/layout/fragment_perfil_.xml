@@ -76,92 +76,141 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/BtMEventos"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginHorizontal="20dp"
-                android:background="@android:color/transparent"
-                android:text="Mis Eventos"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:gravity="center_vertical" />
+                android:orientation="vertical"
+                android:id="@+id/llbotonesuser1">
+
+                <Button
+                    android:id="@+id/BtMEventos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Mis Eventos"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical" />
 
 
-            <View
-                android:id="@+id/view6"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/grisclaro"/>
+                <View
+                    android:id="@+id/view6"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grisclaro"/>
 
-            <Button
-                android:id="@+id/btavisopriv"
+                <Button
+                    android:id="@+id/btavisopriv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Aviso de privacidad"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/btayuda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="¿Necesitas ayuda?"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/bttutorial"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Ver Tutorial"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/btbuzon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Buzón de sugerencias"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/btacercade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Acerca de"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
-                android:text="Aviso de privacidad"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
+                android:orientation="vertical"
+                android:id="@+id/llbotonesuser2">
 
-            <Button
-                android:id="@+id/btayuda"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
-                android:onClick="avisopriv"
-                android:text="¿Necesitas ayuda?"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
+                <View
+                    android:id="@+id/view13"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grisclaro" />
 
-            <Button
-                android:id="@+id/bttutorial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
-                android:text="Ver Tutorial"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
+                <Button
+                    android:id="@+id/btreporteventa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Reporte de Venta"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
 
-            <Button
-                android:id="@+id/btbuzon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
-                android:text="Buzón de sugerencias"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
+                <Button
+                    android:id="@+id/btvalidaboleto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/transparent"
+                    android:text="Valida Boleto"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
 
-            <Button
-                android:id="@+id/btacercade"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginLeft="20dp"
-                android:background="@android:color/transparent"
-                android:text="Acerca de"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="#000"
-                android:textSize="15sp" />
+            </LinearLayout>
+
+
 
             <View
                 android:id="@+id/view7"

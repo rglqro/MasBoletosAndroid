@@ -103,10 +103,10 @@
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/mbiconor"
+                    app:srcCompat="@drawable/imgmberror"
                     android:layout_alignParentLeft="true" />
 
-                <ScrollView
+                <android.support.v4.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
@@ -161,7 +161,7 @@
                             android:textColor="#fff" />
 
                     </LinearLayout>
-                </ScrollView>
+                </android.support.v4.widget.NestedScrollView>
 
             </RelativeLayout>
 

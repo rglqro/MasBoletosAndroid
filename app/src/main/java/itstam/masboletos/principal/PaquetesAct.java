@@ -63,7 +63,7 @@ public class PaquetesAct extends AppCompatActivity {
     ArrayList<ImageView> imvpaqxorg,imvevtopaq;
     ArrayList<TextView> txvnombrepaqxorg,txvpreciopaqxorg,btverpaq,btcomprarpack,txvevtopaq;
     LinearLayout llbotones;
-    DecimalFormat df = new DecimalFormat("#.00");
+    DecimalFormat df = new DecimalFormat("#0.00");
     TableRow rowpaqxorg;
     int ancho,alto;
     RelativeLayout rlimagspaq;
@@ -212,7 +212,7 @@ public class PaquetesAct extends AppCompatActivity {
 
             imvpaqxorg.add(new ImageView(getApplicationContext()));
             imvpaqxorg.get(i).setAdjustViewBounds(true);
-            Picasso.get().load(imagpaqxorg.get(i)).error(R.drawable.mbiconor).into(imvpaqxorg.get(i));
+            Picasso.get().load(imagpaqxorg.get(i)).error(R.drawable.imgmberror).into(imvpaqxorg.get(i));
             imvpaqxorg.get(i).setBackgroundColor(Color.TRANSPARENT);
             imvpaqxorg.get(i).setScaleType(ImageView.ScaleType.FIT_CENTER);
             imvpaqxorg.get(i).setTag(i);
@@ -343,7 +343,7 @@ public class PaquetesAct extends AppCompatActivity {
             imvevtopaq.get(i).setLayoutParams(lp);
             imvevtopaq.get(i).setAdjustViewBounds(true);
             imvevtopaq.get(i).setBackgroundColor(Color.TRANSPARENT);
-            Picasso.get().load(imgevtopaq.get(i)).error(R.drawable.mbiconor).into(imvevtopaq.get(i)); Log.e("img",imgevtopaq.get(i));
+            Picasso.get().load(imgevtopaq.get(i)).error(R.drawable.imgmberror).into(imvevtopaq.get(i)); Log.e("img",imgevtopaq.get(i));
             imvevtopaq.get(i).setScaleType(ImageView.ScaleType.FIT_XY);
             llevtospaq.addView(imvevtopaq.get(i));
 
