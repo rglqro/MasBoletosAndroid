@@ -133,7 +133,7 @@ public class UbicacionAct extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             Estados= new String[Elementos.length()];
@@ -192,7 +192,7 @@ public class UbicacionAct extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             latLngs= new String[Elementos.length()];

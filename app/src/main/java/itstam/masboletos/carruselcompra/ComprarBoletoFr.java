@@ -107,14 +107,14 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             funciones= new String[Elementos.length()+1];
@@ -253,7 +253,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         if(v==btmDisponible){
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             if(cantidadBoletos>0) {
-                Log.e("BTMD", "pulsado");
+                //Log.e("BTMD", "pulsado");
                 ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
                 set_DatosCompra("idevento", idevento);
                 set_DatosCompra("Cant_boletos", txvCantidad.getText().toString());

@@ -38,14 +38,14 @@
                 android:background="@color/negro" />
 
             <TextView
-                android:id="@+id/txvnuser"
+                android:id="@+id/txvpuntoventa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/gris2"
                 android:padding="10dp"
                 android:text="ACUDA A CUALQUIERA DE NUESTROS PUNTOS DE VENTA "
                 android:textAlignment="center"
-                android:textColor="@color/negro" />
+                android:textColor="@color/azul_link" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -109,16 +109,11 @@
                 </TableRow>
             </TableLayout>
 
-            <TextView
-                android:id="@+id/txvmensajefnal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gris2"
-                android:clickable="true"
-                android:padding="10dp"
-                android:text="Informacion de la compra que es hecha"
-                android:textAlignment="center"
-                android:textColor="@color/negro" />
+            <View
+                android:id="@+id/view20"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="@color/grisclaro" />
 
             <LinearLayout
                 android:layout_width="match_parent"

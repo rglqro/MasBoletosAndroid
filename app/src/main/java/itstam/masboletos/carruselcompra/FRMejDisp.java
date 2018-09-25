@@ -160,14 +160,14 @@ public class FRMejDisp extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             ((DetallesEventos)getActivity()).cerrar_cargando();
@@ -216,7 +216,7 @@ public class FRMejDisp extends Fragment {
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lptbra.setMargins(1,0,1,0);
-        asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));
+        asientosmar= new ArrayList<String>(); //Log.e("# asientos", String.valueOf(asientosmar.size()));
         idfilaasiento= new ArrayList<String>();
         datalugaresobtenidos= new ArrayList<>();
         asientosxsel=0;
@@ -250,9 +250,9 @@ public class FRMejDisp extends Fragment {
                                     filapack=fila[f]; asientopack= String.valueOf(a+1); idfilapack=idfila[f];
                                     consulta_lugares_paquete();
                                 }
-                                asientosel = fila[f] + String.valueOf(a + 1); Log.e("AsientoSel",asientosel);
-                                asientosmar.add(asientosel); Log.e("# asientos", String.valueOf(asientosmar.size()));
-                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; Log.e("AsientoSel",asientosel);
+                                asientosel = fila[f] + String.valueOf(a + 1); //Log.e("AsientoSel",asientosel);
+                                asientosmar.add(asientosel); //Log.e("# asientos", String.valueOf(asientosmar.size()));
+                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; //Log.e("AsientoSel",asientosel);
                                 idfilaasiento.add(asientosel);
                                 ver_asientos_sel();
                                 id_asientos_sel();
@@ -265,18 +265,18 @@ public class FRMejDisp extends Fragment {
                             btasientos[f][a].setImageResource(R.drawable.asiento_disp);
                             btasientos[f][a].setTag(f+","+(a+1)+",0");
                             asientosel=fila[f]+String.valueOf(a+1);
-                            Log.e("AsientoSel",asientosel);
+                            //Log.e("AsientoSel",asientosel);
                             for(int i =asientosmar.size()-1;i>=0;i--){
                                 if(asientosmar.get(i).equals(asientosel)){
                                     asientosmar.remove(i);
                                 }
                             }
-                            Log.e("# asientos", String.valueOf(asientosmar.size()));
+                            //Log.e("# asientos", String.valueOf(asientosmar.size()));
                             ver_asientos_sel();
 
                             if(idevento.equals("0")){
                                 for(int i=datalugaresobtenidos.size()-1;i>=0;i--){
-                                    String[] parts = datalugaresobtenidos.get(i).split(","); Log.e("idfilaasientopackget",parts[4]);
+                                    String[] parts = datalugaresobtenidos.get(i).split(","); //Log.e("idfilaasientopackget",parts[4]);
                                     if(asientosel.equals(parts[4])){
                                         datalugaresobtenidos.remove(i);
                                     }
@@ -285,13 +285,13 @@ public class FRMejDisp extends Fragment {
                             }
 
                             asientosel=fila[f]+"-"+String.valueOf(a+1)+"-"+idfila[f];
-                            Log.e("idAsientoSel",asientosel);
+                            //Log.e("idAsientoSel",asientosel);
                             for(int i =idfilaasiento.size()-1 ;i>=0;i--){
                                 if(idfilaasiento.get(i).equals(asientosel)){
                                     idfilaasiento.remove(i);
                                 }
                             }
-                            Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
+                            //Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
                             id_asientos_sel();
                             txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
                         }
@@ -362,7 +362,7 @@ public class FRMejDisp extends Fragment {
             } cont++;
         }
         idfilaasientotxt=dato;
-        Log.e("idfilaasiento",idfilaasientotxt);
+        //Log.e("idfilaasiento",idfilaasientotxt);
     }
 
     void consulta_lugares_paquete(){
@@ -376,7 +376,7 @@ public class FRMejDisp extends Fragment {
                     public void onResponse(String response)
                     {
                         ((DetallesEventos)getActivity()).cerrar_cargando();
-                        Log.e("respenvia",response);
+                        //Log.e("respenvia",response);
                         try {
                             Elementos= new JSONArray(response);
                             datalugaresobtenidos.add(asientopack+","+filapack+","+ideventoasientopack+","+idfilapack+","+filapack+asientopack+","+
@@ -386,7 +386,7 @@ public class FRMejDisp extends Fragment {
                                 datalugaresobtenidos.add(asientopack+","+filapack+","+datos.getString("idevento")+","+datos.getString("idfila")+","+filapack+asientopack+
                                         ","+(filapack+"-"+asientopack+"-"+idfilapack)+","+datos.getString("idzona"));
                             }
-                            Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
+                            //Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
                             genera_arreglo_lugarespack();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -436,7 +436,7 @@ public class FRMejDisp extends Fragment {
                 e.printStackTrace();
             }
         }
-        Log.e("arrayhecho",jadataatospack.toString());
+        //Log.e("arrayhecho",jadataatospack.toString());
     }
 
     public void set_DatosCompra(String ndato,String dato){

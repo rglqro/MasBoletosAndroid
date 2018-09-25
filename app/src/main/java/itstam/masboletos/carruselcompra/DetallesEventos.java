@@ -111,7 +111,7 @@ public class DetallesEventos extends AppCompatActivity {
         iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -119,7 +119,7 @@ public class DetallesEventos extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
@@ -219,7 +219,7 @@ public class DetallesEventos extends AppCompatActivity {
     Bitmap imageBlur;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
-        Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
+        //Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
         Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
             @Override
             public void onSuccess() {
@@ -273,7 +273,7 @@ public class DetallesEventos extends AppCompatActivity {
         if(contadorTab==7 && cdtcrono!=null){
             txvcrono.setVisibility(View.INVISIBLE); cdtcrono.cancel();
         }
-        Log.e("posicion tab",String.valueOf(contadorTab));
+        //Log.e("posicion tab",String.valueOf(contadorTab));
         cambiar_tab(contadorTab);
     }
 
@@ -363,5 +363,21 @@ public class DetallesEventos extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         tab_anterior();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(cdtcrono!=null){
+            cdtcrono.cancel();
+        } //Log.e("Destroy","Destroy");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(cdtcrono!=null){
+            cdtcrono.cancel();
+        } //Log.e("Stop","Stop");
     }
 }

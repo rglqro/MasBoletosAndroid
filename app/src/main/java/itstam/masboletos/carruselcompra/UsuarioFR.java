@@ -66,6 +66,7 @@ public class UsuarioFR extends Fragment {
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml,comisionpack,ideventopack="",datalugarespack="";
     String idzona,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa,dataevento;
     Button entrar;
+    String tipousuario;
     TextView txvinfocrearcta;
     JSONArray Elementos;
     EditText edtusuario,edtcontra;
@@ -74,7 +75,7 @@ public class UsuarioFR extends Fragment {
     String msj,usuario,id_cliente;
     int bloqueo_boton=0,dataeventosize=0,cant_boletos;
     private static final int PAYPAL_REQUEST_CODE=7171;
-    private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX).clientId(PAYPAL_CLIENT_ID_sandbox);
+    private static PayPalConfiguration configPP = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_PRODUCTION).clientId(PAYPAL_CLIENT_ID_live);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -189,29 +190,29 @@ public class UsuarioFR extends Fragment {
 
     void iniciar_sesion(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
-        // Initialize a new RequestQueue instance
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/validalogin.php?correo="+edtusuario.getText().toString()+"&contrasenia="+edtcontra.getText().toString();
-        // Initialize a new JsonArrayRequest instance
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
-                new Response.Listener<JSONArray>() {
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url="https://www.masboletos.mx/appMasboletos/validalogin.php";
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
                     @Override
-                    public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                    public void onResponse(String response)
+                    {
                         try {
-                            Elementos = response;
+                            Elementos = new JSONArray(response);
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 resp=datos.getBoolean("respuesta");
                                 msj=datos.getString("mensaje");
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
+                                tipousuario=datos.getString("tipousuario");
                                 ((DetallesEventos)getActivity()).set_DatosCompra("email",edtusuario.getText().toString());
 
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("usuario_s",usuario,0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("contrasena_s",edtcontra.getText().toString(),0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("id_cliente",id_cliente,0);
+                                ((DetallesEventos)getActivity()).set_DatosUsuario("tipousuario",tipousuario,0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("validasesion","true",1);
                             }
                             ((DetallesEventos)getActivity()).cerrar_cargando();
@@ -226,17 +227,26 @@ public class UsuarioFR extends Fragment {
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener()
+                {
                     @Override
-                    public void onErrorResponse(VolleyError error){
-                        // Do something when error occurred
-                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                    public void onErrorResponse(VolleyError error)
+                    {
                         ((DetallesEventos)getActivity()).cerrar_cargando();
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
-                }
-        );
-        // Add JsonArrayRequest to the RequestQueue
-        requestQueue.add(jsonArrayRequest);
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("correo", edtusuario.getText().toString());//Log.e("dato",String.valueOf(dataeventosize));
+                params.put("contrasenia", edtcontra.getText().toString());//Log.e("fila",fila);
+                return params;
+            }
+        };
+        queue.add(strRequest);
     }
 
     void checar_tipo_pago(){
@@ -263,18 +273,19 @@ public class UsuarioFR extends Fragment {
     }
 
     private void preregistro_paypal(final String url){
-        ((DetallesEventos)getActivity()).iniciar_cargando(); Log.e("URL",URL);
+        ((DetallesEventos)getActivity()).iniciar_cargando(); //Log.e("URL",URL);
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        Log.e("URL",url);
+        //Log.e("URL",url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("Resultado registro",response);
+                        //Log.e("Resultado registro",response);
                         procesar_pagoPP();
                         folio=response;
+                        folio = folio.replace(" ", "").replace("\n", "");
                     }
                 }, new Response.ErrorListener() {
 
@@ -305,7 +316,7 @@ public class UsuarioFR extends Fragment {
                             folio = folio.replace(" ", "").replace("\n", "");
                             procesar_pagoPP();
                         }
-                        Log.e("respenvia",response);
+                        //Log.e("respenvia",response);
                     }
                 },
                 new Response.ErrorListener()
@@ -321,27 +332,27 @@ public class UsuarioFR extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError
             {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
-                params.put("fila", fila);Log.e("fila",fila);
-                params.put("importe", precio);Log.e("dato",precio);
-                params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));//Log.e("dato",String.valueOf(dataeventosize));
+                params.put("fila", fila);//Log.e("fila",fila);
+                params.put("importe", precio);//Log.e("dato",precio);
+                params.put("cantidad", String.valueOf(cant_boletos));//Log.e("dato",String.valueOf(cant_boletos));
                 params.put("cargoxservicio", comisionpack);
-                params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
-                params.put("zona", idzona);Log.e("dato",idzona);
+                params.put("cargotdc", cargoxservicio);//Log.e("dato",comisionpack);
+                params.put("zona", idzona);//Log.e("dato",idzona);
                 params.put("numerado", numerado);
-                params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
-                params.put("idfila", idfila); Log.e("idfila",idfila);
-                params.put("inicolumna", inicolumna); Log.e("inicolumna",inicolumna);
-                params.put("fincolumna", fincolumna); Log.e("fincolumna",fincolumna);
-                params.put("filaasientos", filaasientos); Log.e("filaasientos",filaasientos);
-                params.put("idfilafilaasiento", idfilafilaasiento);Log.e("idfilafilaasiento",idfilafilaasiento);
-                params.put("formadepago", fpago);Log.e("dato",fpago);
-                params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
-                params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
-                params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
-                params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
+                params.put("idcliente",id_cliente);//Log.e("dato",id_cliente);
+                params.put("idfila", idfila); //Log.e("idfila",idfila);
+                params.put("inicolumna", inicolumna); //Log.e("inicolumna",inicolumna);
+                params.put("fincolumna", fincolumna); //Log.e("fincolumna",fincolumna);
+                params.put("filaasientos", filaasientos); //Log.e("filaasientos",filaasientos);
+                params.put("idfilafilaasiento", idfilafilaasiento);//Log.e("idfilafilaasiento",idfilafilaasiento);
+                params.put("formadepago", fpago);//Log.e("dato",fpago);
+                params.put("txtformaentrega", idformaentrega);//Log.e("dato",idformaentrega);
+                params.put("idpaquete", ideventopack);//Log.e("dato",ideventopack);
+                params.put("Comisionpaquete", comisionpack);//Log.e("dato",comisionpack);
+                params.put("dataEventos", dataevento.toString());//Log.e("dato",dataevento);
                 params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", datalugarespack); Log.e("datalugpack",datalugarespack);
+                params.put("dataeventozonafilasiento", datalugarespack); //Log.e("datalugpack",datalugarespack);
                 return params;
             }
         };
@@ -380,7 +391,7 @@ public class UsuarioFR extends Fragment {
                         idpp=json3.getString("id");
                         statuspp=json3.getString("state");
                         Toast.makeText(getActivity(),"Fecha: "+fechappp+"\nid: "+idpp,Toast.LENGTH_LONG).show();
-                        Log.e("Datos Pago Paypal","Fecha: "+fechappp+"\nid: "+idpp);
+                        //Log.e("Datos Pago Paypal","Fecha: "+fechappp+"\nid: "+idpp);
                         actualizaciondepago("0");
                     }catch (Exception e){}
                 }
@@ -397,14 +408,14 @@ public class UsuarioFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url="https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error; Log.e("URL",url);
-        Log.e("URL",url);
+        String url="https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error; //Log.e("URL",url);
+        //Log.e("URL",url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("Resultado actualizacion",response);
+                        //Log.e("Resultado actualizacion",response);
                         if(error.equals("0")){
                             envio_mail(response);
                         }
@@ -427,14 +438,14 @@ public class UsuarioFR extends Fragment {
     public void envio_mail(final String fe){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url="https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2"; Log.e("URL",url);
-        Log.e("URL",url);
+        String url="https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2"; //Log.e("URL",url);
+        //Log.e("URL",url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String resultado) {
-                        Log.e("Resultado actualizacion",resultado);
+                        //Log.e("Resultado actualizacion",resultado);
                         ((DetallesEventos)getActivity()).cerrar_cargando();
                         ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
                         ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);

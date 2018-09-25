@@ -87,7 +87,7 @@ public class FPagoFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -95,7 +95,7 @@ public class FPagoFR extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             cant_datos=0;
                             Elementos = response;
@@ -180,7 +180,7 @@ public class FPagoFR extends Fragment {
                     datoscargos = idtipopagom.get(pos) + ",";
                     datoscargos += ptajecargo.get(pos) + ",";
                     datoscargos += itefijo.get(pos);
-                    Log.e("datoscargos", datoscargos);
+                    //Log.e("datoscargos", datoscargos);
                     String [] fpago= spTitFP2.get(pos).split("-");
                     set_DatosCompra("datoscargos", datoscargos);
                     set_DatosCompra("formapago", fpago[0]);

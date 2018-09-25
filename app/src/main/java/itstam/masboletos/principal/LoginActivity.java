@@ -1,6 +1,8 @@
 package itstam.masboletos.principal;
 import itstam.masboletos.R;
+import itstam.masboletos.carruselcompra.DetallesEventos;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,16 +22,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edtcorreo,edtcontrasena;
@@ -39,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     ImageView imvavatar;
     String msj,usuario,id_cliente,correo,contrasena,tipousuario;
     Boolean resp;
-
+    ProgressDialog dialogcarg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(bloqueo_boton==1){
+                    correo=edtcorreo.getText().toString();
+                    contrasena=edtcontrasena.getText().toString();
                     iniciar_sesion();
                 }else{
                     Toast.makeText(LoginActivity.this,"Datos incorrectos, verifiquelos",Toast.LENGTH_LONG).show();
@@ -118,19 +127,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void iniciar_sesion(){
-        // Initialize a new RequestQueue instance
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        correo=edtcorreo.getText().toString(); contrasena=edtcontrasena.getText().toString();
-        String URL="https://www.masboletos.mx/appMasboletos/validalogin.php?correo="+correo+"&contrasenia="+contrasena;
-        // Initialize a new JsonArrayRequest instance
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
-                new Response.Listener<JSONArray>() {
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        iniciar_cargando();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url="https://www.masboletos.mx/appMasboletos/validalogin.php";
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
                     @Override
-                    public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                    public void onResponse(String response)
+                    {
                         try {
-                            Elementos = response;
+                            Elementos = new JSONArray(response);
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 resp=datos.getBoolean("respuesta");
@@ -153,21 +160,32 @@ public class LoginActivity extends AppCompatActivity {
                             }else{
                                 Toast.makeText(LoginActivity.this,msj,Toast.LENGTH_LONG).show();
                             }
+                            cerrar_cargando();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 },
-                new Response.ErrorListener(){
+                new Response.ErrorListener()
+                {
                     @Override
-                    public void onErrorResponse(VolleyError error){
-                        // Do something when error occurred
-                        Toast.makeText(LoginActivity.this,"Error al iniciar sesión",Toast.LENGTH_SHORT).show();
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        cerrar_cargando();
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
-                }
-        );
-        // Add JsonArrayRequest to the RequestQueue
-        requestQueue.add(jsonArrayRequest);
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("correo", correo);
+                params.put("contrasenia", contrasena);
+                return params;
+            }
+        };
+        queue.add(strRequest);
     }
 
     void guarda_sesion() {
@@ -196,5 +214,18 @@ public class LoginActivity extends AppCompatActivity {
 
     public void regresar(View view){
         finish();
+    }
+
+    public void iniciar_cargando(){
+        dialogcarg= new ProgressDialog(this,R.style.ProgressDialogStyle);
+        dialogcarg.setTitle("Cargando información");
+        dialogcarg.setMessage("  Espere...");
+        dialogcarg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialogcarg.setCancelable(false);
+        dialogcarg.show();
+    }
+
+    public void cerrar_cargando(){
+        dialogcarg.dismiss();
     }
 }

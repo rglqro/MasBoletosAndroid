@@ -25,8 +25,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.Result;
+
 import itstam.masboletos.R;
 import itstam.masboletos.acciones_perfil.*;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Perfil_Fr extends Fragment {
     View vista;
@@ -37,7 +40,7 @@ public class Perfil_Fr extends Fragment {
     TextView txvnuser;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
-    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade;
+    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade, btvalidaboleto;
 
     public Perfil_Fr() {
         // Required empty public constructor
@@ -63,8 +66,18 @@ public class Perfil_Fr extends Fragment {
         btacercade=vista.findViewById(R.id.btacercade);
         llbotonesuser1=vista.findViewById(R.id.llbotonesuser1);
         llbotonesuser2=vista.findViewById(R.id.llbotonesuser2);
+        btvalidaboleto=vista.findViewById(R.id.btvalidaboleto);
 
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
+
+        checar_sesion();
+        eventos_botones();
+
+        return vista;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    void checar_sesion(){
         nuser=prefe_sesion.getString("usuario_s", "");
         tipousuario=prefe_sesion.getString("tipousuario","0");
         valida_sesion=prefe_sesion.getBoolean("validasesion",false);
@@ -76,6 +89,7 @@ public class Perfil_Fr extends Fragment {
                 llbotonesuser2.setVisibility(View.GONE);
             }
             btcerrarsesion.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
                 @Override
                 public void onClick(View view) {
                     cierra_sesion();
@@ -95,6 +109,9 @@ public class Perfil_Fr extends Fragment {
             btcerrarsesion.setVisibility(View.GONE);
             llbotonesuser2.setVisibility(View.GONE);
         }
+    }
+
+    void eventos_botones(){
         btmeventos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,11 +119,6 @@ public class Perfil_Fr extends Fragment {
                 startActivity(mainIntent);
             }
         });
-        eventos_botones();
-        return vista;
-    }
-
-    void eventos_botones(){
         btavisopriv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,6 +144,13 @@ public class Perfil_Fr extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mainIntent = new Intent().setClass(getActivity(), acercade.class);
+                startActivity(mainIntent);
+            }
+        });
+        btvalidaboleto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), ScannerQR.class);
                 startActivity(mainIntent);
             }
         });
@@ -257,13 +276,8 @@ public class Perfil_Fr extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
+    public void onPause() {
+        super.onPause();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 }

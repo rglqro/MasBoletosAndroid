@@ -43,6 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import itstam.masboletos.R;
+import itstam.masboletos.UbicacionAct;
 import itstam.masboletos.acciones_perfil.MisEventos;
 
 
@@ -51,9 +52,9 @@ import itstam.masboletos.acciones_perfil.MisEventos;
  */
 public class FRFinalizarCompra extends Fragment {
 
-    TextView txvtitulofc,txvmsjfinal,txvntran,txvfolios;
+    TextView txvtitulofc,txvntran,txvfolios,txvpuntosventa;
     View vista;
-    String titulo,msjfinal,ntransac,folios,fpago,idevento,idfpago;
+    String titulo,ntransac,folios,fpago,idevento,idfpago;
     SharedPreferences prefe;
     Button btseguir,btmiseventos;
     WebView myWebView;
@@ -73,13 +74,13 @@ public class FRFinalizarCompra extends Fragment {
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         txvtitulofc=(TextView)vista.findViewById(R.id.txvtitulofc);
         llinfofinal=vista.findViewById(R.id.rlinfofinal);
-        txvmsjfinal=(TextView)vista.findViewById(R.id.txvmensajefnal);
         txvntran=(TextView)vista.findViewById(R.id.txvntran);
         txvfolios=(TextView)vista.findViewById(R.id.txvfolios);
         btseguir=(Button)vista.findViewById(R.id.btseguir);
         imvqrcode=vista.findViewById(R.id.imvqrcode);
         myWebView = (WebView) vista.findViewById(R.id.wb1);
         btmiseventos=vista.findViewById(R.id.btmisboletosfincompra);
+        txvpuntosventa=vista.findViewById(R.id.txvpuntoventa);
         llqr=vista.findViewById(R.id.llqro); llqr.setVisibility(View.GONE);
 
         recibir_datos();
@@ -93,12 +94,7 @@ public class FRFinalizarCompra extends Fragment {
         idevento=prefe.getString("idevento","0");
         idfpago=prefe.getString("idformaentrega","0");
         if(fpago.equals("5")) {
-            msjfinal = "<br>" +
-                    "GRACIAS POR HACER USOS DE NUESTROS SERVICIOS <br><br><br>" +
-                    "<a href=\"https://www.masboletos.mx\">masboletos.mx</a>";
             txvtitulofc.setText(Html.fromHtml(titulo));
-            txvmsjfinal.setText(Html.fromHtml(msjfinal));
-            txvmsjfinal.setClickable(true);
             if(idfpago.equals("2")){
                 llqr.setVisibility(View.VISIBLE);
                 MultiFormatWriter mfwQR = new MultiFormatWriter();
@@ -139,6 +135,14 @@ public class FRFinalizarCompra extends Fragment {
                 ((DetallesEventos)getActivity()).finish();
             }
         });
+        txvpuntosventa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), UbicacionAct.class);
+                startActivity(mainIntent);
+                ((DetallesEventos)getActivity()).finish();
+            }
+        });
     }
 
     void consulta_folios(){
@@ -150,8 +154,8 @@ public class FRFinalizarCompra extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("Resultado actualizacion",response);
-                        folios=response;
+                        //Log.e("Resultado actualizacion",response);
+                        folios=response; folios=folios.replace(" ","").replace("\n","");
                         txvntran.setText(ntransac);
                         txvfolios.setText(folios);
                     }
