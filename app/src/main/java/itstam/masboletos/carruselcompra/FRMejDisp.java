@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -49,7 +52,7 @@ import itstam.masboletos.R;
 public class FRMejDisp extends Fragment {
 
     Double precio, subtotal,comision, cargoTC;
-    int Cant_Boletos,cont_asientos=1,ancho,alto,asientosxsel=0;
+    int Cant_Boletos,cont_asientos=1,ancho,alto,asientosxsel=0,filamayor=0;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
     String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
@@ -66,6 +69,7 @@ public class FRMejDisp extends Fragment {
     String asientosel;
     JSONObject jodataastospack =new JSONObject();
     JSONArray jadataatospack= new JSONArray();
+    NestedScrollView scvertAsientos;
     public FRMejDisp() {
         // Required empty public constructor
     }
@@ -84,6 +88,7 @@ public class FRMejDisp extends Fragment {
         TBLasientos=(TableLayout)vista.findViewById(R.id.TBLAsientos);
         llleyendaasientos=(LinearLayout)vista.findViewById(R.id.llyLeyendaAsientos);
         txvtotalasientos=vista.findViewById(R.id.txvtotalasientos);
+        scvertAsientos=vista.findViewById(R.id.scvertAsientos);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -115,7 +120,7 @@ public class FRMejDisp extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     void llenar_info(){
         set_DatosCompra("filaasientos","");
-        if(numerado.equals("0")) {
+        if(numerado.equals("0")) { // si numerado es 0 solo se motrará la informacion obtenida de los boletos
             asientos= String.valueOf(Cant_Boletos);
             set_DatosCompra("asientos",asientos);
             TXVAsientos.setText(asientos);
@@ -127,15 +132,15 @@ public class FRMejDisp extends Fragment {
                 }
             });
             llleyendaasientos.setVisibility(View.GONE);
-        }else{
-            if(idvermapa.equals("1")) {
+        }else{ // sino enrtrará aqui en donde checará si el usuario ha decidido elegir sus lugares o quedarse con los que da el servidor
+            if(idvermapa.equals("1")) { //si es 1 procederá a consultar los lugares disponibles
                 TXVAsientos.setText("");
                 if(idevento.equals("0")) {// si es el idevento es 0 significa que se va a trabajar con el idpaquete
                     consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacasPaquete.php?idpaquete="+ideventopack+"&idzona="+idsubzona);
                 }else{
                     consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);
                 }
-            }else{
+            }else{ /*sino solo se encargará de pintar los lugares obtenidos del servidor*/
                 llleyendaasientos.setVisibility(View.GONE);
                 btComprar.setBackgroundResource(R.color.verdemb);
                 TXVAsientos.setText(asientos);
@@ -160,14 +165,14 @@ public class FRMejDisp extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        //Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             ((DetallesEventos)getActivity()).cerrar_cargando();
@@ -185,6 +190,8 @@ public class FRMejDisp extends Fragment {
                                 fila[i]=fila[i].replace(" ","");
                                 inicia[i]=datos.getInt("inicia");
                                 termina[i]=datos.getInt("termina");
+                                if(filamayor<datos.getInt("termina")) /*Este if obtiene la fila mas larga para que el arreglo de asientos pueda generarla sin conflictos con las filas más cortas*/
+                                filamayor=datos.getInt("termina");
                                 dispfila[i]=datos.getString("asientos");
                                 idfila[i]=datos.getString("id");
                                 ideventoasientopack=datos.getString("idevento");
@@ -210,15 +217,16 @@ public class FRMejDisp extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void pintar_asientos(){
+        scvertAsientos.getLayoutParams().height=alto/3;
         txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
-        btasientos= new ImageButton[fila.length][termina[0]];
-        txvnombreasiento = new TextView[fila.length][termina[0]];
+        btasientos= new ImageButton[fila.length][filamayor];
+        txvnombreasiento = new TextView[fila.length][filamayor];
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lptbra.setMargins(1,0,1,0);
-        asientosmar= new ArrayList<String>(); //Log.e("# asientos", String.valueOf(asientosmar.size()));
-        idfilaasiento= new ArrayList<String>();
-        datalugaresobtenidos= new ArrayList<>();
+        asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));/*Aqui se iran almacenando los asientos seleccionados de la sig forma A1,A2,A3*/
+        idfilaasiento= new ArrayList<String>();/*Aqui se almacenaran lo asientos de la siguiente forma: A-1-13256,A-2-13256,A-3-13256 (FILA-#asiento-IDFILA)*/
+        datalugaresobtenidos= new ArrayList<>(); /*En caso de ser paquete aqui irán los asientos selecionados*/
         asientosxsel=0;
         for (int j=0;j<fila.length;j++) {
             rowasientos = new TableRow(getActivity());
@@ -229,7 +237,7 @@ public class FRMejDisp extends Fragment {
                 llasientotexto.setOrientation(LinearLayout.VERTICAL);
                 btasientos[j][i - 1] = new ImageButton(getActivity());
                 btasientos[j][i - 1].setId(j*100+i);
-                btasientos[j][i-1].setTag(j+","+i+",0");
+                btasientos[j][i-1].setTag(j+","+i+",0");/*El tag servirá para indicar si es seleccionado quedando asi: 0,1,0 (INDICELISTAFILA,ASIENTO,STATUSPULSADO)*/
                 btasientos[j][i - 1].setBackgroundColor(Color.TRANSPARENT);
                 btasientos[j][i - 1].setLayoutParams(new LinearLayout.LayoutParams(ancho/15, alto/15));
                 //btasientos[j][i - 1].setAdjustViewBounds(true);
@@ -238,62 +246,62 @@ public class FRMejDisp extends Fragment {
                     @SuppressLint("ResourceType")
                     @Override
                     public void onClick(View v) {
-                        String[] coord= ((String) v.getTag()).split(",");
-                        int f=0,a=0;
-                        f=Integer.parseInt(coord[0]); a=Integer.parseInt(coord[1])-1;
-                        if (coord[2].equals("0")) { // recibe texto de la sig forma 0,51,0 siendo fila,asiento,estado seleccion donde 0 es no pulsado y 1 lo es
-                            if(asientosmar.size()<Cant_Boletos) {
+                        String[] coord= ((String) v.getTag()).split(",");/*Aqui se separa el tag con un split de comas,*/
+                        int f=0,a=0;/*f será el indice de fila, a el indice de asiento*/
+                        f=Integer.parseInt(coord[0]); a=Integer.parseInt(coord[1])-1;/*Recordar que a es el asiento entonces se le resta 1 por la posicion del arreglo en donde el asiento 1 irá en la poscion 0 del arreglo*/
+                        if (coord[2].equals("0")) { // recibe texto de la sig forma 0,51,0 siendo fila,asiento,estado seleccion donde 0 es no pulsado y 1 lo es, sino es pulsado lo cambia a seleccionado
+                            if(asientosmar.size()<Cant_Boletos) { /*Si los asientos no han sido seleccionados todos deja avanzar*/
                                 asientosxsel++;
                                 btasientos[f][a].setImageResource(R.drawable.asiento_sel);
-                                btasientos[f][a].setTag(f + "," + (a + 1) + ",1");
-                                if(idevento.equals("0")){
+                                btasientos[f][a].setTag(f + "," + (a + 1) + ",1"); /*Si llegamos aqui es que el asiento puede ser seleccionado y su estatus cambia a 1 de que fue seleccionado asignandoles 0,1,1*/
+                                if(idevento.equals("0")){/*Si almacena las almacena de la mima forma en otras variables*/
                                     filapack=fila[f]; asientopack= String.valueOf(a+1); idfilapack=idfila[f];
                                     consulta_lugares_paquete();
                                 }
-                                asientosel = fila[f] + String.valueOf(a + 1); //Log.e("AsientoSel",asientosel);
-                                asientosmar.add(asientosel); //Log.e("# asientos", String.valueOf(asientosmar.size()));
-                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; //Log.e("AsientoSel",asientosel);
-                                idfilaasiento.add(asientosel);
-                                ver_asientos_sel();
-                                id_asientos_sel();
+                                asientosel = fila[f] + String.valueOf(a + 1); Log.e("AsientoSel",asientosel); /*Esta variable crea el asiento seleccionado A1*/
+                                asientosmar.add(asientosel); Log.e("# asientos", String.valueOf(asientosmar.size())); /*Se agrega a la lista que los almacenará*/
+                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; Log.e("AsientoSel",asientosel); /*Aqui se crea el asiento A-1-13256*/
+                                idfilaasiento.add(asientosel); /*Se agrega a su lista correspondiente*/
+                                ver_asientos_sel();/*Este metodo imprimirá los asientos que se vayan seleccionando separandolos por comas*/
+                                id_asientos_sel();/*Este metodo hará lo mismo que el metodo anterior*/
                             }else{
                                 ((DetallesEventos)getActivity()).AlertaBoton("Limite Alcanzado","Ya ha seleccionado todos sus boletos").show();
                             }
                             txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
                         }else{
                             asientosxsel--;
-                            btasientos[f][a].setImageResource(R.drawable.asiento_disp);
-                            btasientos[f][a].setTag(f+","+(a+1)+",0");
-                            asientosel=fila[f]+String.valueOf(a+1);
-                            //Log.e("AsientoSel",asientosel);
-                            for(int i =asientosmar.size()-1;i>=0;i--){
+                            btasientos[f][a].setImageResource(R.drawable.asiento_disp); /*Aqui se cambia la imagen a disponible de nuevo*/
+                            btasientos[f][a].setTag(f+","+(a+1)+",0"); /*y su status cambia a 0 que es dispobible*/
+                            asientosel=fila[f]+String.valueOf(a+1); /*se crea nuevamente el asiento seleccionado "A1"*/
+                            Log.e("AsientoSel",asientosel);
+                            for(int i =asientosmar.size()-1;i>=0;i--){ /*y este for busca el asiento sleccionado para borrarlo de la lista*/
                                 if(asientosmar.get(i).equals(asientosel)){
                                     asientosmar.remove(i);
                                 }
                             }
-                            //Log.e("# asientos", String.valueOf(asientosmar.size()));
-                            ver_asientos_sel();
+                            Log.e("# asientos", String.valueOf(asientosmar.size()));
+                            ver_asientos_sel();/* y se vuleven a pintar los asientos restantes */
 
                             if(idevento.equals("0")){
-                                for(int i=datalugaresobtenidos.size()-1;i>=0;i--){
-                                    String[] parts = datalugaresobtenidos.get(i).split(","); //Log.e("idfilaasientopackget",parts[4]);
-                                    if(asientosel.equals(parts[4])){
+                                for(int i=datalugaresobtenidos.size()-1;i>=0;i--){/*En los paquetes de la misma forma se busca borrar el asiento que se desmarcó*/
+                                    String[] parts = datalugaresobtenidos.get(i).split(","); Log.e("idfilaasientopackget",parts[4]);
+                                    if(asientosel.equals(parts[4])){/*la estructura viene separada por comas en donde se extrae la posicion 4 que es filaasiento "A1" para ser comparado con el seleccionado y borrarlo de la lista*/
                                         datalugaresobtenidos.remove(i);
                                     }
                                 }
                                 genera_arreglo_lugarespack();
                             }
 
-                            asientosel=fila[f]+"-"+String.valueOf(a+1)+"-"+idfila[f];
-                            //Log.e("idAsientoSel",asientosel);
-                            for(int i =idfilaasiento.size()-1 ;i>=0;i--){
+                            asientosel=fila[f]+"-"+String.valueOf(a+1)+"-"+idfila[f];/* se crea la estructura A-1-1256*/
+                            Log.e("idAsientoSel",asientosel);
+                            for(int i =idfilaasiento.size()-1 ;i>=0;i--){/* y este for se encarga de eliminarlo de los seleccionados*/
                                 if(idfilaasiento.get(i).equals(asientosel)){
                                     idfilaasiento.remove(i);
                                 }
                             }
-                            //Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
+                            Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
                             id_asientos_sel();
-                            txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);
+                            txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);/*Y aqui se le actualiza al usuario cuantos le faltan por seleccionar*/
                         }
                         if(asientosmar.size()==Cant_Boletos){
                             btComprar.setBackgroundResource(R.color.verdemb);
@@ -316,9 +324,11 @@ public class FRMejDisp extends Fragment {
                 llasientotexto.addView(txvnombreasiento[j][i-1]);
 
                 rowasientos.addView(llasientotexto);
+                rowasientos.setGravity(Gravity.CENTER);
                 cont_asientos++;
             }
             TBLasientos.addView(rowasientos);
+            TBLasientos.setGravity(Gravity.CENTER_HORIZONTAL);
         }
         btComprar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,7 +372,7 @@ public class FRMejDisp extends Fragment {
             } cont++;
         }
         idfilaasientotxt=dato;
-        //Log.e("idfilaasiento",idfilaasientotxt);
+        Log.e("idfilaasiento",idfilaasientotxt);
     }
 
     void consulta_lugares_paquete(){
@@ -376,18 +386,18 @@ public class FRMejDisp extends Fragment {
                     public void onResponse(String response)
                     {
                         ((DetallesEventos)getActivity()).cerrar_cargando();
-                        //Log.e("respenvia",response);
+                        Log.e("respenvia",response);
                         try {
                             Elementos= new JSONArray(response);
                             datalugaresobtenidos.add(asientopack+","+filapack+","+ideventoasientopack+","+idfilapack+","+filapack+asientopack+","+
-                                    (filapack+"-"+asientopack+"-"+idfilapack)+","+idzonapack);
+                                    (filapack+"-"+asientopack+"-"+idfilapack)+","+idzonapack);/*(1,A,1380,13256,A1,A-1-13256,13856) Aqui se crea la lista con la informacion de los asiento de los paquetes donde esta insercion a la lista son del asiento que ha elegido el usuario en la app*/
                             for(int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 datalugaresobtenidos.add(asientopack+","+filapack+","+datos.getString("idevento")+","+datos.getString("idfila")+","+filapack+asientopack+
-                                        ","+(filapack+"-"+asientopack+"-"+idfilapack)+","+datos.getString("idzona"));
+                                        ","+(filapack+"-"+asientopack+"-"+idfilapack)+","+datos.getString("idzona"));/*Si la consulta es correcta se obtiene un JSON del servidor con el resto de la informacion y tambien se agrega a la lista separadas por comas*/
                             }
-                            //Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
-                            genera_arreglo_lugarespack();
+                            Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
+                            genera_arreglo_lugarespack();/*Una vez generada la lista se construye el arreglo JSON que se enviará al servidor*/
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -436,7 +446,7 @@ public class FRMejDisp extends Fragment {
                 e.printStackTrace();
             }
         }
-        //Log.e("arrayhecho",jadataatospack.toString());
+        Log.e("arrayhecho",jadataatospack.toString());
     }
 
     public void set_DatosCompra(String ndato,String dato){

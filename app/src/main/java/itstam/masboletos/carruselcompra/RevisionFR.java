@@ -89,7 +89,7 @@ public class RevisionFR extends Fragment {
         txvseccion.setText("MX $"+df.format(precio*Integer.parseInt(cant_boletos)));
         CargosServ=((precio*(ptecargo/100))+imtecargo);
         total+=CargosServ*Integer.parseInt(cant_boletos);
-        //Log.e("Cargo serv ","$"+String.valueOf(CargosServ));
+        Log.e("Cargo serv ","$"+String.valueOf(CargosServ));
         txvasiento.setText(asiento);
         txvfila.setText(fila);
         txvcarserv.setText("MX $"+df.format(CargosServ)+" x "+cant_boletos);

@@ -40,7 +40,7 @@ import itstam.masboletos.SpinnerAdater;
 public class FPagoFR extends Fragment {
     View vista;
     String datoscargos,ideventopack;
-    ArrayList<String>idtipopagom,ptajecargo,itefijo,spTitFP,spDescFP,spTitFP2,spDescFP2;
+    ArrayList<String>idtipopagom,ptajecargo,itefijo,spDescFP,spTitFP,spDescFP2;
     ArrayList<Integer>spImagesFP,spImagesFP2;
     ListView lvfpago;
     int cant_datos=0,idsel=0,pos=0,alto,ancho;
@@ -65,8 +65,6 @@ public class FPagoFR extends Fragment {
         idevento=prefe.getString("idevento","");
         spImagesFP= new ArrayList<Integer>();
         spImagesFP.add(R.drawable.puntoventa); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.drawable.oxxopago); spImagesFP.add(R.mipmap.paypal);
-        spTitFP= new ArrayList<String>();
-        spTitFP.add("Pago en punto de venta"); spTitFP.add("Tarjeta de Crédito "); spTitFP.add("Tarjeta de Débito"); spTitFP.add("Oxxo "); spTitFP.add("PayPal");
         spDescFP= new ArrayList<String>();
 
         if(idevento.equals("0")){
@@ -87,7 +85,7 @@ public class FPagoFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        //Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -95,12 +93,12 @@ public class FPagoFR extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             cant_datos=0;
                             Elementos = response;
                             spImagesFP2= new ArrayList<Integer>();
-                            spTitFP2= new ArrayList<String>();
+                            spTitFP= new ArrayList<String>();
                             spDescFP2= new ArrayList<String>();
                             idtipopagom= new ArrayList<String>();
                             ptajecargo= new ArrayList<String>();
@@ -115,7 +113,7 @@ public class FPagoFR extends Fragment {
                                     idtipopagom.add( datos.getString("IdTipoPago"));
                                     ptajecargo.add(cargopte);
                                     itefijo.add(cargofijo);
-                                    spTitFP2.add(datos.getString("texto"));
+                                    spTitFP.add(datos.getString("texto"));
                                     spDescFP2.add("% Cargo "+cargopte+" + Cargo $"+cargofijo);
                                     spImagesFP2.add(spImagesFP.get(Integer.parseInt(datos.getString("IdTipoPago"))-1));
                                     cant_datos++;
@@ -157,7 +155,7 @@ public class FPagoFR extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void LlenadoLista(){
-        SpinnerAdater adapter= new SpinnerAdater(getActivity(),spTitFP2,spImagesFP2,spDescFP2,ancho,alto);
+        SpinnerAdater adapter= new SpinnerAdater(getActivity(),spTitFP,spImagesFP2,spDescFP2,ancho,alto);
         lvfpago.setAdapter(null);
         lvfpago.setAdapter(adapter);
         ((DetallesEventos)getActivity()).cerrar_cargando();
@@ -179,11 +177,11 @@ public class FPagoFR extends Fragment {
                 if(idsel!=0) {
                     datoscargos = idtipopagom.get(pos) + ",";
                     datoscargos += ptajecargo.get(pos) + ",";
-                    datoscargos += itefijo.get(pos);
-                    //Log.e("datoscargos", datoscargos);
-                    String [] fpago= spTitFP2.get(pos).split("-");
+                    datoscargos += itefijo.get(pos);/*esta variable almacena los cargos por forma de entrega separadas por coma "5,5,5"(idformapago,%cargo,$cargo)*/
+                    Log.e("datoscargos", datoscargos);
+                    Log.e("spTitFP",spTitFP.get(pos));
                     set_DatosCompra("datoscargos", datoscargos);
-                    set_DatosCompra("formapago", fpago[0]);
+                    set_DatosCompra("formapago", spTitFP.get(pos));
                     set_DatosCompra("idformapago", idtipopagom.get(pos));
                     FEntregaFr fEntregaFr = new FEntregaFr();
                     ((DetallesEventos) getActivity()).replaceFragment(fEntregaFr);

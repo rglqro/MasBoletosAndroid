@@ -91,12 +91,11 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         BtMenos.setOnClickListener(this);
         btmDisponible.setOnClickListener(this);
         if(cantidadBoletos==0){ BtMenos.setClickable(false);} else{ BtMenos.setClickable(true);btmDisponible.setBackgroundResource(R.color.verdemb);}
-        if(eventogrupo.equals("0")){
+        if(eventogrupo.equals("0")){/*si eventogrupo es 0 significa que el evento solo tiene una fecha sino será necesario consultar el resto de ellas*/
             TXVSFuncion2.setVisibility(View.GONE);
             TXVEFuncion.setVisibility(View.GONE);
             spfuncion.setVisibility(View.GONE);
-        }else{
-
+        }else{/*sino el usuario tendra que elgir una de las fo¿unciones disponibles para el evento*/
             BtMas.setClickable(false);
             BtMenos.setClickable(false);
             Consulta_Funciones_Evento();
@@ -107,14 +106,14 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; //Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             funciones= new String[Elementos.length()+1];
@@ -164,7 +163,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemIdAtPosition(position)!=0){
-                    idevento=idevento_funcion[position];
+                    idevento=idevento_funcion[position];//aqui se reemplaza el id de evento por uno de funcion que es con el que se trabajará el resto de la app
                     fecha=fechaevento[position];
                     hora=horaevento[position];
                     set_DatosCompra("fechaevento",fecha);
@@ -221,7 +220,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v==BtMas){
+        if(v==BtMas){/*El usuario podra elegir un maiomo de 8 boletos*/
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             cantidadBoletos++;
             txvCantidad.setText(String.valueOf(cantidadBoletos));
@@ -233,7 +232,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 BtMas.setClickable(false);
             }
         }
-        if(v==BtMenos){
+        if(v==BtMenos){/**/
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             cantidadBoletos--;
             txvCantidad.setText(String.valueOf(cantidadBoletos));
@@ -250,10 +249,10 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
                 BtMas.setClickable(true);
             }
         }
-        if(v==btmDisponible){
+        if(v==btmDisponible){/*al dar click se transfiere la inforacion para seguir con el proceso*/
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             if(cantidadBoletos>0) {
-                //Log.e("BTMD", "pulsado");
+                Log.e("BTMD", "pulsado");
                 ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
                 set_DatosCompra("idevento", idevento);
                 set_DatosCompra("Cant_boletos", txvCantidad.getText().toString());

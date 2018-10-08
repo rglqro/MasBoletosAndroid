@@ -130,7 +130,7 @@ public class buzonsuger extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             Estados= new String[Elementos.length()+1];
@@ -186,7 +186,7 @@ public class buzonsuger extends AppCompatActivity {
                     public void onResponse(String response)
                     {
                         cerrar_cargando();
-                        //Log.e("respenvia",response);
+                        Log.e("respenvia",response);
                         if(response.equals("1")){
                             cerrar_teclado();
                             Toast.makeText(getApplicationContext(),"Su mensaje ha sido enviado, gracias por sus comentarios",Toast.LENGTH_LONG).show();

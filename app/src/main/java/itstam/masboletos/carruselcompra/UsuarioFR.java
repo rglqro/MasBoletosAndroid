@@ -3,6 +3,7 @@ package itstam.masboletos.carruselcompra;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -65,7 +66,7 @@ public class UsuarioFR extends Fragment {
     public static final String PAYPAL_CLIENT_ID_live="AaYUqrVFn58K9kaZ2FBsAlZNdOB5H_2-Hpy5Tlf943e4NyUeT_ceHUW2c5nGMWzVFHi5uOFRg5tJIicr";
     String fpago,totalpago,nombreevento,idevento,fechappp,idpp,statuspp,txthtml,comisionpack,ideventopack="",datalugarespack="";
     String idzona,numerado,precio,idformaentrega,cargoxservicio,folio,idfila="",inicolumna="",fincolumna="",idfilafilaasiento="",filaasientos="",fila="",idvermapa,dataevento;
-    Button entrar;
+    Button entrar,btcrearcuenta;
     String tipousuario;
     TextView txvinfocrearcta;
     JSONArray Elementos;
@@ -82,6 +83,7 @@ public class UsuarioFR extends Fragment {
         // Inflate the layout for this fragment
         vista= inflater.inflate(R.layout.fragment_usuario_fr, container, false);
         entrar=(Button)vista.findViewById(R.id.btentrar);
+        btcrearcuenta=vista.findViewById(R.id.btcrearctauser);
         entrar.setBackgroundResource(R.color.grisclaro);
         txvinfocrearcta=(TextView)vista.findViewById(R.id.txvinfocrearcta);
         txthtml="<b>Crea tu cuenta para:</b><br><br>• Agilizar tu compra guardando tu información" +
@@ -134,6 +136,14 @@ public class UsuarioFR extends Fragment {
         prefe=getActivity().getSharedPreferences("DatosCompra",Context.MODE_PRIVATE);
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion",Context.MODE_PRIVATE);
         validasesion=prefe_sesion.getBoolean("validasesion",false);
+        btcrearcuenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://www.masboletos.mx/crearperfil.php");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
         recibir_datos();
         return vista;
     }
@@ -158,22 +168,26 @@ public class UsuarioFR extends Fragment {
         datalugarespack=prefe.getString("datalugarespack","");
 
 
-        if(numerado.equals("1")){
+        if(numerado.equals("1")){/*si es numerado entra aqui*/
             idfila=prefe.getString("idfila","");
             inicolumna=prefe.getString("inicolumna","");
             fincolumna=prefe.getString("fincolumna","");
-            fila=prefe.getString("fila","");
-            if(idvermapa.equals("1")){
+            fila=prefe.getString("fila","").replace(" ","");
+            if(idvermapa.equals("1")){/*si el usuario eligió sus asientos se trabaja con los datos dentro del if sino con los datos anteriores*/
                 idfilafilaasiento=prefe.getString("idfilafilaasiento","");
                 filaasientos=prefe.getString("filaasientos","");
+                idfila="";
+                inicolumna="0";
+                fincolumna="0";
+                fila="";
             }
 
         }
-        if(validasesion) {
+        if(validasesion) {/* si la sesion está iniciada se procederá a realizar el pago obteniendo los dato almacenados en el dispositivo*/
             usuario=prefe_sesion.getString("usuario_s","");
             id_cliente=prefe_sesion.getString("id_cliente","");
             checar_tipo_pago();
-        }else{
+        }else{ /*sino se procedera a iniciar sesion para guardar la informacion y mandarla con los datos de compra*/
             entrar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,18 +221,20 @@ public class UsuarioFR extends Fragment {
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
                                 tipousuario=datos.getString("tipousuario");
+                            }
+                            ((DetallesEventos)getActivity()).cerrar_cargando();
+                            if(resp){// si la sesion es iniciada correctamente de procede a iniciar el proceso de pago
                                 ((DetallesEventos)getActivity()).set_DatosCompra("email",edtusuario.getText().toString());
-
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("usuario_s",usuario,0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("contrasena_s",edtcontra.getText().toString(),0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("id_cliente",id_cliente,0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("tipousuario",tipousuario,0);
                                 ((DetallesEventos)getActivity()).set_DatosUsuario("validasesion","true",1);
-                            }
-                            ((DetallesEventos)getActivity()).cerrar_cargando();
-                            if(resp){
                                 Toast.makeText(getActivity(),"Bienvenido: "+usuario,Toast.LENGTH_LONG).show();
                                 checar_tipo_pago();
+                                if(((DetallesEventos)getActivity()).cdtcrono!=null){
+                                    ((DetallesEventos)getActivity()).txvcrono.setVisibility(View.INVISIBLE); ((DetallesEventos)getActivity()).cdtcrono.cancel();
+                                }
                             }else {
                                 Toast.makeText(getActivity(),msj,Toast.LENGTH_SHORT).show();
                             }
@@ -232,8 +248,8 @@ public class UsuarioFR extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
                         ((DetallesEventos)getActivity()).cerrar_cargando();
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 })
         {
@@ -241,15 +257,15 @@ public class UsuarioFR extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError
             {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("correo", edtusuario.getText().toString());//Log.e("dato",String.valueOf(dataeventosize));
-                params.put("contrasenia", edtcontra.getText().toString());//Log.e("fila",fila);
+                params.put("correo", edtusuario.getText().toString());Log.e("dato",String.valueOf(dataeventosize));
+                params.put("contrasenia", edtcontra.getText().toString());Log.e("fila",fila);
                 return params;
             }
         };
         queue.add(strRequest);
     }
 
-    void checar_tipo_pago(){
+    void checar_tipo_pago(){/*en este metodo se valida con el id de fpago con que proceso se va a realizar */
         if (fpago.equals("2")||fpago.equals("3")){
             if(idevento.equals("0")){
                 pre_registro_packs("https://www.masboletos.mx/masBoletosEnviaDatosPaqueteMovil.php");
@@ -272,18 +288,18 @@ public class UsuarioFR extends Fragment {
         }
     }
 
-    private void preregistro_paypal(final String url){
-        ((DetallesEventos)getActivity()).iniciar_cargando(); //Log.e("URL",URL);
+    private void preregistro_paypal(final String url){/*Este metodo aparta los boletos para poder realizar la transaccion obteniendo un folio de transaccion */
+        ((DetallesEventos)getActivity()).iniciar_cargando(); Log.e("URL",URL);
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        //Log.e("URL",url);
+        Log.e("URL",url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Log.e("Resultado registro",response);
-                        procesar_pagoPP();
+                        Log.e("Resultado registro",response);
+                        procesar_pagoPP();/*Aqui se inician lo servicios del API de Paypal*/
                         folio=response;
                         folio = folio.replace(" ", "").replace("\n", "");
                     }
@@ -291,14 +307,15 @@ public class UsuarioFR extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                ((DetallesEventos)getActivity()).cerrar_cargando();
             }
         });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
 
-    private void pre_registro_packs(String url){
+    private void pre_registro_packs(String url){/*Este metodo registra via post los datos para los boletos de un paquete*/
         ((DetallesEventos)getActivity()).iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
@@ -312,11 +329,11 @@ public class UsuarioFR extends Fragment {
                             ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
                             ((DetallesEventos)getActivity()).cerrar_cargando();
                         }else if(fpago.equals("5")) {
-                            folio = response.toString();
+                            folio = response;
                             folio = folio.replace(" ", "").replace("\n", "");
                             procesar_pagoPP();
                         }
-                        //Log.e("respenvia",response);
+                        Log.e("respenvia",response);
                     }
                 },
                 new Response.ErrorListener()
@@ -324,7 +341,8 @@ public class UsuarioFR extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                     }
                 })
         {
@@ -332,34 +350,34 @@ public class UsuarioFR extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError
             {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));//Log.e("dato",String.valueOf(dataeventosize));
-                params.put("fila", fila);//Log.e("fila",fila);
-                params.put("importe", precio);//Log.e("dato",precio);
-                params.put("cantidad", String.valueOf(cant_boletos));//Log.e("dato",String.valueOf(cant_boletos));
+                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
+                params.put("fila", fila);Log.e("fila",fila);
+                params.put("importe", precio);Log.e("dato",precio);
+                params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
                 params.put("cargoxservicio", comisionpack);
-                params.put("cargotdc", cargoxservicio);//Log.e("dato",comisionpack);
-                params.put("zona", idzona);//Log.e("dato",idzona);
+                params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
+                params.put("zona", idzona);Log.e("dato",idzona);
                 params.put("numerado", numerado);
-                params.put("idcliente",id_cliente);//Log.e("dato",id_cliente);
-                params.put("idfila", idfila); //Log.e("idfila",idfila);
-                params.put("inicolumna", inicolumna); //Log.e("inicolumna",inicolumna);
-                params.put("fincolumna", fincolumna); //Log.e("fincolumna",fincolumna);
-                params.put("filaasientos", filaasientos); //Log.e("filaasientos",filaasientos);
-                params.put("idfilafilaasiento", idfilafilaasiento);//Log.e("idfilafilaasiento",idfilafilaasiento);
-                params.put("formadepago", fpago);//Log.e("dato",fpago);
-                params.put("txtformaentrega", idformaentrega);//Log.e("dato",idformaentrega);
-                params.put("idpaquete", ideventopack);//Log.e("dato",ideventopack);
-                params.put("Comisionpaquete", comisionpack);//Log.e("dato",comisionpack);
-                params.put("dataEventos", dataevento.toString());//Log.e("dato",dataevento);
+                params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
+                params.put("idfila", idfila); Log.e("idfila",idfila);
+                params.put("inicolumna", inicolumna); Log.e("inicolumna",inicolumna);
+                params.put("fincolumna", fincolumna); Log.e("fincolumna",fincolumna);
+                params.put("filaasientos", filaasientos); Log.e("filaasientos",filaasientos);
+                params.put("idfilafilaasiento", idfilafilaasiento);Log.e("idfilafilaasiento",idfilafilaasiento);
+                params.put("formadepago", fpago);Log.e("dato",fpago);
+                params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
+                params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
+                params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
+                params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
                 params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", datalugarespack); //Log.e("datalugpack",datalugarespack);
+                params.put("dataeventozonafilasiento", datalugarespack); Log.e("datalugpack",datalugarespack);
                 return params;
             }
         };
         queue.add(strRequest);
     }
 
-    private void preregistroTCTD(){
+    private void preregistroTCTD(){/*Este solo crea la URL para abrirla y direccionar al portal de pago para tarjetas de Credito, esta url se abrirá en el siguiente fragmento ya que devuelve un post automatico el script*/
         String URL=("https://www.masboletos.mx/masBoletosEnviaDatosMovil.php?idevento="+idevento+"&numerado="
                         +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
                         +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
@@ -368,7 +386,7 @@ public class UsuarioFR extends Fragment {
         ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
     }
 
-    private void procesar_pagoPP(){
+    private void procesar_pagoPP(){/*Aqui se inicia el api de paypal*/
         ((DetallesEventos)getActivity()).cerrar_cargando();
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalpago),"MXN","Pago por boletos de :"+nombreevento,PayPalPayment.PAYMENT_INTENT_SALE);
         Intent intent = new Intent(getActivity(),PaymentActivity.class);
@@ -380,7 +398,7 @@ public class UsuarioFR extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==PAYPAL_REQUEST_CODE){
-            if (resultCode== RESULT_OK){
+            if (resultCode== RESULT_OK){ /*Si el pago es realizado se procede a capturar los datos de compra*/
                 PaymentConfirmation confirmation=data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if(confirmation!=null){
                     try {
@@ -391,13 +409,13 @@ public class UsuarioFR extends Fragment {
                         idpp=json3.getString("id");
                         statuspp=json3.getString("state");
                         Toast.makeText(getActivity(),"Fecha: "+fechappp+"\nid: "+idpp,Toast.LENGTH_LONG).show();
-                        //Log.e("Datos Pago Paypal","Fecha: "+fechappp+"\nid: "+idpp);
-                        actualizaciondepago("0");
+                        Log.e("Datos Pago Paypal","Fecha: "+fechappp+"\nid: "+idpp);
+                        actualizaciondepago("0");/*y se actualiza la transaccion obtenida del apartado mandando una variable error donde 0 es pago aprobado*/
                     }catch (Exception e){}
                 }
             }else if(resultCode==RESULT_CANCELED){
                 Toast.makeText(getActivity(),"Pago Cancelado",Toast.LENGTH_LONG).show();
-                actualizaciondepago("1");
+                actualizaciondepago("1");/*si el pago es invalido o cancelado se envia 1 en error indicando que no se realizó*/
             }
         }else if(resultCode==PaymentActivity.RESULT_EXTRAS_INVALID){
 
@@ -408,18 +426,17 @@ public class UsuarioFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url="https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error; //Log.e("URL",url);
-        //Log.e("URL",url);
+        String url="https://www.masboletos.mx/masMoletosRecibeDatosPaypalMovil.php?EM_OrderID="+folio+"&error="+error; Log.e("URL",url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Log.e("Resultado actualizacion",response);
-                        if(error.equals("0")){
+                        Log.e("Resultado actualizacion",response);
+                        if(error.equals("0")){/* si el pago se realizó se manda al usuario un email via script*/
                             envio_mail(response);
                         }
-                        else {
+                        else { /*si el pago no se realizó se procede a cerrar el proceso de compra*/
                             ((DetallesEventos)getActivity()).cerrar_cargando();
                             ((DetallesEventos)getActivity()).finish();
                         }
@@ -428,7 +445,8 @@ public class UsuarioFR extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                ((DetallesEventos)getActivity()).cerrar_cargando();
             }
         });
         // Add the request to the RequestQueue.
@@ -438,14 +456,14 @@ public class UsuarioFR extends Fragment {
     public void envio_mail(final String fe){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url="https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2"; //Log.e("URL",url);
-        //Log.e("URL",url);
+        String url="https://www.masboletos.mx/sica/masmail.cfm?trans="+folio+"&fe="+fe+"&de=2"; Log.e("URL",url);
+        Log.e("URL",url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String resultado) {
-                        //Log.e("Resultado actualizacion",resultado);
+                    public void onResponse(String resultado) {/*Despues del envio del mail se procede a la ultima ventana del proceso de compra*/
+                        Log.e("Resultado actualizacion",resultado);
                         ((DetallesEventos)getActivity()).cerrar_cargando();
                         ((DetallesEventos)getActivity()).set_DatosCompra("nombreuser",usuario);
                         ((DetallesEventos)getActivity()).set_DatosCompra("foliocompra",folio);
@@ -455,7 +473,8 @@ public class UsuarioFR extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                ((DetallesEventos)getActivity()).cerrar_cargando();
             }
         });
         // Add the request to the RequestQueue.

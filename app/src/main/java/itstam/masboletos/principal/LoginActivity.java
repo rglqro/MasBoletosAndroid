@@ -137,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response)
                     {
                         try {
+                            Log.e("resp json",response);
                             Elementos = new JSONArray(response);
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);

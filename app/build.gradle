@@ -6,8 +6,8 @@ android {
         applicationId "itstam.masboletos"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.0.1"
+        versionCode 8
+        versionName "1.0.3.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true

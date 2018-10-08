@@ -98,14 +98,14 @@ public class SeleccionZonaFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        //Log.e("Enlace", URL);
+        Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             zonas= new String[Elementos.length()];
@@ -139,7 +139,7 @@ public class SeleccionZonaFR extends Fragment {
                             if(Elementos.length()>0) {
                                 spinner_zonas();
                                 Mostrar_Mapa();
-                            }else{
+                            }else{/*sino hay zonas dispnibles el proceso de compra termina*/
                                 Toast.makeText(getActivity(),"Evento no disponible para su venta.",Toast.LENGTH_LONG).show();
                                 ((DetallesEventos)getActivity()).cerrar_cargando();
                                 ((DetallesEventos)getActivity()).finish();
@@ -250,14 +250,14 @@ public class SeleccionZonaFR extends Fragment {
         }
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        //Log.e("Enlace", URL);
+        Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             subzonas= new String[Elementos.length()+1];
@@ -318,7 +318,7 @@ public class SeleccionZonaFR extends Fragment {
                     cbvermapaas.setVisibility(View.INVISIBLE);
                     cbvermapaas.setChecked(false);
                 }
-                //Log.e("id:seccion",id_seccionXevento);
+                Log.e("id:seccion",id_seccionXevento);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -355,14 +355,14 @@ public class SeleccionZonaFR extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        //Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
@@ -422,20 +422,20 @@ public class SeleccionZonaFR extends Fragment {
         final Boolean[] disponibilidad = {false};
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
-        //Log.e("URL",URL);
+        Log.e("URL",URL);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         ((DetallesEventos)getActivity()).cerrar_cargando();
-                        //Log.e("Response: " , response.toString());
+                        Log.e("Response: " , response.toString());
                         try {
                             dataevento[0] = response.getString("dataEvento");
                             disponibilidad[0] =response.getBoolean("disponibilidad");
                             Elementos = new JSONArray(dataevento[0]);
                             if(disponibilidad[0] && Elementos.length()>0){
-                                //Log.e("jsondata",Elementos.toString());
+                                Log.e("jsondata",Elementos.toString());
                                 for (int i=0;i<1;i++){
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     seccion_compra=datos.getString("mensagesetDescripcion");
@@ -499,12 +499,12 @@ public class SeleccionZonaFR extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        //Log.e(TAG,"OnDettach");
+        Log.e(TAG,"OnDettach");
     }
 
     @Override
     public void onDestroyView() {
-        //Log.e(TAG,"onDestroyView");
+        Log.e(TAG,"onDestroyView");
         super.onDestroyView();
     }
 

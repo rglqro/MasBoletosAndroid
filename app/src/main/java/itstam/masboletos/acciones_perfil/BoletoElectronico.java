@@ -71,14 +71,14 @@ public class BoletoElectronico extends AppCompatActivity {
     void consulta_boleto_electronico(String url){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //Log.e("URL",url);
+        Log.e("URL",url);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                                 for (int i = 0; i < Elementos.length(); i++) {
@@ -94,7 +94,7 @@ public class BoletoElectronico extends AppCompatActivity {
                                 JSONObject datos2= new JSONObject(fecha);
                                 fecha=datos2.getString("date");
                                 String[] parts = fecha.split(" "); fecha=parts[0];
-                                //Log.e("fecha",fecha);
+                                Log.e("fecha",fecha);
                                 pintar_detalles_boleto();
                         } catch (JSONException e) {
                             e.printStackTrace();

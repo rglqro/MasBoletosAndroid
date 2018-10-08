@@ -93,9 +93,9 @@ public class FRFinalizarCompra extends Fragment {
         fpago=prefe.getString("idformapago","");
         idevento=prefe.getString("idevento","0");
         idfpago=prefe.getString("idformaentrega","0");
-        if(fpago.equals("5")) {
+        if(fpago.equals("5")) {/*si el pago se realizó con paypal se muestra la interfaz de compra finalizada con su transacion y folios de los boletos*/
             txvtitulofc.setText(Html.fromHtml(titulo));
-            if(idfpago.equals("2")){
+            if(idfpago.equals("2")){/*si el id de fentrega es 2 significa que se pagó por boleto electronico lo que procede que se genere un codigo QR*/
                 llqr.setVisibility(View.VISIBLE);
                 MultiFormatWriter mfwQR = new MultiFormatWriter();
                 BitMatrix bmtxQR = null;
@@ -109,7 +109,7 @@ public class FRFinalizarCompra extends Fragment {
                 }
             }
             consulta_folios();
-        }else if(fpago.equals("2")||fpago.equals("3")){
+        }else if(fpago.equals("2")||fpago.equals("3")){/*si el id de forma de pago es 2 o 3 se procederá a abrir el url que se generó en el fragmento anterior para realizar el pago via web*/
             llinfofinal.setVisibility(View.GONE);
             if(idevento.equals("0")){
                 myWebView.loadData(prefe.getString("URLTC", "www.google.com.mx"),"text/html","BASE64");
@@ -145,7 +145,7 @@ public class FRFinalizarCompra extends Fragment {
         });
     }
 
-    void consulta_folios(){
+    void consulta_folios(){/*Este metodo consulta los folios de los boletos que fueron comprados con el folio de transaccion*/
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url ="https://www.masboletos.mx/appMasboletos/getFoliosxTransaccion.php?transaccion="+ntransac;
@@ -154,7 +154,7 @@ public class FRFinalizarCompra extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Log.e("Resultado actualizacion",response);
+                        Log.e("Resultado actualizacion",response);
                         folios=response; folios=folios.replace(" ","").replace("\n","");
                         txvntran.setText(ntransac);
                         txvfolios.setText(folios);
@@ -169,5 +169,7 @@ public class FRFinalizarCompra extends Fragment {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
+
+
 
 }

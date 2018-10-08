@@ -44,7 +44,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:background="@color/blanco"
+        android:background="@color/grismasclaro"
         android:id="@+id/rlimagspaq">
 
         <ImageView
@@ -73,7 +73,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/IMVFondopaq">
+            android:layout_alignStart="@+id/IMVFondopaq"
+            android:layout_alignLeft="@+id/IMVFondopaq">
 
             <LinearLayout
                 android:layout_width="match_parent"

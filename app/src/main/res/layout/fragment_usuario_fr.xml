@@ -74,7 +74,7 @@
             android:layout_marginHorizontal="30dp"/>
 
         <Button
-            android:id="@+id/btcrearcta"
+            android:id="@+id/btcrearctauser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btentrar"
@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/btcrearcta"
+            android:layout_below="@+id/btcrearctauser"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:layout_alignParentLeft="true"
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/textView28"
                 android:layout_alignStart="@+id/textView28"
-                android:layout_below="@+id/btcrearcta"
+                android:layout_below="@+id/btcrearctauser"
                 android:layout_marginVertical="5dp"
                 android:layout_weight="1"
                 android:text="\n\n¿Olvidaste tu contraseña?\n\n¿No tienes una cuenta?"

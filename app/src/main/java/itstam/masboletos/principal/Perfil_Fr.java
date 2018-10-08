@@ -88,27 +88,19 @@ public class Perfil_Fr extends Fragment {
             }else {
                 llbotonesuser2.setVisibility(View.GONE);
             }
-            btcerrarsesion.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-                @Override
-                public void onClick(View view) {
-                    cierra_sesion();
-                    RLDatosPerfil.setVisibility(View.GONE);
-                    vista_no_sesion();
-                    btcerrarsesion.setVisibility(View.GONE);
-                    if (llbotonesuser2.getVisibility() == View.VISIBLE) {
-                        llbotonesuser2.setVisibility(View.GONE);
-                    }
-                    if(llbotonesuser1.getVisibility() == View.GONE){
-                        llbotonesuser1.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
         }else {
             vista_no_sesion();
             btcerrarsesion.setVisibility(View.GONE);
             llbotonesuser2.setVisibility(View.GONE);
         }
+        btcerrarsesion.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onClick(View view) {
+                cierra_sesion();
+                vista_no_sesion();
+            }
+        });
     }
 
     void eventos_botones(){
@@ -273,6 +265,15 @@ public class Perfil_Fr extends Fragment {
         editor.putString("id_cliente","");
         editor.putString("tipousuario","0");
         editor.commit();
+
+        RLDatosPerfil.setVisibility(View.GONE);
+        btcerrarsesion.setVisibility(View.GONE);
+        if (llbotonesuser2.getVisibility() == View.VISIBLE) {
+            llbotonesuser2.setVisibility(View.GONE);
+        }
+        if(llbotonesuser1.getVisibility() == View.GONE){
+            llbotonesuser1.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

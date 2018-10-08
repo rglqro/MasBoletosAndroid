@@ -97,7 +97,7 @@ public class DetallesEventos extends AppCompatActivity {
         ancho = displayMetrics.widthPixels;
         rlimagsevento.getLayoutParams().height=alto/5;
 
-        if(idevento.equals("0")){
+        if(idevento.equals("0")){ /*Si el ID es 0 significa que la compra será para paquetes*/
             ideventopack=prefe.getString("ideventopack","");
             consulta_info("https://www.masboletos.mx/appMasboletos/getPaqueteEncabezado.php?IdEventoPack="+ideventopack);
         }else {
@@ -111,7 +111,7 @@ public class DetallesEventos extends AppCompatActivity {
         iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -119,7 +119,7 @@ public class DetallesEventos extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
@@ -219,7 +219,7 @@ public class DetallesEventos extends AppCompatActivity {
     Bitmap imageBlur;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
-        //Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
+        Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
         Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
             @Override
             public void onSuccess() {
@@ -273,7 +273,7 @@ public class DetallesEventos extends AppCompatActivity {
         if(contadorTab==7 && cdtcrono!=null){
             txvcrono.setVisibility(View.INVISIBLE); cdtcrono.cancel();
         }
-        //Log.e("posicion tab",String.valueOf(contadorTab));
+        Log.e("posicion tab",String.valueOf(contadorTab));
         cambiar_tab(contadorTab);
     }
 
@@ -321,14 +321,14 @@ public class DetallesEventos extends AppCompatActivity {
         return builder.create();
     }
 
-    public void set_DatosCompra(String ndato,String dato){
+    public void set_DatosCompra(String ndato,String dato){//Este metodo almacena las variables que serán utilizadas en la compra
         SharedPreferences preferencias=getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
     }
 
-    public void set_DatosUsuario(String ndato,String dato,int tipo){
+    public void set_DatosUsuario(String ndato,String dato,int tipo){//Este metodo almacena las variables que tienen los datos del usuario que inicia sesion
         SharedPreferences preferencias=getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=preferencias.edit();
         if(tipo==0) {
@@ -370,14 +370,11 @@ public class DetallesEventos extends AppCompatActivity {
         super.onDestroy();
         if(cdtcrono!=null){
             cdtcrono.cancel();
-        } //Log.e("Destroy","Destroy");
+        } Log.e("Destroy","Destroy");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(cdtcrono!=null){
-            cdtcrono.cancel();
-        } //Log.e("Stop","Stop");
     }
 }

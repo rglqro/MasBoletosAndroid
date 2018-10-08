@@ -82,6 +82,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     TabHost thboletopaq;
     String nombreuser; Boolean validasesion=false;
     ImageView imvlogoarriba;
+    ImageButton imbtcompartirapp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,9 +95,17 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         llpaquetes=(LinearLayout)vista.findViewById(R.id.llpaquetes);
         imvlogoarriba=vista.findViewById(R.id.imvlogoarriba);
         scvorg=vista.findViewById(R.id.SCVOrg);
+        imbtcompartirapp=vista.findViewById(R.id.imbtcompartirapp);
 
         prefe_user=getActivity().getSharedPreferences("datos_sesion",Context.MODE_PRIVATE);
         validasesion=prefe_user.getBoolean("validasesion",false);
+
+        imbtcompartirapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intent_compartir();
+            }
+        });
 
         iniciar_tabhost();
 
@@ -132,14 +141,14 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         ((MainActivity)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getEventosActivos.php"; //Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             ListaImagBoton = new ArrayList<String>();
                             ListaImagCarrusel = new ArrayList<String>();
@@ -198,7 +207,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                 ImBotonEvento.get(pos_arr_ima).setId(pos_arr_ima);
                 ImBotonEvento.get(pos_arr_ima).setPadding(5,5,5,5);
                 ImBotonEvento.get(pos_arr_ima).setAdjustViewBounds(true);
-                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.drawable.imgmberror).into(ImBotonEvento.get(pos_arr_ima)); //Log.e("foto",ListaImagBoton.get(pos_arr_ima));
+                Picasso.get().load(ListaImagBoton.get(pos_arr_ima)).error(R.drawable.imgmberror).into(ImBotonEvento.get(pos_arr_ima)); Log.e("foto",ListaImagBoton.get(pos_arr_ima));
                 ImBotonEvento.get(pos_arr_ima).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -257,14 +266,14 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void Consulta_Imagen_Organizadores(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getPatrocinadores.php"; //Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPatrocinadores.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos=response;
                             ListaImagOrg=new String[Elementos.length()];
@@ -314,14 +323,14 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void consulta_paquete_evento(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador.php"; //Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos=response;
                             listaimapaq=new ArrayList<String>();
@@ -369,8 +378,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
 
             ImPaquete.add(new ImageButton(getActivity()));
             ImPaquete.get(i).setLayoutParams(lpinfo);
-            Picasso.get().load(listaimapaq.get(i)).error(R.mipmap.logo_masboletos).into(ImPaquete.get(i)); //Log.e("foto",listaimapaq.get(i));
-            ImPaquete.get(i).setBackgroundColor(Color.TRANSPARENT);
+            Picasso.get().load(listaimapaq.get(i)).error(R.mipmap.logo_masboletos).into(ImPaquete.get(i)); Log.e("foto",listaimapaq.get(i));
+            ImPaquete.get(i).setBackgroundResource(R.color.grismasclaro);
             ImPaquete.get(i).setScaleType(ImageView.ScaleType.CENTER);
             ImPaquete.get(i).setTag(i);
             ImPaquete.get(i).setId(i);
@@ -412,6 +421,15 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
+    }
+
+    public void intent_compartir(){
+        Intent compartir = new Intent(Intent.ACTION_SEND);
+        compartir.setType("text/plain");
+        String mensaje = "Descarga la app de MasBoletos para Android"+"\nVisita el siguiente enlace: https://play.google.com/store/apps/details?id=itstam.masboletos";
+        compartir.putExtra(Intent.EXTRA_SUBJECT, "MasBoletos APP");
+        compartir.putExtra(Intent.EXTRA_TEXT, mensaje);
+        startActivity(Intent.createChooser(compartir, "Comparte nuestra APP vía"));
     }
 
     @Override

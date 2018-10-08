@@ -98,14 +98,14 @@ public class PaquetesAct extends AppCompatActivity {
         // Initialize a new RequestQueue instance
         iniciar_cargando();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos/getPaqueteInfo.php?idorganizador="+idorgpaq; //Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPaqueteInfo.php?idorganizador="+idorgpaq; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
@@ -135,7 +135,7 @@ public class PaquetesAct extends AppCompatActivity {
     }
 
     void pintar_detalles(){
-        //Log.e("imagen",imapaq);
+        Log.e("imagen",imapaq);
         Picasso.get().load(imapaq).error(R.drawable.mbiconor).into(imvpaq, new Callback() {
             @Override
             public void onSuccess() {
@@ -157,14 +157,14 @@ public class PaquetesAct extends AppCompatActivity {
     void consulta_paqxorg(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador_detalle.php?idorganizador="+idorgpaq; //Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador_detalle.php?idorganizador="+idorgpaq; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             nombrepaqxorg= new ArrayList<>();
@@ -287,14 +287,14 @@ public class PaquetesAct extends AppCompatActivity {
         iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos/getImgEventosPack.php?idEventoPack="+id; //Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getImgEventosPack.php?idEventoPack="+id; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             infoevtopaq= new ArrayList<>();
@@ -343,7 +343,7 @@ public class PaquetesAct extends AppCompatActivity {
             imvevtopaq.get(i).setLayoutParams(lp);
             imvevtopaq.get(i).setAdjustViewBounds(true);
             imvevtopaq.get(i).setBackgroundColor(Color.TRANSPARENT);
-            Picasso.get().load(imgevtopaq.get(i)).error(R.drawable.imgmberror).into(imvevtopaq.get(i)); //Log.e("img",imgevtopaq.get(i));
+            Picasso.get().load(imgevtopaq.get(i)).error(R.drawable.imgmberror).into(imvevtopaq.get(i)); Log.e("img",imgevtopaq.get(i));
             imvevtopaq.get(i).setScaleType(ImageView.ScaleType.FIT_XY);
             llevtospaq.addView(imvevtopaq.get(i));
 

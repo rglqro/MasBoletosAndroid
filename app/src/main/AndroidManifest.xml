@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="itstam.masboletos">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -27,10 +28,22 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/mbiconor"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.AppCompat.NoActionBar"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".principal.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="www.masboletos.mx" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".UbicacionAct"
             android:screenOrientation="portrait" />
@@ -39,7 +52,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -68,13 +80,17 @@
         <activity
             android:name=".principal.PaquetesAct"
             android:screenOrientation="portrait" />
-        <activity android:name=".acciones_perfil.acercade"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".acciones_perfil.buzonsuger"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".acciones_perfil.BoletoElectronico"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".acciones_perfil.ScannerQR"
+        <activity
+            android:name=".acciones_perfil.acercade"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".acciones_perfil.buzonsuger"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".acciones_perfil.BoletoElectronico"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".acciones_perfil.ScannerQR"
             android:screenOrientation="portrait"></activity>
     </application>
 

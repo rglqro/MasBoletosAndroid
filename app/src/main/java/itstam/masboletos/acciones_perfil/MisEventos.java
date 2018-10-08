@@ -81,14 +81,14 @@ public class MisEventos extends AppCompatActivity {
     void consulta_miseventos(String URL, final int numconsult){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //Log.e("URL",URL);
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        //Log.e("Respuesta Json",response.toString());
+                        Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             if (numconsult==1) {
@@ -221,7 +221,7 @@ public class MisEventos extends AppCompatActivity {
                     }
                 });
             }else{
-                infomiseventos[i][3].setTextColor(Color.BLACK);
+                infomiseventos[i][4].setTextColor(Color.BLACK);
                 infomiseventos[i][4].setText("N/D");
             }
             infomiseventos[i][4].setLayoutParams(lp);
