@@ -205,7 +205,7 @@ public class UsuarioFR extends Fragment {
     void iniciar_sesion(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url="https://www.masboletos.mx/appMasboletos/validalogin.php";
+        String url="https://www.masboletos.mx/appMasboletos.fueralinea/validalogin.php";
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {

@@ -88,9 +88,9 @@ public class SeleccionZonaFR extends Fragment {
         URLMapa=prefe.getString("eventomapa","");
         if(idevento.equals("0")){
             ideventopack=prefe.getString("ideventopack","0");
-            obtener_zonas("https://www.masboletos.mx/appMasboletos/getPaquetesZonas.php?idpaquete="+ideventopack);
+            obtener_zonas("https://www.masboletos.mx/appMasboletos.fueralinea/getPaquetesZonas.php?idpaquete="+ideventopack);
         }else{
-            obtener_zonas("https://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento);
+            obtener_zonas("https://www.masboletos.mx/appMasboletos.fueralinea/getZonasxEvento.php?idevento="+idevento);
         }
     }
 
@@ -231,9 +231,9 @@ public class SeleccionZonaFR extends Fragment {
                 txtsel=(String) zonas[position];
                 _zona=txtsel.replace(" ","%20");
                 if(idevento.equals("0")){
-                    obtener_secciones("https://www.masboletos.mx/appMasboletos/getCargandoSubzonasxGrupoPaquete.php?idpaquete="+ideventopack+"&grupo="+_zona);
+                    obtener_secciones("https://www.masboletos.mx/appMasboletos.fueralinea/getCargandoSubzonasxGrupoPaquete.php?idpaquete="+ideventopack+"&grupo="+_zona);
                 }else {
-                    obtener_secciones("https://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);
+                    obtener_secciones("https://www.masboletos.mx/appMasboletos.fueralinea/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);
                 }
             }
 
@@ -343,15 +343,16 @@ public class SeleccionZonaFR extends Fragment {
             @Override
             public void onClick(View v) {
                 if(idevento.equals("0")){
-                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&cantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
+                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos.fueralinea/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&cantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
                 }else {
-                    Mejor_Disponible("https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);
+                    Mejor_Disponible("https://www.masboletos.mx/appMasboletos.fueralinea/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);
                 }
             }
         });
     }
 
     void Mejor_Disponible(String URL){
+        final String[] zonagetbol = {""};
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
@@ -377,6 +378,7 @@ public class SeleccionZonaFR extends Fragment {
                                 idfila=datos.getString("idfila");
                                 inicolumna=datos.getString("mensagesetIniColumna");
                                 fincolumna=datos.getString("mensagesetFinColumna");
+                                zonagetbol[0] =datos.getString("mensagesetNombreZona");
                                 if(fila.equals("0")){
                                     fila="*";
                                 }
@@ -389,7 +391,11 @@ public class SeleccionZonaFR extends Fragment {
                                 set_DatosCompra("fila",fila);
                                 set_DatosCompra("asientos",fila+": "+asiento_compra);
                                 set_DatosCompra("valornumerado",indicenumerzona);
-                                set_DatosCompra("subzona",subzonas[indicesubzona]);
+                                if(indicesubzona==0)
+                                    set_DatosCompra("subzona",zonagetbol[0]);
+                                else
+                                    set_DatosCompra("subzona",subzonas[indicesubzona]);
+                                set_DatosCompra("subzonagetbol",zonagetbol[0] );
                                 set_DatosCompra("idvermapa",idvermapa);
                                 set_DatosCompra("idfila",idfila);
                                 set_DatosCompra("inicolumna",inicolumna);

@@ -106,7 +106,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getFuncionesxEvento.php?eventogrupo="+eventogrupo; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

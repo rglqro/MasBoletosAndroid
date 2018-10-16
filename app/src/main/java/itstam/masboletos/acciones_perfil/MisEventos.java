@@ -72,7 +72,7 @@ public class MisEventos extends AppCompatActivity {
         ancho = displayMetrics.widthPixels;
         if(validasesion){
             iniciar_cargando();
-            consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosUsuario.php?idcliente="+idcliente,1);
+            consulta_miseventos("https://www.masboletos.mx/appMasboletos.fueralinea/getMisEventosUsuario.php?idcliente="+idcliente,1);
         }else{
             AlertaBoton("Inicio de Sesión","Debe iniciar sesion para poder ver este contenido").show();
         }
@@ -113,7 +113,7 @@ public class MisEventos extends AppCompatActivity {
                                         imagenlist.add("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
                                     }
                                 }
-                                consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosPasadosUsuario.php?idcliente="+idcliente,2);
+                                consulta_miseventos("https://www.masboletos.mx/appMasboletos.fueralinea/getMisEventosPasadosUsuario.php?idcliente="+idcliente,2);
                             }else{
                                 cantidadlistpass = new ArrayList<>();
                                 eventolistpass = new ArrayList<>();
@@ -161,6 +161,8 @@ public class MisEventos extends AppCompatActivity {
         TableRow.LayoutParams lp = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         for (int i=0;i<eventolist.size();i++){
             filatbl= new TableRow(this);
+            if(i%2==0)
+                filatbl.setBackgroundResource(R.color.grismasclaro);
             filatbl.setGravity(Gravity.CENTER);
             infomiseventos[i][0]=new TextView(this);
             infomiseventos[i][0].setText(cantidadlist.get(i));
@@ -181,6 +183,7 @@ public class MisEventos extends AppCompatActivity {
             Picasso.get().load(imagenlist.get(i)).error(R.drawable.imgmberror).into(imagseventos.get(i));
             imagseventos.get(i).setBackgroundColor(Color.TRANSPARENT);
             imagseventos.get(i).setLayoutParams(lp);
+            imagseventos.get(i).setPadding(0,0,0,5);
             imagseventos.get(i).setScaleType(ImageView.ScaleType.FIT_XY);
             imagseventos.get(i).setAdjustViewBounds(true);
             imagseventos.get(i).setId(i);
@@ -246,6 +249,8 @@ public class MisEventos extends AppCompatActivity {
         TableRow.LayoutParams lp = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1);
         for (int i=0;i<eventolistpass.size();i++){
             filatbl= new TableRow(this);
+            if(i%2==0)
+                filatbl.setBackgroundResource(R.color.grismasclaro);
             filatbl.setGravity(Gravity.CENTER);
             infomiseventospass[i][0]=new TextView(this);
             infomiseventospass[i][0].setText(cantidadlistpass.get(i));

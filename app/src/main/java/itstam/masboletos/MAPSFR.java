@@ -58,6 +58,7 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
     protected GoogleApiClient mGoogleApiClient;
     JSONArray Elementos=null;
     String nombrepv,direccionpv,telpv,urlimagen,latc,longc;
+    Marker prevMarker;
 
     public MAPSFR() {
         // Required empty public constructor
@@ -82,32 +83,15 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
         mGoogleApiClient.connect();
     }
 
-    Marker previousMarker = null;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mimapa = googleMap;
         // Posicionar el mapa en una localización y con un nivel de zoom
-        for (int i = 0; i < latLngs.length; i++) {
-            String[] cord = latLngs[i].split(",");
-            LatLng latLng = new LatLng(Double.parseDouble(cord[0]), Double.parseDouble(cord[1]));
-            googleMap.addMarker(new MarkerOptions().position(latLng).zIndex(i).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_sel)));
-        }
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             googleMap.setMyLocationEnabled(true);
         }
-        mimapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(final Marker marker) {
-                consulta_puntoventa((int) marker.getZIndex());
 
-                if(previousMarker!=null){
-                    previousMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_sel));
-                }
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_local));
-                previousMarker=marker; //Now the clicked marker becomes previousMarker
-                return false;
-            }
-        });
         mimapa.setMyLocationEnabled(true);
         mimapa.getUiSettings().setZoomControlsEnabled(true);
     }
@@ -117,7 +101,8 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
         ((UbicacionAct)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getDatosPuntoVenta.php?idpuntoventa="+((UbicacionAct)getActivity()).idpuntoventa[indice]; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getDatosPuntoVenta.php?idpuntoventa="+((UbicacionAct)getActivity()).idpuntoventa[indice];
+        Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -216,8 +201,33 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
                 e.printStackTrace();
                 Log.e("Error con localizacion"," Error");
             }
+
+            for (int i = 0; i < latLngs.length; i++) {
+                String[] cord = latLngs[i].split(",");
+                LatLng latLng = new LatLng(Double.parseDouble(cord[0]), Double.parseDouble(cord[1]));
+                mimapa.addMarker(new MarkerOptions().position(latLng).zIndex(i).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            }
+
+            mimapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    if (prevMarker != null) {
+                        //Set prevMarker back to default color
+                        prevMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    }
+                    //leave Marker default color if re-click current Marker
+                    if (!marker.equals(prevMarker)) {
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        prevMarker = marker;
+                    }
+                    prevMarker = marker;
+                    consulta_puntoventa((int) marker.getZIndex());
+                    return false;
+                }
+            });
         }
     }
+
 
     @Override
     public void onStart() {

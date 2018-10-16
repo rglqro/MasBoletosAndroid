@@ -148,7 +148,7 @@ public class FRFinalizarCompra extends Fragment {
     void consulta_folios(){/*Este metodo consulta los folios de los boletos que fueron comprados con el folio de transaccion*/
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url ="https://www.masboletos.mx/appMasboletos/getFoliosxTransaccion.php?transaccion="+ntransac;
+        String url ="https://www.masboletos.mx/appMasboletos.fueralinea/getFoliosxTransaccion.php?transaccion="+ntransac;
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

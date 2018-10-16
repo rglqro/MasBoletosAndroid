@@ -65,7 +65,7 @@ public class BoletoElectronico extends AppCompatActivity {
         ancho = displayMetrics.widthPixels;
 
         ntransaccion=getIntent().getStringExtra("transaccion");
-        consulta_boleto_electronico("https://www.masboletos.mx/appMasboletos/getInfoPorTransaccion.php?transaccion="+ntransaccion);
+        consulta_boleto_electronico("https://www.masboletos.mx/appMasboletos.fueralinea/getInfoPorTransaccion.php?transaccion="+ntransaccion);
     }
 
     void consulta_boleto_electronico(String url){

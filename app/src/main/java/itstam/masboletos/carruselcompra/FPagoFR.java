@@ -69,9 +69,9 @@ public class FPagoFR extends Fragment {
 
         if(idevento.equals("0")){
             ideventopack=prefe.getString("ideventopack","0");
-            ConsultaFormasPago("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
+            ConsultaFormasPago("https://www.masboletos.mx/appMasboletos.fueralinea/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
         }else{
-            ConsultaFormasPago("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);
+            ConsultaFormasPago("https://www.masboletos.mx/appMasboletos.fueralinea/getFormaPagoFormaEntrega.php?idevento="+idevento);
         }
 
         DisplayMetrics displayMetrics = new DisplayMetrics();

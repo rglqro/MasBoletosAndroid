@@ -55,7 +55,7 @@ public class FRMejDisp extends Fragment {
     int Cant_Boletos,cont_asientos=1,ancho,alto,asientosxsel=0,filamayor=0;
     int []inicia,termina;
     String[] fila=null,dispfila=null,idfila=null;
-    String zona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
+    String zona,subzona,asientos,numerado,idevento,idsubzona,idvermapa,asientosmartxt="",idfilaasientotxt,ideventopack;
     String ideventoasientopack,idzonapack,filapack,asientopack,seccionpack,idfilapack;
     View vista;
     TextView TXVSeccionComp,TXVAsientos,TXVInfoCompra,TXVTotal,txvtotalasientos;
@@ -70,6 +70,7 @@ public class FRMejDisp extends Fragment {
     JSONObject jodataastospack =new JSONObject();
     JSONArray jadataatospack= new JSONArray();
     NestedScrollView scvertAsientos;
+    SharedPreferences prefe;
     public FRMejDisp() {
         // Required empty public constructor
     }
@@ -102,7 +103,7 @@ public class FRMejDisp extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     void RecibirDatos(){
         ((DetallesEventos)getActivity()).cerrar_cargando();
-        SharedPreferences prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
         Cant_Boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
         asientos=prefe.getString("asientos","");
@@ -112,6 +113,7 @@ public class FRMejDisp extends Fragment {
         idsubzona=prefe.getString("idsubzona","0");
         comision=Double.parseDouble(prefe.getString("comision","0.00"));
         zona=prefe.getString("zona","");
+        subzona=prefe.getString("subzona","");
         seccionpack=prefe.getString("subzona","");
         idvermapa=prefe.getString("idvermapa","");
         llenar_info();
@@ -136,9 +138,9 @@ public class FRMejDisp extends Fragment {
             if(idvermapa.equals("1")) { //si es 1 procederá a consultar los lugares disponibles
                 TXVAsientos.setText("");
                 if(idevento.equals("0")) {// si es el idevento es 0 significa que se va a trabajar con el idpaquete
-                    consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacasPaquete.php?idpaquete="+ideventopack+"&idzona="+idsubzona);
+                    consulta_asientos("https://www.masboletos.mx/appMasboletos.fueralinea/getButacasPaquete.php?idpaquete="+ideventopack+"&idzona="+idsubzona);
                 }else{
-                    consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);
+                    consulta_asientos("https://www.masboletos.mx/appMasboletos.fueralinea/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);
                 }
             }else{ /*sino solo se encargará de pintar los lugares obtenidos del servidor*/
                 llleyendaasientos.setVisibility(View.GONE);
@@ -152,7 +154,7 @@ public class FRMejDisp extends Fragment {
                 });
             }
         }
-        TXVSeccionComp.setText(zona);
+        TXVSeccionComp.setText(zona+"/"+subzona);
         subtotal=Cant_Boletos*precio;
         //subtotal+=comision*Cant_Boletos;
         cargoTC=subtotal*0.03;

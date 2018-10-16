@@ -26,7 +26,7 @@ import itstam.masboletos.carruselcompra.UsuarioFR;
 public class RevisionFR extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,asiento,carfentr,fpago,fentregas,carserv="",cant_boletos,datoscargos;
+    String zona,seccion,fila,asiento,carfentr,fpago,fentregas,carserv="",cant_boletos,datoscargos;
     Double precio=0.0,total=0.00,ptecargo=0.00,imtecargo=0.00, CargosServ=0.00;
     TextView txvnevento,txvfechaeve,txvhoraeve,txvfila,txvasiento,txvseccion,txvcarserv,txvfpago,txvfentrega,txvcarfentr2,txvtotal2,txvseccion2;
     DecimalFormat df = new DecimalFormat("#0.00");
@@ -67,7 +67,8 @@ public class RevisionFR extends Fragment {
 
     void recepcion_datos(){
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
-        seccion=prefe.getString("zona","");
+        zona=prefe.getString("zona","");
+        seccion=prefe.getString("subzona","");
         fila=prefe.getString("fila","");
         asiento=prefe.getString("asientos","0");
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
@@ -85,7 +86,7 @@ public class RevisionFR extends Fragment {
         txvnevento.setText(prefe.getString("NombreEvento",""));
         txvfechaeve.setText(prefe.getString("fechaevento",""));
         txvhoraeve.setText(prefe.getString("horaevento",""));
-        txvseccion2.setText(seccion+" x "+cant_boletos);
+        txvseccion2.setText(zona+"/"+seccion+" x "+cant_boletos);
         txvseccion.setText("MX $"+df.format(precio*Integer.parseInt(cant_boletos)));
         CargosServ=((precio*(ptecargo/100))+imtecargo);
         total+=CargosServ*Integer.parseInt(cant_boletos);

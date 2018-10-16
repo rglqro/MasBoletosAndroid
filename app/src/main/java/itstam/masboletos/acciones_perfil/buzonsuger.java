@@ -123,7 +123,7 @@ public class buzonsuger extends AppCompatActivity {
         // Initialize a new RequestQueue instance
         iniciar_cargando();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos/getEstados.php";
+        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getEstados.php";
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

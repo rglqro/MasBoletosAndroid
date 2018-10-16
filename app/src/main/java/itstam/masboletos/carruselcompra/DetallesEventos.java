@@ -99,9 +99,9 @@ public class DetallesEventos extends AppCompatActivity {
 
         if(idevento.equals("0")){ /*Si el ID es 0 significa que la compra será para paquetes*/
             ideventopack=prefe.getString("ideventopack","");
-            consulta_info("https://www.masboletos.mx/appMasboletos/getPaqueteEncabezado.php?IdEventoPack="+ideventopack);
+            consulta_info("https://www.masboletos.mx/appMasboletos.fueralinea/getPaqueteEncabezado.php?IdEventoPack="+ideventopack);
         }else {
-            consulta_info("https://www.masboletos.mx/appMasboletos/getEventoEncabezado.php?idevento="+idevento);
+            consulta_info("https://www.masboletos.mx/appMasboletos.fueralinea/getEventoEncabezado.php?idevento="+idevento);
         }
         set_DatosCompra("Cant_boletos","0");
         set_DatosCompra("posEve","0");

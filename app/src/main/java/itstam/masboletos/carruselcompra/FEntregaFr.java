@@ -49,7 +49,7 @@ import itstam.masboletos.R;
 public class FEntregaFr extends Fragment {
     View vista;
     SharedPreferences prefe;
-    String seccion,fila,ideventopack,idevento="",fentregas="",asiento="",numerado="";
+    String zona,seccion,fila,ideventopack,idevento="",fentregas="",asiento="",numerado="";
     Double precio=0.00,total=0.00,CargoFEntr=0.00,Sumafentr=0.00;
     Double cargoseg=0.00,sumaseg=0.00;
     int cant_datos=0,cant_boletos;
@@ -97,13 +97,14 @@ public class FEntregaFr extends Fragment {
     void recepcion_datos(){
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=prefe.getString("idevento","");
-        seccion=prefe.getString("zona","");
+        zona=prefe.getString("zona","");
+        seccion=prefe.getString("subzona","");
         fila=prefe.getString("fila","");
         cant_boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
         asiento=(prefe.getString("asientos","0"));
         precio=Double.parseDouble(prefe.getString("precio","0.00"));
         numerado=prefe.getString("valornumerado","0");
-        txvseccion2.setText(seccion+" x "+cant_boletos);
+        txvseccion2.setText(zona+"/"+seccion+" x "+cant_boletos);
 
         if(numerado.equals("0")){
             txvfila.setVisibility(View.GONE); txvfila2.setVisibility(View.GONE);
@@ -118,9 +119,9 @@ public class FEntregaFr extends Fragment {
         txvtotal.setText("MX $"+df.format(total));
         if(idevento.equals("0")){
             ideventopack=prefe.getString("ideventopack","0");
-            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
+            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos.fueralinea/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
         }else{
-            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);
+            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos.fueralinea/getFormaPagoFormaEntrega.php?idevento="+idevento);
         }
     }
 
