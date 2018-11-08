@@ -4,6 +4,7 @@ package itstam.masboletos.principal;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.os.Bundle;
@@ -33,18 +34,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BTInicio=(ImageButton)findViewById(R.id.BTInicio);
-        BTUbic=(ImageButton)findViewById(R.id.BTUbicacion);
-        BTPerfil=(ImageButton)findViewById(R.id.BTPerfil);
+        BTInicio = (ImageButton) findViewById(R.id.BTInicio);
+        BTUbic = (ImageButton) findViewById(R.id.BTUbicacion);
+        BTPerfil = (ImageButton) findViewById(R.id.BTPerfil);
 
-            if(NetworkUtils.isNetworkConnected(this)){
-                Menu_Navegacion();
-                frboletos = new BoletosPrin();
-                getSupportFragmentManager().beginTransaction().add(R.id.contenedor,frboletos).commit();
-            }else {
-                alertanointernet();
-            }
-
+        if (NetworkUtils.isNetworkConnected(this)) {
+            Menu_Navegacion();
+            frboletos = new BoletosPrin();
+            getSupportFragmentManager().beginTransaction().add(R.id.contenedor, frboletos).commit();
+        } else {
+            alertanointernet();
+        }
     }
 
     FragmentManager fm;

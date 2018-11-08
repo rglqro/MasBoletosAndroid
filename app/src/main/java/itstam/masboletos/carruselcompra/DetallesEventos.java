@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -80,31 +81,43 @@ public class DetallesEventos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_eventos);
-        TXVNEvento=(TextView)findViewById(R.id.txvnombreevepaq);
-        txvinfoevepac=findViewById(R.id.txvinfoevepac);
-        txvdescripcionevepac=findViewById(R.id.TXVDescripcion);
-        IMVFondo=(ImageView)findViewById(R.id.IMVFondo);
-        IMVEvento=(ImageView)findViewById(R.id.IMVEvento);
-        IMBTRegresar=(ImageButton)findViewById(R.id.imBtRegresar);
-        rlimagsevento=findViewById(R.id.rlimagsevento);
-        txvcrono=findViewById(R.id.txvcrono); txvcrono.setVisibility(View.INVISIBLE);
-        SharedPreferences prefe=this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
-        idevento=prefe.getString("idevento","0");
+        TXVNEvento = (TextView) findViewById(R.id.txvnombreevepaq);
+        txvinfoevepac = findViewById(R.id.txvinfoevepac);
+        txvdescripcionevepac = findViewById(R.id.TXVDescripcion);
+        IMVFondo = (ImageView) findViewById(R.id.IMVFondo);
+        IMVEvento = (ImageView) findViewById(R.id.IMVEvento);
+        IMBTRegresar = (ImageButton) findViewById(R.id.imBtRegresar);
+        rlimagsevento = findViewById(R.id.rlimagsevento);
+        txvcrono = findViewById(R.id.txvcrono);
+        txvcrono.setVisibility(View.INVISIBLE);
+        SharedPreferences prefe = this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        idevento = prefe.getString("idevento", "0");
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         alto = displayMetrics.heightPixels;
         ancho = displayMetrics.widthPixels;
-        rlimagsevento.getLayoutParams().height=alto/5;
+        rlimagsevento.getLayoutParams().height = alto / 5;
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
 
-        if(idevento.equals("0")){ /*Si el ID es 0 significa que la compra será para paquetes*/
-            ideventopack=prefe.getString("ideventopack","");
-            consulta_info("https://www.masboletos.mx/appMasboletos.fueralinea/getPaqueteEncabezado.php?IdEventoPack="+ideventopack);
+
+        if (idevento.equals("0")) { /*Si el ID es 0 significa que la compra será para paquetes*/
+            ideventopack = prefe.getString("ideventopack", "");
+            consulta_info("https://www.masboletos.mx/appMasboletos/getPaqueteEncabezado.php?IdEventoPack=" + ideventopack);
+        } else if(appLinkAction!=null){
+            Uri appLinkData = appLinkIntent.getData();
+            Log.e("pagina",appLinkData.toString());
+            Log.e("pagina2",appLinkAction);
+            String[] sep= appLinkData.toString().split("=");
+            consulta_info("https://www.masboletos.mx/appMasboletos/getEventoEncabezado.php?idevento=" + sep[1]);
         }else {
-            consulta_info("https://www.masboletos.mx/appMasboletos.fueralinea/getEventoEncabezado.php?idevento="+idevento);
+            consulta_info("https://www.masboletos.mx/appMasboletos/getEventoEncabezado.php?idevento=" + idevento);
         }
-        set_DatosCompra("Cant_boletos","0");
-        set_DatosCompra("posEve","0");
+        set_DatosCompra("Cant_boletos", "0");
+        set_DatosCompra("posEve", "0");
+
     }
 
     void consulta_info(String URL){

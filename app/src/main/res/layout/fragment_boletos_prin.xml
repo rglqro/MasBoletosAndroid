@@ -156,6 +156,15 @@
                                 android:orientation="vertical"
                                 android:padding="2dp">
 
+                                <TextView
+                                    android:id="@+id/textView32"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="No hay Paquetes Disponibles"
+                                    android:textColor="@color/negro"
+                                    android:textSize="14sp"
+                                    android:padding="10dp"
+                                    android:textAlignment="center"/>
                             </LinearLayout>
 
                         </FrameLayout>

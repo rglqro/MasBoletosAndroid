@@ -138,9 +138,9 @@ public class FRMejDisp extends Fragment {
             if(idvermapa.equals("1")) { //si es 1 procederá a consultar los lugares disponibles
                 TXVAsientos.setText("");
                 if(idevento.equals("0")) {// si es el idevento es 0 significa que se va a trabajar con el idpaquete
-                    consulta_asientos("https://www.masboletos.mx/appMasboletos.fueralinea/getButacasPaquete.php?idpaquete="+ideventopack+"&idzona="+idsubzona);
+                    consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacasPaquete.php?idpaquete="+ideventopack+"&idzona="+idsubzona);
                 }else{
-                    consulta_asientos("https://www.masboletos.mx/appMasboletos.fueralinea/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);
+                    consulta_asientos("https://www.masboletos.mx/appMasboletos/getButacas.php?idevento="+idevento+"&idzona="+idsubzona);
                 }
             }else{ /*sino solo se encargará de pintar los lugares obtenidos del servidor*/
                 llleyendaasientos.setVisibility(View.GONE);
@@ -209,6 +209,7 @@ public class FRMejDisp extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
                     }
                 }
@@ -410,7 +411,8 @@ public class FRMejDisp extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
                     }
                 })
         {

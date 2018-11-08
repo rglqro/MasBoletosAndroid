@@ -101,7 +101,7 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
         ((UbicacionAct)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getDatosPuntoVenta.php?idpuntoventa="+((UbicacionAct)getActivity()).idpuntoventa[indice];
+        String URL="https://www.masboletos.mx/appMasboletos/getDatosPuntoVenta.php?idpuntoventa="+((UbicacionAct)getActivity()).idpuntoventa[indice];
         Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,

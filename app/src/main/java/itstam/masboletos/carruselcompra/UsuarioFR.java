@@ -55,6 +55,7 @@ import java.util.Map;
 
 import itstam.masboletos.R;
 
+import static android.app.Activity.DEFAULT_KEYS_DIALER;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -205,7 +206,7 @@ public class UsuarioFR extends Fragment {
     void iniciar_sesion(){
         ((DetallesEventos)getActivity()).iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url="https://www.masboletos.mx/appMasboletos.fueralinea/validalogin.php";
+        String url="https://www.masboletos.mx/appMasboletos/validalogin.php";
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
@@ -257,8 +258,9 @@ public class UsuarioFR extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError
             {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("correo", edtusuario.getText().toString());Log.e("dato",String.valueOf(dataeventosize));
-                params.put("contrasenia", edtcontra.getText().toString());Log.e("fila",fila);
+                params.put("correo", edtusuario.getText().toString());
+                params.put("contrasenia", edtcontra.getText().toString());
+                Log.e("params post",params.toString());
                 return params;
             }
         };
@@ -270,7 +272,7 @@ public class UsuarioFR extends Fragment {
             if(idevento.equals("0")){
                 pre_registro_packs("https://www.masboletos.mx/masBoletosEnviaDatosPaqueteMovil.php");
             }else {
-                preregistroTCTD();
+                preregistroTCTD("https://www.masboletos.mx/masBoletosEnviaDatos.php");
             }
             ((DetallesEventos)getActivity()).FRNombres[7]="8. Pago con TC";
         }else if(fpago.equals("5")){
@@ -280,39 +282,62 @@ public class UsuarioFR extends Fragment {
             if(idevento.equals("0")){
                 pre_registro_packs("https://www.masboletos.mx/masBoletosEnviadatosPaquetePaypalMovil.php");
             }else{
-                preregistro_paypal("https://www.masboletos.mx/masBoletosEnviaDatosPaypalMovil.php?idevento="+idevento+"&numerado="
-                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
-                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
-                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);
+                preregistro_paypal("https://www.masboletos.mx/masBoletosEnviaDatosPaypal.php");
             }
         }
     }
 
     private void preregistro_paypal(final String url){/*Este metodo aparta los boletos para poder realizar la transaccion obteniendo un folio de transaccion */
         ((DetallesEventos)getActivity()).iniciar_cargando(); Log.e("URL",URL);
-        // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        Log.e("URL",url);
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(String response)
+                    {
                         Log.e("Resultado registro",response);
-                        procesar_pagoPP();/*Aqui se inician lo servicios del API de Paypal*/
                         folio=response;
                         folio = folio.replace(" ", "").replace("\n", "");
+                        procesar_pagoPP();/*Aqui se inician lo servicios del API de Paypal*/
                     }
-                }, new Response.ErrorListener() {
-
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                    }
+                })
+        {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
-                ((DetallesEventos)getActivity()).cerrar_cargando();
+            protected Map<String, String> getParams() throws AuthFailureError
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("idevento", idevento);
+                params.put("numerado", numerado);
+                params.put("cantidad", String.valueOf(cant_boletos));
+                params.put("cargoxservicio", cargoxservicio);
+                params.put("cargotdc", cargoxservicio);
+                params.put("zona", idzona);
+                params.put("idcliente", id_cliente);
+                params.put("formadepago", fpago);
+                params.put("importe",precio);
+                params.put("txtformaentrega", idformaentrega);
+                params.put("idfila", idfila);
+                params.put("inicolumna", inicolumna);
+                params.put("fincolumna", fincolumna);
+                params.put("filaasientos", filaasientos);
+                params.put("fila", fila);
+                params.put("idfilafilaasiento", idfilafilaasiento);
+                params.put("totalfinal", totalpago);
+                Log.e("parametros post",params.toString());
+                return params;
             }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        };
+        queue.add(strRequest);
     }
 
     private void pre_registro_packs(String url){/*Este metodo registra via post los datos para los boletos de un paquete*/
@@ -350,49 +375,95 @@ public class UsuarioFR extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError
             {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));Log.e("dato",String.valueOf(dataeventosize));
-                params.put("fila", fila);Log.e("fila",fila);
-                params.put("importe", precio);Log.e("dato",precio);
-                params.put("cantidad", String.valueOf(cant_boletos));Log.e("dato",String.valueOf(cant_boletos));
+                params.put("cantidadeventosxpaquete", String.valueOf(dataeventosize));
+                params.put("fila", fila);
+                params.put("importe", precio);
+                params.put("cantidad", String.valueOf(cant_boletos));
                 params.put("cargoxservicio", comisionpack);
-                params.put("cargotdc", cargoxservicio);Log.e("dato",comisionpack);
-                params.put("zona", idzona);Log.e("dato",idzona);
+                params.put("cargotdc", cargoxservicio);
+                params.put("zona", idzona);
                 params.put("numerado", numerado);
-                params.put("idcliente",id_cliente);Log.e("dato",id_cliente);
-                params.put("idfila", idfila); Log.e("idfila",idfila);
-                params.put("inicolumna", inicolumna); Log.e("inicolumna",inicolumna);
-                params.put("fincolumna", fincolumna); Log.e("fincolumna",fincolumna);
-                params.put("filaasientos", filaasientos); Log.e("filaasientos",filaasientos);
-                params.put("idfilafilaasiento", idfilafilaasiento);Log.e("idfilafilaasiento",idfilafilaasiento);
-                params.put("formadepago", fpago);Log.e("dato",fpago);
-                params.put("txtformaentrega", idformaentrega);Log.e("dato",idformaentrega);
-                params.put("idpaquete", ideventopack);Log.e("dato",ideventopack);
-                params.put("Comisionpaquete", comisionpack);Log.e("dato",comisionpack);
-                params.put("dataEventos", dataevento.toString());Log.e("dato",dataevento);
+                params.put("idcliente",id_cliente);
+                params.put("idfila", idfila);
+                params.put("inicolumna", inicolumna);
+                params.put("fincolumna", fincolumna);
+                params.put("filaasientos", filaasientos);
+                params.put("idfilafilaasiento", idfilafilaasiento);
+                params.put("formadepago", fpago);
+                params.put("txtformaentrega", idformaentrega);
+                params.put("idpaquete", ideventopack);
+                params.put("Comisionpaquete", comisionpack);
+                params.put("dataEventos", dataevento.toString());
                 params.put("datafilasiento", "[]");
-                params.put("dataeventozonafilasiento", datalugarespack); Log.e("datalugpack",datalugarespack);
+                params.put("dataeventozonafilasiento", datalugarespack);
+                Log.e("params post",params.toString());
                 return params;
             }
         };
         queue.add(strRequest);
     }
 
-    private void preregistroTCTD(){/*Este solo crea la URL para abrirla y direccionar al portal de pago para tarjetas de Credito, esta url se abrirá en el siguiente fragmento ya que devuelve un post automatico el script*/
-        String URL=("https://www.masboletos.mx/masBoletosEnviaDatosMovil.php?idevento="+idevento+"&numerado="
-                        +numerado+"&cantidad="+cant_boletos+"&cargoxservicio="+cargoxservicio+"&zona="+idzona+"&idcliente="+id_cliente+"&formadepago="
-                        +fpago+"&txtformaentrega="+idformaentrega+"&importe="+precio+"&idfila="+idfila+"&inicolumna="+inicolumna+"&fincolumna="+fincolumna
-                        +"&filaasientos="+filaasientos+"&fila="+fila+"&idfilafilaasiento="+idfilafilaasiento);  //para que la variable sea reconocida en todos los metodos
-        ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",URL);
-        ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+    private void preregistroTCTD(String url){/*Este solo crea la URL para abrirla y direccionar al portal de pago para tarjetas de Credito, esta url se abrirá en el siguiente fragmento ya que devuelve un post automatico el script*/
+
+        ((DetallesEventos)getActivity()).iniciar_cargando();
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response)
+                    {
+                        Log.e("respenvia",response);
+                        ((DetallesEventos)getActivity()).set_DatosCompra("URLTC",response);
+                        ((DetallesEventos)getActivity()).replaceFragment(new FRFinalizarCompra());
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("idevento", idevento);
+                params.put("numerado", numerado);
+                params.put("cantidad", String.valueOf(cant_boletos));
+                params.put("cargoxservicio", cargoxservicio);
+                params.put("zona", idzona);
+                params.put("idcliente",id_cliente);
+                params.put("formadepago", fpago);
+                params.put("txtformaentrega", idformaentrega);
+                params.put("importe",precio);
+                params.put("idfila", idfila);
+                params.put("inicolumna", inicolumna);
+                params.put("fincolumna", fincolumna);
+                params.put("filaasientos", filaasientos);
+                params.put("fila", fila);
+                params.put("idfilafilaasiento", idfilafilaasiento);
+                params.put("totalfinal", totalpago);
+                params.put("origen", "APP");
+                Log.e("params post",params.toString());
+                return params;
+            }
+        };
+        queue.add(strRequest);
     }
 
     private void procesar_pagoPP(){/*Aqui se inicia el api de paypal*/
-        ((DetallesEventos)getActivity()).cerrar_cargando();
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(totalpago),"MXN","Pago por boletos de :"+nombreevento,PayPalPayment.PAYMENT_INTENT_SALE);
         Intent intent = new Intent(getActivity(),PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configPP);
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
         startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+        ((DetallesEventos)getActivity()).cerrar_cargando();
     }
 
     @Override

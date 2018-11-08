@@ -59,7 +59,7 @@ public class SeleccionZonaFR extends Fragment {
     int indiceZona,indicesubzona;
     Spinner spzona,spseccion;
     Button btContinuar;
-    String seccion_compra,costo_compra,asiento_compra,tipomsj,msj,cantidadBoletos,fila,idfila,inicolumna,fincolumna,filaasientos,ideventopack="";
+    String seccion_compra="",costo_compra,asiento_compra,tipomsj="Error...",msj,cantidadBoletos,fila,idfila,inicolumna,fincolumna,zonagetbol,ideventopack="";
     ImageView IMVMApa;
     Dialog customDialog = null;
     CheckBox cbvermapaas;
@@ -88,9 +88,9 @@ public class SeleccionZonaFR extends Fragment {
         URLMapa=prefe.getString("eventomapa","");
         if(idevento.equals("0")){
             ideventopack=prefe.getString("ideventopack","0");
-            obtener_zonas("https://www.masboletos.mx/appMasboletos.fueralinea/getPaquetesZonas.php?idpaquete="+ideventopack);
+            obtener_zonas("https://www.masboletos.mx/appMasboletos/getPaquetesZonas.php?idpaquete="+ideventopack);
         }else{
-            obtener_zonas("https://www.masboletos.mx/appMasboletos.fueralinea/getZonasxEvento.php?idevento="+idevento);
+            obtener_zonas("https://www.masboletos.mx/appMasboletos/getZonasxEvento.php?idevento="+idevento);
         }
     }
 
@@ -153,6 +153,7 @@ public class SeleccionZonaFR extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
                     }
                 }
@@ -231,9 +232,9 @@ public class SeleccionZonaFR extends Fragment {
                 txtsel=(String) zonas[position];
                 _zona=txtsel.replace(" ","%20");
                 if(idevento.equals("0")){
-                    obtener_secciones("https://www.masboletos.mx/appMasboletos.fueralinea/getCargandoSubzonasxGrupoPaquete.php?idpaquete="+ideventopack+"&grupo="+_zona);
+                    obtener_secciones("https://www.masboletos.mx/appMasboletos/getCargandoSubzonasxGrupoPaquete.php?idpaquete="+ideventopack+"&grupo="+_zona);
                 }else {
-                    obtener_secciones("https://www.masboletos.mx/appMasboletos.fueralinea/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);
+                    obtener_secciones("https://www.masboletos.mx/appMasboletos/getSubzonasxGrupo.php?idevento="+idevento+"&grupo="+_zona);
                 }
             }
 
@@ -343,16 +344,18 @@ public class SeleccionZonaFR extends Fragment {
             @Override
             public void onClick(View v) {
                 if(idevento.equals("0")){
-                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos.fueralinea/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&cantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
+                    Mejor_disponible_Pack("https://www.masboletos.mx/appMasboletos/getBoletosPaquete.php?idpaquete="+ideventopack+"&numerado="+numerado[indiceZona]+"&grupo="+_zona+"&cantBoletos="+cantidadBoletos/*+"&idzonaxgrupo="+id_seccionXevento*/);
+                }else if(indicenumerzona.equals("0") || (indicenumerzona.equals("1")&& !cbvermapaas.isChecked())) {
+                    Mejor_Disponible("https://www.masboletos.mx/appMasboletos/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);
                 }else {
-                    Mejor_Disponible("https://www.masboletos.mx/appMasboletos.fueralinea/getBoletos.php?idevento="+idevento+"&numerado="+numerado[indiceZona]+"&zona="+_zona+"&CantBoletos="+cantidadBoletos+"&idzonaxgrupo="+id_seccionXevento);
+                    idsubzona=id_seccionXevento;
+                    mandar_datos();
                 }
             }
         });
     }
 
     void Mejor_Disponible(String URL){
-        final String[] zonagetbol = {""};
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
@@ -378,29 +381,13 @@ public class SeleccionZonaFR extends Fragment {
                                 idfila=datos.getString("idfila");
                                 inicolumna=datos.getString("mensagesetIniColumna");
                                 fincolumna=datos.getString("mensagesetFinColumna");
-                                zonagetbol[0] =datos.getString("mensagesetNombreZona");
+                                zonagetbol=datos.getString("mensagesetNombreZona");
                                 if(fila.equals("0")){
                                     fila="*";
                                 }
                             }
                             if(tipomsj.equals("1")) {
-                                set_DatosCompra("idsubzona",idsubzona);
-                                set_DatosCompra("zona",zonas[indiceZona]);
-                                set_DatosCompra("precio",precios[indiceZona]);
-                                set_DatosCompra("comision",comision[indiceZona]);
-                                set_DatosCompra("fila",fila);
-                                set_DatosCompra("asientos",fila+": "+asiento_compra);
-                                set_DatosCompra("valornumerado",indicenumerzona);
-                                if(indicesubzona==0)
-                                    set_DatosCompra("subzona",zonagetbol[0]);
-                                else
-                                    set_DatosCompra("subzona",subzonas[indicesubzona]);
-                                set_DatosCompra("subzonagetbol",zonagetbol[0] );
-                                set_DatosCompra("idvermapa",idvermapa);
-                                set_DatosCompra("idfila",idfila);
-                                set_DatosCompra("inicolumna",inicolumna);
-                                set_DatosCompra("fincolumna",fincolumna);
-                                ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
+                                mandar_datos();
                             }else {
                                 ((DetallesEventos)getActivity()).cerrar_cargando();
                                 Toast.makeText(getActivity(),msj+"\nSolicite una cantidad diferente o verifique la zona",Toast.LENGTH_LONG).show();
@@ -482,12 +469,32 @@ public class SeleccionZonaFR extends Fragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
                         ((DetallesEventos)getActivity()).cerrar_cargando();
+                        Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
                     }
                 });
         // Access the RequestQueue through your singleton class.
         requestQueue.add(jsonObjectRequest);
+    }
+
+    void mandar_datos(){
+        set_DatosCompra("idsubzona",idsubzona);
+        set_DatosCompra("zona",zonas[indiceZona]);
+        set_DatosCompra("precio",precios[indiceZona]);
+        set_DatosCompra("comision",comision[indiceZona]);
+        set_DatosCompra("fila",fila);
+        set_DatosCompra("asientos",fila+": "+asiento_compra);
+        set_DatosCompra("valornumerado",indicenumerzona);
+        if(indicesubzona==0)
+            set_DatosCompra("subzona",zonagetbol);
+        else
+            set_DatosCompra("subzona",subzonas[indicesubzona]);
+        set_DatosCompra("subzonagetbol",zonagetbol);
+        set_DatosCompra("idvermapa",idvermapa);
+        set_DatosCompra("idfila",idfila);
+        set_DatosCompra("inicolumna",inicolumna);
+        set_DatosCompra("fincolumna",fincolumna);
+        ((DetallesEventos) getActivity()).replaceFragment(new FRMejDisp());
     }
 
     public void set_DatosCompra(String ndato,String dato){

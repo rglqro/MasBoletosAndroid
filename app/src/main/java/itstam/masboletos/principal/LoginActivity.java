@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
     void iniciar_sesion(){
         iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url="https://www.masboletos.mx/appMasboletos.fueralinea/validalogin.php";
+        String url="https://www.masboletos.mx/appMasboletos/validalogin.php";
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {

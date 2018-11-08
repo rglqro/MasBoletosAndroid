@@ -126,7 +126,7 @@ public class UbicacionAct extends AppCompatActivity {
     void Consulta_Estados(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getEstados.php";
+        String URL="https://www.masboletos.mx/appMasboletos/getEstados.php";
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -185,7 +185,7 @@ public class UbicacionAct extends AppCompatActivity {
         iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getPuntosVentaxEstado.php?idestado="+id_edo;
+        String URL="https://www.masboletos.mx/appMasboletos/getPuntosVentaxEstado.php?idestado="+id_edo;
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

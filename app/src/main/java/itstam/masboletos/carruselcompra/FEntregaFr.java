@@ -119,9 +119,9 @@ public class FEntregaFr extends Fragment {
         txvtotal.setText("MX $"+df.format(total));
         if(idevento.equals("0")){
             ideventopack=prefe.getString("ideventopack","0");
-            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos.fueralinea/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
+            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntregaPaquete.php?idpaquete="+ideventopack);
         }else{
-            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos.fueralinea/getFormaPagoFormaEntrega.php?idevento="+idevento);
+            consulta_formas_entrega("https://www.masboletos.mx/appMasboletos/getFormaPagoFormaEntrega.php?idevento="+idevento);
         }
     }
 
@@ -168,6 +168,7 @@ public class FEntregaFr extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                         Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
                     }
                 }

@@ -141,7 +141,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         ((MainActivity)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getEventosActivos.php"; Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getEventosActivos.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -266,7 +266,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void Consulta_Imagen_Organizadores(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getPatrocinadores.php"; Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPatrocinadores.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -323,7 +323,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     void consulta_paquete_evento(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getPaquetesOrganizador.php"; Log.e("Enlace", URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador.php"; Log.e("Enlace", URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -344,7 +344,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                                 listadireccionpaq.add(datos.getString("domicilio"));
                                 listaidorgpaq.add(datos.getString("idorganizador"));
                             }
-                            genera_datos_paquetes();
+                            if(Elementos.length()>0)
+                                genera_datos_paquetes();
                             ((MainActivity)getActivity()).cerrar_cargando();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -365,6 +366,8 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     }
 
     void genera_datos_paquetes(){
+        if(llpaquetes!=null)
+            llpaquetes.removeAllViews();
         ImPaquete= new ArrayList<ImageView>();
         txvPaquete= new ArrayList<TextView>();
         btpaquete= new ArrayList<TextView>();

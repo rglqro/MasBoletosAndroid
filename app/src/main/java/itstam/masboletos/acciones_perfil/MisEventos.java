@@ -72,7 +72,7 @@ public class MisEventos extends AppCompatActivity {
         ancho = displayMetrics.widthPixels;
         if(validasesion){
             iniciar_cargando();
-            consulta_miseventos("https://www.masboletos.mx/appMasboletos.fueralinea/getMisEventosUsuario.php?idcliente="+idcliente,1);
+            consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosUsuario.php?idcliente="+idcliente,1);
         }else{
             AlertaBoton("Inicio de Sesión","Debe iniciar sesion para poder ver este contenido").show();
         }
@@ -113,7 +113,7 @@ public class MisEventos extends AppCompatActivity {
                                         imagenlist.add("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("imagen"));
                                     }
                                 }
-                                consulta_miseventos("https://www.masboletos.mx/appMasboletos.fueralinea/getMisEventosPasadosUsuario.php?idcliente="+idcliente,2);
+                                consulta_miseventos("https://www.masboletos.mx/appMasboletos/getMisEventosPasadosUsuario.php?idcliente="+idcliente,2);
                             }else{
                                 cantidadlistpass = new ArrayList<>();
                                 eventolistpass = new ArrayList<>();

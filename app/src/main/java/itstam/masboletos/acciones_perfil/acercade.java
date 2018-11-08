@@ -45,5 +45,17 @@ public class acercade extends AppCompatActivity {
         window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
     }
 
+    public void enviarcorreo(View v) {
+        String correo[]={"masboletos.aplicaciones@gmail.com"};
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, correo);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "App MasBoletos Android");
+        intent.putExtra(Intent.EXTRA_TEXT, "Escribe Algo...");
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
 
 }

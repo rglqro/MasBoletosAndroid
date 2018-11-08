@@ -98,7 +98,7 @@ public class PaquetesAct extends AppCompatActivity {
         // Initialize a new RequestQueue instance
         iniciar_cargando();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getPaqueteInfo.php?idorganizador="+idorgpaq; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPaqueteInfo.php?idorganizador="+idorgpaq; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -157,7 +157,7 @@ public class PaquetesAct extends AppCompatActivity {
     void consulta_paqxorg(){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getPaquetesOrganizador_detalle.php?idorganizador="+idorgpaq; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getPaquetesOrganizador_detalle.php?idorganizador="+idorgpaq; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -287,7 +287,7 @@ public class PaquetesAct extends AppCompatActivity {
         iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL="https://www.masboletos.mx/appMasboletos.fueralinea/getImgEventosPack.php?idEventoPack="+id; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getImgEventosPack.php?idEventoPack="+id; Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {

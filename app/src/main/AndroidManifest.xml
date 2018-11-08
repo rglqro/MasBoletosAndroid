@@ -32,18 +32,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".principal.MainActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="https"
-                    android:host="www.masboletos.mx" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".UbicacionAct"
             android:screenOrientation="portrait" />
@@ -57,9 +46,21 @@
         </activity>
         <activity
             android:name=".carruselcompra.DetallesEventos"
-            android:label="@string/title_activity_detalles_eventos"
+            android:label="MasBoletos Detalles Eventos"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="www.masboletos.mx"
+                    android:pathPrefix="/evento.php" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -82,7 +83,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".acciones_perfil.acercade"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <data android:scheme="mailto" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".acciones_perfil.buzonsuger"
             android:screenOrientation="portrait" />

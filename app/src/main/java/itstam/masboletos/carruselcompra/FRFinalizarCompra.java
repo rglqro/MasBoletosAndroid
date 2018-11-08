@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.Log;
@@ -114,7 +115,7 @@ public class FRFinalizarCompra extends Fragment {
             if(idevento.equals("0")){
                 myWebView.loadData(prefe.getString("URLTC", "www.google.com.mx"),"text/html","BASE64");
             }else {
-                myWebView.loadUrl(prefe.getString("URLTC", "www.google.com.mx"));
+                myWebView.loadData(prefe.getString("URLTC", "www.google.com.mx"),"text/html","BASE64");
             }
             myWebView.setWebViewClient(new WebViewClient());
             WebSettings webSettings = myWebView.getSettings();
@@ -147,8 +148,9 @@ public class FRFinalizarCompra extends Fragment {
 
     void consulta_folios(){/*Este metodo consulta los folios de los boletos que fueron comprados con el folio de transaccion*/
         // Instantiate the RequestQueue.
+        ((DetallesEventos)getActivity()).iniciar_cargando();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url ="https://www.masboletos.mx/appMasboletos.fueralinea/getFoliosxTransaccion.php?transaccion="+ntransac;
+        String url ="https://www.masboletos.mx/appMasboletos/getFoliosxTransaccion.php?transaccion="+ntransac;
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -158,12 +160,14 @@ public class FRFinalizarCompra extends Fragment {
                         folios=response; folios=folios.replace(" ","").replace("\n","");
                         txvntran.setText(ntransac);
                         txvfolios.setText(folios);
+                        ((DetallesEventos)getActivity()).cerrar_cargando();
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                ((DetallesEventos)getActivity()).cerrar_cargando();
+                Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
             }
         });
         // Add the request to the RequestQueue.
