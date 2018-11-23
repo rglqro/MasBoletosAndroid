@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,12 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.squareup.picasso.Picasso;
 
 import itstam.masboletos.R;
 import itstam.masboletos.acciones_perfil.*;
@@ -36,11 +39,12 @@ public class Perfil_Fr extends Fragment {
     RelativeLayout RLDatosPerfil; TextView TXVMsj,txvtengocta,btcrearcta;
     LinearLayout LLPrincipal,LLDatosPerfil;
     LinearLayout llinisesion,llbotonesuser1,llbotonesuser2;
-    String nuser,tipousuario;
-    TextView txvnuser;
+    String nuser,tipousuario,urlimgorg;
+    TextView txvnuser,txvtituloperfil;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
-    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade, btvalidaboleto;
+    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade, btvalidaboleto,btreportevta;
+    ImageView imvfondoorg;
 
     public Perfil_Fr() {
         // Required empty public constructor
@@ -60,6 +64,7 @@ public class Perfil_Fr extends Fragment {
         btcerrarsesion=(Button)vista.findViewById(R.id.btcerrarsesion);
         btmeventos=(Button)vista.findViewById(R.id.BtMEventos);
         txvnuser=(TextView)vista.findViewById(R.id.txvnuser);
+        txvtituloperfil=vista.findViewById(R.id.txvtituloperfil);
         btavisopriv=vista.findViewById(R.id.btavisopriv);
         btayuda=vista.findViewById(R.id.btayuda);
         btbuzon=vista.findViewById(R.id.btbuzon);
@@ -67,12 +72,15 @@ public class Perfil_Fr extends Fragment {
         llbotonesuser1=vista.findViewById(R.id.llbotonesuser1);
         llbotonesuser2=vista.findViewById(R.id.llbotonesuser2);
         btvalidaboleto=vista.findViewById(R.id.btvalidaboleto);
+        btreportevta=vista.findViewById(R.id.btreporteventa);
+        imvfondoorg=vista.findViewById(R.id.imvfondoorg);
 
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
 
         checar_sesion();
         eventos_botones();
 
+        RLDatosPerfil.getLayoutParams().height=((MainActivity)getActivity()).alto/8;
         return vista;
     }
 
@@ -81,11 +89,16 @@ public class Perfil_Fr extends Fragment {
         nuser=prefe_sesion.getString("usuario_s", "");
         tipousuario=prefe_sesion.getString("tipousuario","0");
         valida_sesion=prefe_sesion.getBoolean("validasesion",false);
+        urlimgorg=prefe_sesion.getString("urlimgorg","surl");
         if(valida_sesion){
             txvnuser.setText(nuser);
             if(tipousuario.equals("2")){
+                txvtituloperfil.setText(nuser);
+                Picasso.get().load(urlimgorg).error(R.mipmap.logo_masboletos).into(imvfondoorg); Log.e("fondo org",urlimgorg);
                 llbotonesuser1.setVisibility(View.GONE);
             }else {
+                if(imvfondoorg!=null)
+                    imvfondoorg.setBackgroundColor(Color.TRANSPARENT);
                 llbotonesuser2.setVisibility(View.GONE);
             }
         }else {
@@ -143,6 +156,13 @@ public class Perfil_Fr extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mainIntent = new Intent().setClass(getActivity(), ScannerQR.class);
+                startActivity(mainIntent);
+            }
+        });
+        btreportevta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent().setClass(getActivity(), EventosxOrganizador.class);
                 startActivity(mainIntent);
             }
         });
@@ -231,6 +251,7 @@ public class Perfil_Fr extends Fragment {
             if(resultCode == Activity.RESULT_OK) {
                 nuser = data.getStringExtra("validasesion");
                 tipousuario=data.getStringExtra("tipousuario");
+                urlimgorg=data.getStringExtra("urlimgorg");
                 sesion_iniciada();
             }else {
                 Toast.makeText(getActivity(),"Aun no ha iniciado sesión",Toast.LENGTH_SHORT).show();
@@ -238,10 +259,15 @@ public class Perfil_Fr extends Fragment {
         }
     }
 
+    @SuppressLint("ResourceType")
     public void sesion_iniciada(){
         if(tipousuario.equals("2")){
             llbotonesuser1.setVisibility(View.GONE);
             llbotonesuser2.setVisibility(View.VISIBLE);
+            Picasso.get().load(urlimgorg).error(R.mipmap.logo_masboletos).into(imvfondoorg); Log.e("fondo org",urlimgorg);
+            txvtituloperfil.setText(nuser);
+        }else{
+            imvfondoorg.setImageResource(Color.TRANSPARENT);
         }
         btcerrarsesion.setVisibility(View.VISIBLE);
         llinisesion.setVisibility(View.GONE);
@@ -265,7 +291,7 @@ public class Perfil_Fr extends Fragment {
         editor.putString("id_cliente","");
         editor.putString("tipousuario","0");
         editor.commit();
-
+        txvtituloperfil.setText("Perfil");
         RLDatosPerfil.setVisibility(View.GONE);
         btcerrarsesion.setVisibility(View.GONE);
         if (llbotonesuser2.getVisibility() == View.VISIBLE) {

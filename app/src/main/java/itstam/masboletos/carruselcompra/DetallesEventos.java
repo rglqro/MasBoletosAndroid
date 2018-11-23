@@ -72,6 +72,7 @@ public class DetallesEventos extends AppCompatActivity {
     RelativeLayout rlimagsevento;
     CountDownTimer cdtcrono;
     JSONArray Elementos;
+    Bitmap imageBlur;
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -175,15 +176,36 @@ public class DetallesEventos extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     void pintar_info(){
-        cerrar_cargando();
         TXVNEvento.setText(nomevento);
         String txt=lugarevento+", "+direevento+"<br><b>Fecha y Hora:</b> "+fechaevento+", "+horaevento;
         txvinfoevepac.setText(Html.fromHtml(txt));
         txvdescripcionevepac.setText("Información del evento: "+descevento);
-        IniciarFragments();
         set_DatosCompra("fechaevento",fechaevento);
         set_DatosCompra("horaevento",horaevento);
         set_DatosCompra("NombreEvento",nomevento);
+        IniciarFragments();
+        difuminar_imagen();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    void difuminar_imagen(){
+        Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
+        Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
+            @Override
+            public void onSuccess() {
+                imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
+                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+                IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
+                cerrar_cargando();
+            }
+            @Override
+            public void onError(Exception e) {
+                imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
+                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
+                IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
+                cerrar_cargando();
+            }
+        });
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -226,27 +248,6 @@ public class DetallesEventos extends AppCompatActivity {
                 }
             });
         }
-        difuminar_imagen();
-    }
-
-    Bitmap imageBlur;
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    void difuminar_imagen(){
-        Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
-        Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
-            @Override
-            public void onSuccess() {
-                imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
-                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
-                IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-            @Override
-            public void onError(Exception e) {
-                imageBlur=((BitmapDrawable)IMVEvento.getDrawable()).getBitmap();
-                BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
-                IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-        });
 
     }
 

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Perfil_Fr frperfil = new Perfil_Fr();
     ImageButton BTInicio,BTUbic,BTPerfil;
     ProgressDialog dialogcarg;
+    int ancho,alto;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -45,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             alertanointernet();
         }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        alto = displayMetrics.heightPixels;
+        ancho = displayMetrics.widthPixels;
     }
 
     FragmentManager fm;

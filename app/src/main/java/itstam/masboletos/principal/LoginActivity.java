@@ -37,6 +37,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edtcorreo,edtcontrasena;
@@ -44,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btisesion;
     JSONArray Elementos=null;
     ImageView imvavatar;
-    String msj,usuario,id_cliente,correo,contrasena,tipousuario;
+    String msj,usuario,id_cliente,correo,contrasena,tipousuario="1",urlimgorg="";
     Boolean resp;
     ProgressDialog dialogcarg;
 
@@ -91,9 +93,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable txt) {
-                if (/*edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+") && txt.length() > 0 &&*/ edtcontrasena.getText().length()>3) {
+                if (txt.length()>3 && edtcontrasena.getText().toString().length()>3) {
                     btisesion.setBackgroundResource(R.color.azulmb);
                     bloqueo_boton=1;
+                    if(edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
+                        tipousuario="1";
+                    else
+                        tipousuario="2";
                 }
                 else {
                     bloqueo_boton=0;
@@ -115,9 +121,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable txt) {
-                if(txt.length()>1){
+                if(txt.length()>3 && edtcorreo.getText().toString().length()>3){
                     btisesion.setBackgroundResource(R.color.azulmb);
                     bloqueo_boton=1;
+                    if(edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
+                        tipousuario="1";
+                    else
+                        tipousuario="2";
                 }else{
                     bloqueo_boton=0;
                     btisesion.setBackgroundResource(R.color.grisclaro);
@@ -145,12 +155,13 @@ public class LoginActivity extends AppCompatActivity {
                                 msj=datos.getString("mensaje");
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
-                                tipousuario=datos.getString("tipousuario");
+                                urlimgorg="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("pleca");
                             }
                             if(resp) {
                                 Intent intent = new Intent();
                                 intent.putExtra("validasesion", usuario);
                                 intent.putExtra("tipousuario",tipousuario);
+                                intent.putExtra("urlimgorg",urlimgorg);
                                 setResult(RESULT_OK, intent);
                                 guarda_sesion();
                                 if (tipousuario.equals("2")){
@@ -183,6 +194,8 @@ public class LoginActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("correo", correo);
                 params.put("contrasenia", contrasena);
+                params.put("tipo",tipousuario);
+                Log.e("params POST",params.toString());
                 return params;
             }
         };
@@ -197,6 +210,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("id_cliente",id_cliente);
         editor.putBoolean("validasesion",true);
         editor.putString("tipousuario",tipousuario);
+        editor.putString("urlimgorg",urlimgorg);
         editor.commit();
     }
 
@@ -229,4 +243,5 @@ public class LoginActivity extends AppCompatActivity {
     public void cerrar_cargando(){
         dialogcarg.dismiss();
     }
+
 }

@@ -88,7 +88,7 @@
                         android:layout_weight="1"
                         android:backgroundTint="@color/azulmb"
                         android:ems="10"
-                        android:hint="Correo Electrónico"
+                        android:hint="Correo Electrónico ó Usuario Organizador"
                         android:inputType="textEmailAddress"
                         android:textColor="@color/negro" />
                 </android.support.design.widget.TextInputLayout>

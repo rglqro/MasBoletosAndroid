@@ -11,7 +11,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/txvtituloperfil"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/azulmboscuro"
@@ -46,33 +46,48 @@
                 <RelativeLayout
                     android:id="@+id/RLDatosPerfil"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="100dp"
                     android:layout_marginBottom="10dp"
-                    android:paddingVertical="10dp"
+                    android:paddingVertical="5dp"
                     android:animateLayoutChanges="true">
 
                     <ImageView
                         android:id="@+id/imageView3"
-                        android:layout_width="123dp"
+                        android:layout_width="125dp"
                         android:layout_height="50dp"
-                        android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:adjustViewBounds="true"
-                        android:cropToPadding="false"
-                        android:src="@drawable/ic_perfil" />
+                        android:src="@drawable/ic_perfil"
+                        android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/txvnuser"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@+id/imageView3"
-                        android:paddingHorizontal="7dp"
-                        android:text="Nombre del Usuario"
-                        android:textColor="@android:color/background_light"
+                        android:layout_toRightOf="@+id/imageView3"
+                        android:shadowColor="@color/negro"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="10"
+                        android:text="Nombre de Usuario"
+                        android:textColor="@color/blanco"
                         android:textSize="18sp"
-                        android:layout_toRightOf="@+id/imageView3" />
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/imvfondoorg"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="0dp"
+                        android:scaleType="fitXY"
+                        android:src="@android:color/transparent" />
                 </RelativeLayout>
             </LinearLayout>
 

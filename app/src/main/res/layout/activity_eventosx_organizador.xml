@@ -1,0 +1,902 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".acciones_perfil.EventosxOrganizador"
+    android:background="@color/blanco">
+
+
+    <LinearLayout
+        android:id="@+id/LYBarrarep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azulmboscuro"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imBtRegresarlogin"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@color/azulmboscuro"
+            android:cropToPadding="false"
+            android:onClick="regresar"
+            android:tint="@android:color/background_light"
+            app:srcCompat="@drawable/ic_regresar" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Reporte de Ventas "
+            android:textColor="@android:color/background_light"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <TabHost
+        android:id="@+id/threporteorg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/LYBarrarep">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/azulmb"
+                android:orientation="horizontal" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/tabrepgral"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <HorizontalScrollView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbarStyle="insideOverlay"
+                            android:scrollbars="horizontal"
+                            android:fillViewport="true"
+                            android:id="@+id/hscvrepgral">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TableLayout
+                                    android:id="@+id/tblreportegral"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <TableRow
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/verdemb">
+
+                                        <TextView
+                                            android:id="@+id/textView70"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="6" />
+
+                                        <TextView
+                                            android:id="@+id/textView71"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="3"
+                                            android:text="Venta Total"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView72"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="2"
+                                            android:text="Cortesías"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView73"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="2"
+                                            android:text="Apartados"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView74"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="2"
+                                            android:text="Consignados"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView75"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1" />
+                                    </TableRow>
+
+                                    <TableRow
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@color/verdemb">
+
+
+                                        <TextView
+                                            android:id="@+id/textView63"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Detalle"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:id="@+id/textView62"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="2"
+                                            android:text="Evento"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:id="@+id/textView61"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Fecha"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:id="@+id/textView60"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Hora"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:id="@+id/textView59"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Aforo"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:id="@+id/textView42"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Boletos"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView55"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Importe"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView56"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="%"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView58"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Cnt"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView64"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="%"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView65"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Cnt"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView66"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="%"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView67"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="Cnt"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView68"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="%"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                        <TextView
+                                            android:id="@+id/textView69"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="% Ocupación"
+                                            android:textAlignment="center"
+                                            android:textColor="@color/blanco" />
+
+                                    </TableRow>
+                                </TableLayout>
+                            </LinearLayout>
+
+                        </HorizontalScrollView>
+                    </LinearLayout>
+                </android.support.v4.widget.NestedScrollView>
+
+
+                <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/tabcanalventa"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:fillViewport="true">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+                            <TableLayout
+                                android:id="@+id/tblcanalventa"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/verdemb">
+
+                                    <TextView
+                                        android:id="@+id/textView170"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="6" />
+
+                                    <TextView
+                                        android:id="@+id/textView171"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Puntos Venta"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView172"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="6"
+                                        android:text="Por Internet"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView175"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%Venta"
+                                        android:textColor="@color/blanco" />
+                                </TableRow>
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/verdemb">
+
+                                    <TextView
+                                        android:id="@+id/textView162"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Evento"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:id="@+id/textView611"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Fecha"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:id="@+id/textView160"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Hora"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:id="@+id/textView159"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Aforo"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:id="@+id/textView142"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Venta Total"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView155"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Boletos"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView156"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView158"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Cred"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView164"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView165"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="PayPal"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView166"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView167"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Oxxo"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView168"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:id="@+id/textView169"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="% Ocupación"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                </TableRow>
+                            </TableLayout>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+
+                </android.support.v4.widget.NestedScrollView>
+
+                <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/tabefectivo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical">
+
+                    <HorizontalScrollView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbarStyle="insideOverlay"
+                        android:scrollbars="horizontal"
+                        android:fillViewport="true">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TableLayout
+                                android:id="@+id/tblefectivo"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/verdemb">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="5" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Efectivo"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Total Bancos"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="6"
+                                        android:text="Detalle Bancario"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+                                </TableRow>
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/verdemb">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Evento"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Fecha"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Hora"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Venta Total"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Monto"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Monto"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Crédito"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Debito"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Comercio"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+
+                                </TableRow>
+                            </TableLayout>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </android.support.v4.widget.NestedScrollView>
+
+
+                <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/tabboletos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TableLayout
+                                android:id="@+id/tblboletosrep"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/verdemb">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="5" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="3"
+                                        android:text="Boleto Impreso
+"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Total Impreso"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Electrónico"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+                                </TableRow>
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/verdemb">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
+                                        android:text="Evento"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Fecha"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Hora"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco"
+                                        android:textSize="14sp" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Boleto Generado"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Venta"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Cortesia"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Consignados"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Boletos"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Boletos"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="%"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/blanco" />
+
+
+                                </TableRow>
+                            </TableLayout>
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+                </android.support.v4.widget.NestedScrollView>
+
+                <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/tabpaquetes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TableLayout
+                        android:id="@+id/tblpaqueterep"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/verdemb">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:text="Evento"
+                                android:textAlignment="center"
+                                android:textColor="@color/blanco"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Fecha"
+                                android:textAlignment="center"
+                                android:textColor="@color/blanco"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Hora"
+                                android:textAlignment="center"
+                                android:textColor="@color/blanco"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Paquetes"
+                                android:textAlignment="center"
+                                android:textColor="@color/blanco" />
+
+
+                        </TableRow>
+                    </TableLayout>
+                </android.support.v4.widget.NestedScrollView>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+</RelativeLayout>

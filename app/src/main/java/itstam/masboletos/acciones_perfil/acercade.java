@@ -29,8 +29,8 @@ public class acercade extends AppCompatActivity {
 
     public void avisopriv(View v){
         // cuadro de dialogo que se abre si no se envio ningun sms o no hubo respuesta del servidor para ingresar el numero de celular manualmente
-                // con este tema personalizado evitamos los bordes por defecto
-                customDialog = new Dialog(this);
+        // con este tema personalizado evitamos los bordes por defecto
+        customDialog = new Dialog(this);
         //deshabilitamos el título por defecto
         customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //obligamos al usuario a pulsar los botones para cerrarlo

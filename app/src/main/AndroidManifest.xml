@@ -32,7 +32,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".principal.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".UbicacionAct"
             android:screenOrientation="portrait" />
@@ -41,6 +41,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -56,9 +57,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
                     android:host="www.masboletos.mx"
-                    android:pathPrefix="/evento.php" />
+                    android:pathPrefix="/evento.php"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -83,10 +84,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".acciones_perfil.acercade"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
+
                 <data android:scheme="mailto" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -98,7 +101,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".acciones_perfil.ScannerQR"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".acciones_perfil.EventosxOrganizador"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

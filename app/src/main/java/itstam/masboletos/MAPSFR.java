@@ -135,7 +135,7 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
                                 @Override
                                 public void onClick(View view) {
                                     String[] cord = latLngs[indice].split(",");
-                                    String url2="http://maps.google.com/maps?saddr="+latc+","+longc+"&daddr="+cord[0]+","+cord[1];
+                                    String url2="https://maps.google.com/maps?saddr="+latc+","+longc+"&daddr="+cord[0]+","+cord[1];
                                     Log.e("Direccion Mapa",url2);
                                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                                             Uri.parse(url2));

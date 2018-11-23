@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="10dp"
-                android:text="Version 1.0.3.2"
+                android:text="Versión 1.0.4"
                 android:textAlignment="center"
                 android:textColor="@color/grisoscuro" />
 

@@ -346,6 +346,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                             }
                             if(Elementos.length()>0)
                                 genera_datos_paquetes();
+                            else{
+
+                            }
                             ((MainActivity)getActivity()).cerrar_cargando();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -466,7 +469,9 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
                     ImBotonEvento.clear();
                     LLImagOrg.removeAllViews();
                     tabla_imagenes.removeAllViews();
-                    llpaquetes.removeAllViews();
+                    Log.e("tamañolista", String.valueOf(listaimapaq.size()));
+                    if(listaimapaq.size()!=0)
+                        llpaquetes.removeAllViews();
                 }
                     Consulta_Imagen_Botones();
                     swipeContainer.setRefreshing(false);

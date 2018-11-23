@@ -101,9 +101,10 @@ public class UsuarioFR extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length()>1){
+                if(s.length()>3 && edtusuario.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+")){
                     entrar.setBackgroundResource(R.color.verdemb);
                     bloqueo_boton=1;
+                    tipousuario="1";
                 }else{
                     bloqueo_boton=0;
                     entrar.setBackgroundResource(R.color.grisclaro);
@@ -124,9 +125,10 @@ public class UsuarioFR extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (edtusuario.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+") && s.length() > 0 && edtcontra.getText().length()>0) {
+                if (s.toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+") && s.length() > 0 && edtcontra.getText().length()>2) {
                     entrar.setBackgroundResource(R.color.verdemb);
                     bloqueo_boton=1;
+                    tipousuario="1";
                 }
                 else {
                     bloqueo_boton=0;
@@ -187,19 +189,26 @@ public class UsuarioFR extends Fragment {
         if(validasesion) {/* si la sesion está iniciada se procederá a realizar el pago obteniendo los dato almacenados en el dispositivo*/
             usuario=prefe_sesion.getString("usuario_s","");
             id_cliente=prefe_sesion.getString("id_cliente","");
-            checar_tipo_pago();
-        }else{ /*sino se procedera a iniciar sesion para guardar la informacion y mandarla con los datos de compra*/
-            entrar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(bloqueo_boton!=0) {
-                        iniciar_sesion();
-                    }else{
-                        ((DetallesEventos)getActivity()).AlertaBoton("Datos usuario","Ingresa los datos correspondientes").show();
-                    }
+            tipousuario=prefe_sesion.getString("tipousuario","1");
+            if(tipousuario.equals("1"))
+                checar_tipo_pago();
+            else{
+                ((DetallesEventos)getActivity()).AlertaBoton("Cambio de Usuario","Este usuario no tiene permitido la compra de boletos\nInicie sesión con un usuario válido").show();
+                bloqueo_boton=0;
+            }
+
+        } /*sino se procedera a iniciar sesion para guardar la informacion y mandarla con los datos de compra*/
+        entrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bloqueo_boton!=0) {
+                    iniciar_sesion();
+                }else{
+                    ((DetallesEventos)getActivity()).AlertaBoton("Datos usuario","Ingresa los datos correspondientes").show();
                 }
-            });
-        }
+            }
+        });
+
 
     }
 
@@ -221,7 +230,6 @@ public class UsuarioFR extends Fragment {
                                 msj=datos.getString("mensaje");
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
-                                tipousuario=datos.getString("tipousuario");
                             }
                             ((DetallesEventos)getActivity()).cerrar_cargando();
                             if(resp){// si la sesion es iniciada correctamente de procede a iniciar el proceso de pago
@@ -260,6 +268,7 @@ public class UsuarioFR extends Fragment {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("correo", edtusuario.getText().toString());
                 params.put("contrasenia", edtcontra.getText().toString());
+                params.put("tipo",tipousuario);
                 Log.e("params post",params.toString());
                 return params;
             }
