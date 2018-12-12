@@ -3,8 +3,6 @@ package itstam.masboletos.acciones_perfil;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -51,7 +49,6 @@ public class EventosxOrganizador extends AppCompatActivity {
     ArrayList<Double> aforo,ventaboleto,ventadinero,cortesias,apartados,consignados;
     TableLayout tblreportegral,tblverdetrep,tblcanalventa,tblefectivo,tblboletosrep,tblpaquetesrep;
     TableRow filatbl;
-    SharedPreferences prefeuser;
     DecimalFormat df = new DecimalFormat("#0.0");
     DecimalFormat df2 = new DecimalFormat("###,###");
     int alto,ancho;
@@ -68,8 +65,6 @@ public class EventosxOrganizador extends AppCompatActivity {
         tblefectivo=findViewById(R.id.tblefectivo);
         tblboletosrep=findViewById(R.id.tblboletosrep);
         tblpaquetesrep=findViewById(R.id.tblpaqueterep);
-        prefeuser= getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
-        idorg=prefeuser.getString("id_cliente","0");
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         alto = displayMetrics.heightPixels;
@@ -78,6 +73,7 @@ public class EventosxOrganizador extends AppCompatActivity {
         tblcanalventa.getLayoutParams().width= (int) (ancho*1.5);
         tblefectivo.getLayoutParams().width= (int) (ancho*1.5);
         tblboletosrep.getLayoutParams().width= (int) (ancho*1.5);
+        idorg=getIntent().getStringExtra("idparareporte");
         iniciar_tab();
     }
 
@@ -136,7 +132,7 @@ public class EventosxOrganizador extends AppCompatActivity {
         consignados.clear();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -144,7 +140,7 @@ public class EventosxOrganizador extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
@@ -235,7 +231,7 @@ public class EventosxOrganizador extends AppCompatActivity {
 
             creadortxv(i,j,df2.format(ventaboleto.get(i)));j++;
             creadortxv(i,j,df2.format(ventadinero.get(i)));j++;
-            pteventa= (float) (ventaboleto.get(i)/aforo.get(i)*100); Log.e("pteventa", String.valueOf(pteventa));
+            pteventa= (float) (ventaboleto.get(i)/aforo.get(i)*100); //Log.e("pteventa", String.valueOf(pteventa));
             creadortxv(i,j,df.format(pteventa)+"%");j++;
 
             creadortxv(i,j,cortesias.get(i).toString());j++;
@@ -280,11 +276,11 @@ public class EventosxOrganizador extends AppCompatActivity {
             creadortxv(i,j,df2.format(ventaboleto.get(i)));j++;
 
             creadortxv(i,j,df2.format(ventadinero.get(i)));j++;
-            pteventa= ventaboleto.get(i)!=0 ? (float) ((ventadinero.get(i)*100)/ventaboleto.get(i)) :0; //Log.e("pteventa",pteventa.toString());
+            pteventa= ventaboleto.get(i)!=0 ? (float) ((ventadinero.get(i)*100)/ventaboleto.get(i)) :0; ////Log.e("pteventa",pteventa.toString());
             creadortxv(i,j,df.format(pteventa)+"%");j++;
 
             creadortxv(i,j,cortesias.get(i).toString());j++;
-            ptecorte= ventaboleto.get(i)!=0 ? (float) ((cortesias.get(i)*100) / ventaboleto.get(i)) :0; Log.e("ptecredito", String.valueOf(ptecorte));
+            ptecorte= ventaboleto.get(i)!=0 ? (float) ((cortesias.get(i)*100) / ventaboleto.get(i)) :0; //Log.e("ptecredito", String.valueOf(ptecorte));
             creadortxv(i,j,df.format(ptecorte)+"%");j++;
 
             creadortxv(i,j,apartados.get(i).toString());j++;
@@ -324,16 +320,16 @@ public class EventosxOrganizador extends AppCompatActivity {
             creadortxv(i,j,"$"+df2.format(ventaboleto.get(i)));j++;
 
             creadortxv(i,j,"$"+df2.format(ventadinero.get(i)));j++;
-            pteventa= ventaboleto.get(i)!=0 ? (float) ((ventadinero.get(i)*100)/ventaboleto.get(i)) :0; //Log.e("pteventa",pteventa.toString());
+            pteventa= ventaboleto.get(i)!=0 ? (float) ((ventadinero.get(i)*100)/ventaboleto.get(i)) :0;
             creadortxv(i,j,df.format(pteventa)+"%");j++;
 
             pteventa= (float) (cortesias.get(i)+apartados.get(i)+consignados.get(i));
             creadortxv(i,j,"$"+df2.format(pteventa));j++;
-            pteventa= ventaboleto.get(i)!=0 ? (float) ((pteventa*100)/ventaboleto.get(i)) :0; //Log.e("pteventa",pteventa.toString());
+            pteventa= ventaboleto.get(i)!=0 ? (float) ((pteventa*100)/ventaboleto.get(i)) :0;
             creadortxv(i,j,df.format(pteventa)+"%");j++;
 
             creadortxv(i,j,"$"+cortesias.get(i).toString());j++;
-            ptecorte= ventaboleto.get(i)!=0 ? (float) ((cortesias.get(i)*100) / ventaboleto.get(i)) :0; Log.e("ptecredito", String.valueOf(ptecorte));
+            ptecorte= ventaboleto.get(i)!=0 ? (float) ((cortesias.get(i)*100) / ventaboleto.get(i)) :0; //Log.e("ptecredito", String.valueOf(ptecorte));
             creadortxv(i,j,df.format(ptecorte)+"%");j++;
 
             creadortxv(i,j,"$"+apartados.get(i).toString());j++;
@@ -438,7 +434,7 @@ public class EventosxOrganizador extends AppCompatActivity {
     void detalles_ver(){
         customDialog = new Dialog(this);
         customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        customDialog.setContentView(R.layout.dialogver_detalle);
+        customDialog.setContentView(R.layout.dialog_ver_detalle);
         customDialog.show();
         tblverdetrep=customDialog.findViewById(R.id.tblverdetrep);
         Window window = customDialog.getWindow();

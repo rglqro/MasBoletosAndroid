@@ -153,7 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void cerrar_cargando(){
-        dialogcarg.dismiss();
+        if(dialogcarg!=null)
+            dialogcarg.dismiss();
     }
 
 }

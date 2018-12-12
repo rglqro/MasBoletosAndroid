@@ -102,14 +102,14 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String URL="https://www.masboletos.mx/appMasboletos/getDatosPuntoVenta.php?idpuntoventa="+((UbicacionAct)getActivity()).idpuntoventa[indice];
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         ((UbicacionAct)getActivity()).cerrar_cargando();
                         try{
                             Elementos = response;
@@ -136,7 +136,7 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
                                 public void onClick(View view) {
                                     String[] cord = latLngs[indice].split(",");
                                     String url2="https://maps.google.com/maps?saddr="+latc+","+longc+"&daddr="+cord[0]+","+cord[1];
-                                    Log.e("Direccion Mapa",url2);
+                                    //Log.e("Direccion Mapa",url2);
                                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                                             Uri.parse(url2));
                                     startActivity(intent);
@@ -196,10 +196,10 @@ public class MAPSFR extends SupportMapFragment implements  OnMapReadyCallback, G
                 latc= String.valueOf(location.getLatitude()); longc= String.valueOf(location.getLongitude());
                 addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                 String state = addresses.get(0).getAdminArea();
-                Log.e("Estado ",state);
+                //Log.e("Estado ",state);
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e("Error con localizacion"," Error");
+                //Log.e("Error con localizacion"," Error");
             }
 
             for (int i = 0; i < latLngs.length; i++) {

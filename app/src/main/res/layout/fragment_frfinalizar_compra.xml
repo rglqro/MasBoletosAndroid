@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".carruselcompra.FRFinalizarCompra"
     android:background="@color/blanco"
-    android:fillViewport="true">
+    android:clipToPadding="true"
+    android:fillViewport="true"
+    tools:context=".carruselcompra.FRFinalizarCompra">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -19,6 +20,7 @@
             android:id="@+id/rlinfofinal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -116,11 +118,11 @@
                 android:background="@color/grisclaro" />
 
             <LinearLayout
+                android:id="@+id/llqro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/llqro"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView48"
@@ -141,8 +143,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
-                    android:textAlignment="center"
                     android:text="IMPORTANTE: Para poder ver de nuevo este código puedes ingresar a la sección 'Mis Eventos'\n O puedes tomar una captura de pantalla de esta sección"
+                    android:textAlignment="center"
                     android:textColor="@color/gris"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -177,7 +179,160 @@
         <WebView
             android:id="@+id/wb1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/lloxxo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="7dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txvtitrojo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="17sp"
+                android:text="La compra se encuentra en estado pendiente"
+                android:textColor="#ff0000" />
+
+            <TextView
+                android:id="@+id/txvidop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="17sp"
+                android:text="TextView"
+                android:textColor="@color/negro" />
+
+            <TextView
+                android:id="@+id/textView77"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:text="TOMA CAPTURA DE ESTA PANTALLA y presenta este comprobante en cualquier tienda OXXO del estado de Querétaro para realizar el pago de tu compra.   \n\n\nEl presente recibo solo es válido para el pago que estás efectuando y recuerda que se acreditará en la cuenta del vendededor a las 24 hrs. de haberse realizado. Cualquier aclaración sobre tu compra comunícate con tu vendedor envíandole un correo a: masboletos.info@gmail.com. Es responsabilidad del vendedor aclarar cualquier reclamo sobre la compra del producto o servicio que estás pagando. Una vez realizado el pago tienes que presentarte en las siguientes 24 horas, a recoger tus boletos , de lo contrario mas boletos no se hace responsable de la asignación del lugar o estará sujeto a disponibilidad del evento deberas de presentar el comprobante de pago original y la hoja de referencia de pago , NO SE ACEPTAN COMPROBACIONES DE PAGO EN FOTOGRAFIAS O COPIAS FOTOSTATICAS."
+                android:textAlignment="center"
+                android:textColor="@color/negro" />
+
+            <ImageView
+                android:id="@+id/imvlogooxxo"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:src="@drawable/oxxologo"
+                android:layout_marginBottom="5dp"/>
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/mas_boletos_logo_det"
+                android:layout_marginBottom="5dp"/>
+
+            <ImageView
+                android:id="@+id/imvcod_barra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:src="@drawable/cod_barra" />
+
+            <TextView
+                android:id="@+id/txvcodbarra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:text="12345678901234567890123456"
+                android:textColor="@color/negro"
+                android:textSize="18sp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/gris2">
+
+                    <TextView
+                        android:id="@+id/textView78"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Monto Total"
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvmontot"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TextView"
+                        android:gravity="end"
+                        android:textColor="@color/negro" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/textView80"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="No. de Boletos"
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvCantBolFC"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="TextView"
+                        android:textColor="@color/negro" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/gris2">
+
+                    <TextView
+                        android:id="@+id/textView83"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Evento"
+                        android:textColor="@color/negro"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txvneventoFC"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="TextView"
+                        android:textColor="@color/negro" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

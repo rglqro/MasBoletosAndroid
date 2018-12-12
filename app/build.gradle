@@ -6,8 +6,8 @@ android {
         applicationId "itstam.masboletos"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 10
-        versionName "1.0.4"
+        versionCode 14
+        versionName "1.0.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
@@ -46,4 +46,5 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+    implementation files('libs/OnBarcode.AndroidBarcode.jar')
 }

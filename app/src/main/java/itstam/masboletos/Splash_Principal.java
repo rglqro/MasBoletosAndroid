@@ -87,10 +87,10 @@ public class Splash_Principal extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSION_ALL: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("TAG","@@@ PERMISSIONS grant");
+                    //Log.e("TAG","@@@ PERMISSIONS grant");
                     iniciar_activity();
                 } else {
-                    Log.d("TAG","@@@ PERMISSIONS Denied");
+                    //Log.e("TAG","@@@ PERMISSIONS Denied");
                     Toast.makeText(getApplicationContext(), "PERMISSIONS Denied", Toast.LENGTH_LONG).show();
                     System.exit(0);
                 }

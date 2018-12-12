@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btisesion;
     JSONArray Elementos=null;
     ImageView imvavatar;
-    String msj,usuario,id_cliente,correo,contrasena,tipousuario="1",urlimgorg="";
+    String msj,usuario,id_cliente,correo,contrasena,tipousuario="1",urlimgorg="",acc_org="0";
     Boolean resp;
     ProgressDialog dialogcarg;
 
@@ -63,8 +63,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(bloqueo_boton==1){
-                    correo=edtcorreo.getText().toString();
-                    contrasena=edtcontrasena.getText().toString();
+                    correo=edtcorreo.getText().toString().trim();
+                    contrasena=edtcontrasena.getText().toString().trim();
                     iniciar_sesion();
                 }else{
                     Toast.makeText(LoginActivity.this,"Datos incorrectos, verifiquelos",Toast.LENGTH_LONG).show();
@@ -93,10 +93,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable txt) {
-                if (txt.length()>3 && edtcontrasena.getText().toString().length()>3) {
+                if (txt.toString().trim().length()>3 && edtcontrasena.getText().toString().trim().length()>3) {
                     btisesion.setBackgroundResource(R.color.azulmb);
                     bloqueo_boton=1;
-                    if(edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
+                    if(edtcorreo.getText().toString().trim().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
                         tipousuario="1";
                     else
                         tipousuario="2";
@@ -121,10 +121,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable txt) {
-                if(txt.length()>3 && edtcorreo.getText().toString().length()>3){
+                if(txt.toString().trim().length()>3 && edtcorreo.getText().toString().trim().length()>3){
                     btisesion.setBackgroundResource(R.color.azulmb);
                     bloqueo_boton=1;
-                    if(edtcorreo.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
+                    if(edtcorreo.getText().toString().trim().matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+"))
                         tipousuario="1";
                     else
                         tipousuario="2";
@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response)
                     {
                         try {
-                            Log.e("resp json",response);
+                            //Log.e("resp json",response);
                             Elementos = new JSONArray(response);
                             for (int i=0;i<Elementos.length();i++){
                                 JSONObject datos = Elementos.getJSONObject(i);
@@ -156,12 +156,14 @@ public class LoginActivity extends AppCompatActivity {
                                 id_cliente=datos.getString("id_cliente");
                                 usuario=datos.getString("usuario");
                                 urlimgorg="https://www.masboletos.mx/sica/imgEventos/"+datos.getString("pleca");
+                                acc_org=datos.getString("acc_org");
                             }
                             if(resp) {
                                 Intent intent = new Intent();
                                 intent.putExtra("validasesion", usuario);
                                 intent.putExtra("tipousuario",tipousuario);
                                 intent.putExtra("urlimgorg",urlimgorg);
+                                intent.putExtra("acc_org",acc_org);
                                 setResult(RESULT_OK, intent);
                                 guarda_sesion();
                                 if (tipousuario.equals("2")){
@@ -195,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                 params.put("correo", correo);
                 params.put("contrasenia", contrasena);
                 params.put("tipo",tipousuario);
-                Log.e("params POST",params.toString());
+                //Log.e("params POST",params.toString());
                 return params;
             }
         };
@@ -211,6 +213,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putBoolean("validasesion",true);
         editor.putString("tipousuario",tipousuario);
         editor.putString("urlimgorg",urlimgorg);
+        editor.putString("acc_org",acc_org);
         editor.commit();
     }
 

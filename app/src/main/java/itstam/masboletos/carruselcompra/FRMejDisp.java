@@ -167,14 +167,14 @@ public class FRMejDisp extends Fragment {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             ((DetallesEventos)getActivity()).cerrar_cargando();
@@ -227,7 +227,7 @@ public class FRMejDisp extends Fragment {
         TableLayout.LayoutParams lptbl=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TableRow.LayoutParams lptbra = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lptbra.setMargins(1,0,1,0);
-        asientosmar= new ArrayList<String>(); Log.e("# asientos", String.valueOf(asientosmar.size()));/*Aqui se iran almacenando los asientos seleccionados de la sig forma A1,A2,A3*/
+        asientosmar= new ArrayList<String>(); //Log.e("# asientos", String.valueOf(asientosmar.size()));/*Aqui se iran almacenando los asientos seleccionados de la sig forma A1,A2,A3*/
         idfilaasiento= new ArrayList<String>();/*Aqui se almacenaran lo asientos de la siguiente forma: A-1-13256,A-2-13256,A-3-13256 (FILA-#asiento-IDFILA)*/
         datalugaresobtenidos= new ArrayList<>(); /*En caso de ser paquete aqui irán los asientos selecionados*/
         asientosxsel=0;
@@ -261,9 +261,9 @@ public class FRMejDisp extends Fragment {
                                     filapack=fila[f]; asientopack= String.valueOf(a+1); idfilapack=idfila[f];
                                     consulta_lugares_paquete();
                                 }
-                                asientosel = fila[f] + String.valueOf(a + 1); Log.e("AsientoSel",asientosel); /*Esta variable crea el asiento seleccionado A1*/
-                                asientosmar.add(asientosel); Log.e("# asientos", String.valueOf(asientosmar.size())); /*Se agrega a la lista que los almacenará*/
-                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; Log.e("AsientoSel",asientosel); /*Aqui se crea el asiento A-1-13256*/
+                                asientosel = fila[f] + String.valueOf(a + 1); //Log.e("AsientoSel",asientosel); /*Esta variable crea el asiento seleccionado A1*/
+                                asientosmar.add(asientosel); //Log.e("# asientos", String.valueOf(asientosmar.size())); /*Se agrega a la lista que los almacenará*/
+                                asientosel = fila[f] +"-"+ String.valueOf(a + 1)+"-"+idfila[f]; //Log.e("AsientoSel",asientosel); /*Aqui se crea el asiento A-1-13256*/
                                 idfilaasiento.add(asientosel); /*Se agrega a su lista correspondiente*/
                                 ver_asientos_sel();/*Este metodo imprimirá los asientos que se vayan seleccionando separandolos por comas*/
                                 id_asientos_sel();/*Este metodo hará lo mismo que el metodo anterior*/
@@ -276,18 +276,18 @@ public class FRMejDisp extends Fragment {
                             btasientos[f][a].setImageResource(R.drawable.asiento_disp); /*Aqui se cambia la imagen a disponible de nuevo*/
                             btasientos[f][a].setTag(f+","+(a+1)+",0"); /*y su status cambia a 0 que es dispobible*/
                             asientosel=fila[f]+String.valueOf(a+1); /*se crea nuevamente el asiento seleccionado "A1"*/
-                            Log.e("AsientoSel",asientosel);
+                            //Log.e("AsientoSel",asientosel);
                             for(int i =asientosmar.size()-1;i>=0;i--){ /*y este for busca el asiento sleccionado para borrarlo de la lista*/
                                 if(asientosmar.get(i).equals(asientosel)){
                                     asientosmar.remove(i);
                                 }
                             }
-                            Log.e("# asientos", String.valueOf(asientosmar.size()));
+                            //Log.e("# asientos", String.valueOf(asientosmar.size()));
                             ver_asientos_sel();/* y se vuleven a pintar los asientos restantes */
 
                             if(idevento.equals("0")){
                                 for(int i=datalugaresobtenidos.size()-1;i>=0;i--){/*En los paquetes de la misma forma se busca borrar el asiento que se desmarcó*/
-                                    String[] parts = datalugaresobtenidos.get(i).split(","); Log.e("idfilaasientopackget",parts[4]);
+                                    String[] parts = datalugaresobtenidos.get(i).split(","); //Log.e("idfilaasientopackget",parts[4]);
                                     if(asientosel.equals(parts[4])){/*la estructura viene separada por comas en donde se extrae la posicion 4 que es filaasiento "A1" para ser comparado con el seleccionado y borrarlo de la lista*/
                                         datalugaresobtenidos.remove(i);
                                     }
@@ -296,13 +296,13 @@ public class FRMejDisp extends Fragment {
                             }
 
                             asientosel=fila[f]+"-"+String.valueOf(a+1)+"-"+idfila[f];/* se crea la estructura A-1-1256*/
-                            Log.e("idAsientoSel",asientosel);
+                            //Log.e("idAsientoSel",asientosel);
                             for(int i =idfilaasiento.size()-1 ;i>=0;i--){/* y este for se encarga de eliminarlo de los seleccionados*/
                                 if(idfilaasiento.get(i).equals(asientosel)){
                                     idfilaasiento.remove(i);
                                 }
                             }
-                            Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
+                            //Log.e("# idasientos", String.valueOf(idfilaasiento.size()));
                             id_asientos_sel();
                             txvtotalasientos.setText("Asientos seleccionados: "+asientosxsel+" de "+Cant_Boletos);/*Y aqui se le actualiza al usuario cuantos le faltan por seleccionar*/
                         }
@@ -348,6 +348,7 @@ public class FRMejDisp extends Fragment {
                 }
             }
         });
+        ((DetallesEventos)getActivity()).mover_alfondo();
     }
 
     void ver_asientos_sel(){
@@ -375,7 +376,7 @@ public class FRMejDisp extends Fragment {
             } cont++;
         }
         idfilaasientotxt=dato;
-        Log.e("idfilaasiento",idfilaasientotxt);
+        //Log.e("idfilaasiento",idfilaasientotxt);
     }
 
     void consulta_lugares_paquete(){
@@ -389,7 +390,7 @@ public class FRMejDisp extends Fragment {
                     public void onResponse(String response)
                     {
                         ((DetallesEventos)getActivity()).cerrar_cargando();
-                        Log.e("respenvia",response);
+                        //Log.e("respenvia",response);
                         try {
                             Elementos= new JSONArray(response);
                             datalugaresobtenidos.add(asientopack+","+filapack+","+ideventoasientopack+","+idfilapack+","+filapack+asientopack+","+
@@ -399,7 +400,7 @@ public class FRMejDisp extends Fragment {
                                 datalugaresobtenidos.add(asientopack+","+filapack+","+datos.getString("idevento")+","+datos.getString("idfila")+","+filapack+asientopack+
                                         ","+(filapack+"-"+asientopack+"-"+idfilapack)+","+datos.getString("idzona"));/*Si la consulta es correcta se obtiene un JSON del servidor con el resto de la informacion y tambien se agrega a la lista separadas por comas*/
                             }
-                            Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
+                            //Log.e("tamlugar_pack", String.valueOf(datalugaresobtenidos.size()));
                             genera_arreglo_lugarespack();/*Una vez generada la lista se construye el arreglo JSON que se enviará al servidor*/
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -450,7 +451,7 @@ public class FRMejDisp extends Fragment {
                 e.printStackTrace();
             }
         }
-        Log.e("arrayhecho",jadataatospack.toString());
+        //Log.e("arrayhecho",jadataatospack.toString());
     }
 
     public void set_DatosCompra(String ndato,String dato){

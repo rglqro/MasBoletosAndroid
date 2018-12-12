@@ -19,7 +19,7 @@
         android:paddingLeft="20dp"
         android:text="Perfil"
         android:textColor="#fff"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
 
@@ -41,24 +41,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/azulmboscuro"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/txvtitu_org"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Organizadores"
+                    android:textColor="@color/verdemb"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:paddingVertical="3dp"/>
 
                 <RelativeLayout
                     android:id="@+id/RLDatosPerfil"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginBottom="10dp"
-                    android:paddingVertical="5dp"
-                    android:animateLayoutChanges="true">
+                    android:animateLayoutChanges="true"
+                    android:paddingVertical="5dp">
 
                     <ImageView
                         android:id="@+id/imageView3"
                         android:layout_width="125dp"
                         android:layout_height="50dp"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_perfil"
-                        android:layout_alignParentLeft="true" />
+                        android:src="@drawable/ic_perfil" />
 
                     <TextView
                         android:id="@+id/txvnuser"
@@ -189,7 +201,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/llbotonesuser2">
+                android:id="@+id/llbotonesuser2"
+                android:layout_marginTop="2dp">
 
                 <View
                     android:id="@+id/view13"

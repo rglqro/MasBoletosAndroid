@@ -55,7 +55,7 @@ public class MisEventos extends AppCompatActivity {
     ArrayList<ImageView> imagseventos,imagseventospass;
     ArrayList<View>separadores;
     ArrayList<String> cantidadlist,eventolist,fechalist,statuslist,cantidadlistpass,eventolistpass,
-            fechalistpass,statuslistpass,fentregalis,transaccionlist,imagenlist,imagenlistpass;
+            fechalistpass,statuslistpass,fentregalis,transaccionlist,transaccionlistpass,imagenlist,imagenlistpass;
     TableRow filatbl,rowsep,rowsep2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +81,14 @@ public class MisEventos extends AppCompatActivity {
     void consulta_miseventos(String URL, final int numconsult){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             if (numconsult==1) {
@@ -120,12 +120,14 @@ public class MisEventos extends AppCompatActivity {
                                 fechalistpass = new ArrayList<>();
                                 statuslistpass = new ArrayList<>();
                                 imagenlistpass= new ArrayList<>();
+                                transaccionlistpass= new ArrayList<>();
                                 for (int i = 0; i < Elementos.length(); i++) {
                                     JSONObject datos = Elementos.getJSONObject(i);
                                     cantidadlistpass.add(datos.getString("cantidad"));
                                     eventolistpass.add(datos.getString("evento"));
                                     fechalistpass.add(datos.getString("fechaevento"));
                                     statuslistpass.add(datos.getString("estatus"));
+                                    transaccionlistpass.add(datos.getString("transaccion"));
                                     if(datos.getString("imagen").equals("null")){
                                         imagenlistpass.add("https://www.masboletos.mx/img/imgMASBOLETOS.jpg");
                                     }else{
@@ -165,7 +167,7 @@ public class MisEventos extends AppCompatActivity {
                 filatbl.setBackgroundResource(R.color.grismasclaro);
             filatbl.setGravity(Gravity.CENTER);
             infomiseventos[i][0]=new TextView(this);
-            infomiseventos[i][0].setText(cantidadlist.get(i));
+            infomiseventos[i][0].setText(transaccionlist.get(i));
             infomiseventos[i][0].setTextColor(Color.BLACK);
             infomiseventos[i][0].setLayoutParams(lp);
             infomiseventos[i][0].setGravity(Gravity.CENTER);
@@ -253,7 +255,7 @@ public class MisEventos extends AppCompatActivity {
                 filatbl.setBackgroundResource(R.color.grismasclaro);
             filatbl.setGravity(Gravity.CENTER);
             infomiseventospass[i][0]=new TextView(this);
-            infomiseventospass[i][0].setText(cantidadlistpass.get(i));
+            infomiseventospass[i][0].setText(transaccionlistpass.get(i));
             infomiseventospass[i][0].setTextColor(Color.BLACK);
             infomiseventospass[i][0].setLayoutParams(lp);
             infomiseventospass[i][0].setPadding(20,0,0,0);

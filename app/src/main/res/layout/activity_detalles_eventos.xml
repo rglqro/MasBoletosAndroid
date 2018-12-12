@@ -71,6 +71,7 @@
     </RelativeLayout>
 
     <ScrollView
+        android:id="@+id/scvcarruselcompra"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -91,32 +92,32 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_toEndOf="@+id/IMVEvento"
+                    android:layout_toRightOf="@+id/IMVEvento"
                     android:adjustViewBounds="true"
-                    app:srcCompat="@mipmap/logo_masboletos"
-                    android:layout_toRightOf="@+id/IMVEvento" />
+                    app:srcCompat="@mipmap/logo_masboletos" />
 
                 <ImageView
                     android:id="@+id/IMVEvento"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/imgmberror"
-                    android:layout_alignParentLeft="true" />
+                    app:srcCompat="@drawable/imgmberror" />
 
                 <android.support.v4.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
                     android:layout_alignStart="@+id/IMVFondo"
-                    android:layout_alignLeft="@+id/IMVFondo">
+                    android:layout_alignLeft="@+id/IMVFondo"
+                    android:layout_alignParentTop="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" >
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/txvnombreevepaq"
@@ -151,8 +152,8 @@
                             android:id="@+id/TXVDescripcion"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingHorizontal="8dp"
                             android:gravity="right|left|center"
+                            android:paddingHorizontal="8dp"
                             android:shadowColor="@color/negro"
                             android:shadowDx="1"
                             android:shadowDy="1"
@@ -175,22 +176,22 @@
                     android:id="@+id/TabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@+id/IMVFondo"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
                     android:background="@color/blanco"
                     android:clickable="false"
                     app:tabIndicatorColor="@color/azulmboscuro"
                     app:tabMode="scrollable"
                     app:tabSelectedTextColor="@color/azulmb"
-                    app:tabTextColor="@color/gris"
-                    android:layout_alignParentLeft="true"></android.support.design.widget.TabLayout>
+                    app:tabTextColor="@color/gris"></android.support.design.widget.TabLayout>
 
 
                 <View
                     android:id="@+id/view"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gris"/>
+                    android:background="@color/gris" />
 
                 <FrameLayout
                     android:id="@+id/pagerfragmets2"

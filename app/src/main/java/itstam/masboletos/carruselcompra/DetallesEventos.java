@@ -31,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import itstam.masboletos.R;
@@ -60,7 +62,7 @@ import itstam.masboletos.R;
 public class DetallesEventos extends AppCompatActivity {
 
     ImageView IMVFondo,IMVEvento;
-    String idevento="",ideventopack="",comisionpack="0";
+    String idevento="",ideventopack="",comisionpack="0",fpago="";
     String imgevento="",direevento="S/D",nomevento="",lugarevento="S/L",fechaevento="N/D",horaevento="N/D",descevento="",eventomapa="";
     TabLayout tabLayout;
     String[] FRNombres;
@@ -73,6 +75,10 @@ public class DetallesEventos extends AppCompatActivity {
     CountDownTimer cdtcrono;
     JSONArray Elementos;
     Bitmap imageBlur;
+    ScrollView scvcarruselcompra;
+    int cont_regreso=0;
+    SharedPreferences prefe;
+    DecimalFormat df = new DecimalFormat("#0.00");
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -89,9 +95,10 @@ public class DetallesEventos extends AppCompatActivity {
         IMVEvento = (ImageView) findViewById(R.id.IMVEvento);
         IMBTRegresar = (ImageButton) findViewById(R.id.imBtRegresar);
         rlimagsevento = findViewById(R.id.rlimagsevento);
+        scvcarruselcompra=findViewById(R.id.scvcarruselcompra);
         txvcrono = findViewById(R.id.txvcrono);
         txvcrono.setVisibility(View.INVISIBLE);
-        SharedPreferences prefe = this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
+        prefe = this.getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento = prefe.getString("idevento", "0");
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -109,8 +116,8 @@ public class DetallesEventos extends AppCompatActivity {
             consulta_info("https://www.masboletos.mx/appMasboletos/getPaqueteEncabezado.php?IdEventoPack=" + ideventopack);
         } else if(appLinkAction!=null){
             Uri appLinkData = appLinkIntent.getData();
-            Log.e("pagina",appLinkData.toString());
-            Log.e("pagina2",appLinkAction);
+            //Log.e("pagina",appLinkData.toString());
+            //Log.e("pagina2",appLinkAction);
             String[] sep= appLinkData.toString().split("=");
             consulta_info("https://www.masboletos.mx/appMasboletos/getEventoEncabezado.php?idevento=" + sep[1]);
         }else {
@@ -125,7 +132,7 @@ public class DetallesEventos extends AppCompatActivity {
         iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -133,7 +140,7 @@ public class DetallesEventos extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             for (int i=0;i<Elementos.length();i++){
@@ -183,12 +190,12 @@ public class DetallesEventos extends AppCompatActivity {
         set_DatosCompra("fechaevento",fechaevento);
         set_DatosCompra("horaevento",horaevento);
         set_DatosCompra("NombreEvento",nomevento);
-        IniciarFragments();
         difuminar_imagen();
     }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     void difuminar_imagen(){
-        Log.e("ImagenEventourl",imgevento); if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
+        //Log.e("ImagenEventourl",imgevento);
+        if(imgevento.equals("")) imgevento="https://www.masboletos.mx/img/imgMASBOLETOS.jpg";
         Picasso.get().load(imgevento).error(R.drawable.imgmberror).into(IMVEvento, new Callback() {
             @Override
             public void onSuccess() {
@@ -196,6 +203,7 @@ public class DetallesEventos extends AppCompatActivity {
                 BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
                 IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
                 cerrar_cargando();
+                IniciarFragments();
             }
             @Override
             public void onError(Exception e) {
@@ -203,6 +211,7 @@ public class DetallesEventos extends AppCompatActivity {
                 BlurImage.with(getApplicationContext()).load(imageBlur).intensity(20).Async(true).into(IMVFondo);
                 IMVFondo.setScaleType(ImageView.ScaleType.FIT_XY);
                 cerrar_cargando();
+                IniciarFragments();
             }
         });
 
@@ -281,13 +290,12 @@ public class DetallesEventos extends AppCompatActivity {
         transaction.commit();
         contadorTab++;
         if(contadorTab==1){
-            cronometro_comra();
-            AlertaBoton("Tiempo de Compra","A partir de este momento cuentas con 7 minutos para comprar tu boletos, continua con tu proceso").show();
+            AlertaCrono("Tiempo de Compra","A partir de este momento cuentas con 7 minutos para comprar tu boletos, continua con tu proceso").show();
         }
         if(contadorTab==7 && cdtcrono!=null){
             txvcrono.setVisibility(View.INVISIBLE); cdtcrono.cancel();
         }
-        Log.e("posicion tab",String.valueOf(contadorTab));
+        //Log.e("posicion tab",String.valueOf(contadorTab));
         cambiar_tab(contadorTab);
     }
 
@@ -310,7 +318,13 @@ public class DetallesEventos extends AppCompatActivity {
             tab.select();
             super.onBackPressed();
         }else if(contadorTab==0 || contadorTab==7) {
-            finish();
+            fpago=prefe.getString("idformapago","0");
+            if(fpago.equals("4") && contadorTab==7)
+                alerta_captura("¿Quieres cerrar la compra?","Si ya has tomado captura de pantalla al código de barras, pulsa ACEPTAR, sino pulsa CANCELAR y procede a realizarla");
+            else if((fpago.equals("2") || fpago.equals("3")) && contadorTab==7)
+                alerta_captura("¿Quieres cerrar la compra?","Si tu compra ha sido confirmada pulsa ACEPTAR sino pulsa CANCELAR para continuar con el PROCESO");
+            else
+                finish();
         }
         if(contadorTab==0 && cdtcrono!=null){
             txvcrono.setVisibility(View.INVISIBLE); cdtcrono.cancel();
@@ -319,6 +333,22 @@ public class DetallesEventos extends AppCompatActivity {
 
     public void regresar(View view){
         onBackPressed();
+    }
+
+    public AlertDialog AlertaCrono(String titulo,String mensaje) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mover_alfondo();
+                                cronometro_comra();
+                                dialog.dismiss();
+                            }
+                        }).setCancelable(false);
+        return builder.create();
     }
 
     public AlertDialog AlertaBoton(String titulo,String mensaje) {
@@ -333,6 +363,31 @@ public class DetallesEventos extends AppCompatActivity {
                             }
                         }).setCancelable(false);
         return builder.create();
+    }
+
+    public void alerta_captura(String titu,String msj){
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(titu);
+        builder.setMessage(msj);
+
+        // add the buttons
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     public void set_DatosCompra(String ndato,String dato){//Este metodo almacena las variables que serán utilizadas en la compra
@@ -353,6 +408,16 @@ public class DetallesEventos extends AppCompatActivity {
         editor.commit();
     }
 
+    public void mover_alfondo(){
+        cont_regreso=0;
+        scvcarruselcompra.post(new Runnable() {
+            @Override
+            public void run() {
+                scvcarruselcompra.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+    }
+
     public void cronometro_comra(){
         txvcrono.setVisibility(View.VISIBLE);
         if(cdtcrono!=null){
@@ -365,6 +430,9 @@ public class DetallesEventos extends AppCompatActivity {
                         TimeUnit.MILLISECONDS.toMinutes( millisUntilFinished),
                         TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)))+")");
+                if(cont_regreso==1)
+                    scvcarruselcompra.fullScroll(ScrollView.FOCUS_UP);
+                cont_regreso++;
             }
 
             @Override
@@ -384,7 +452,7 @@ public class DetallesEventos extends AppCompatActivity {
         super.onDestroy();
         if(cdtcrono!=null){
             cdtcrono.cancel();
-        } Log.e("Destroy","Destroy");
+        } //Log.e("Destroy","Destroy");
     }
 
     @Override

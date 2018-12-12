@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingHorizontal="3dp"
-                        android:text="Cantidad"
+                        android:text="Transacción"
                         android:textAlignment="center"
                         android:textColor="@color/negro"
                         android:textStyle="bold" />
@@ -182,10 +182,10 @@
                     <TextView
                         android:id="@+id/textView6"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:paddingHorizontal="3dp"
-                        android:text="Cantidad"
+                        android:text="Transacción"
                         android:textAlignment="center"
                         android:textColor="@color/negro"
                         android:textStyle="bold" />

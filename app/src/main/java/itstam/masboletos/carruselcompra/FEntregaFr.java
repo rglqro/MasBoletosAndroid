@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,7 +130,7 @@ public class FEntregaFr extends Fragment {
         ((DetallesEventos)getActivity()).dialogcarg.show();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -137,7 +138,7 @@ public class FEntregaFr extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             idtipoentrega= new ArrayList<Integer>();
@@ -193,7 +194,7 @@ public class FEntregaFr extends Fragment {
         rgentregas.setLayoutParams(lp);
         rgentregas.setGravity(Gravity.RIGHT);
         for (int i = 0; i < cant_datos; i++) {
-            Log.e("Tipoentreg2",tipoentre.get(i));
+            //Log.e("Tipoentreg2",tipoentre.get(i));
             lineasep[i]= new View(getActivity());
             lineasep[i].setBackgroundResource(R.color.grismasclaro);
             lineasep[i].setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,3));
@@ -227,7 +228,7 @@ public class FEntregaFr extends Fragment {
                 cbseguros[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        Log.e("idcb",String.valueOf(buttonView.getId()));
+                        //Log.e("idcb",String.valueOf(buttonView.getId()));
                         if(isChecked){
                             suma_seguro_entrega(buttonView.getId());
                         }else{
@@ -318,6 +319,7 @@ public class FEntregaFr extends Fragment {
                     Toast.makeText(getActivity(),"Debe seleccionar al menos una de las formas de entrega",Toast.LENGTH_LONG).show();
             }
         });
+        ((DetallesEventos)getActivity()).mover_alfondo();
     }
 
     public void set_DatosCompra(String ndato,String dato){

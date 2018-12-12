@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,85 +12,104 @@
     android:fillViewport="true">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/IMVMapa"
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#fff"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:paddingHorizontal="7dp"
+        android:paddingVertical="5dp"
+        android:descendantFocusability="blocksDescendants"
+        tools:context=".carruselcompra.SeleccionZonaFR"
+        android:id="@+id/scvsel_zona">
+
+        <!-- TODO: Update blank fragment layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@color/azulmb" />
-        </RelativeLayout>
+                android:layout_marginBottom="5dp"
+                android:text="Seleccione su Zona"
+                android:textColor="#000" />
 
-        <View
-            android:id="@+id/view3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="30dp"
-            android:background="@color/gris" />
+            <Spinner
+                android:id="@+id/spzona"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#f000"
+                android:entries="@array/secciones" />
 
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Seleccione su Zona"
-            android:textColor="#000"
-            android:layout_marginBottom="5dp"/>
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="5dp"
+                android:background="@color/gris" />
 
-        <Spinner
-            android:id="@+id/spzona"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/secciones"
-            android:backgroundTint="#f000"/>
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Seleccione su sección"
+                android:textColor="#000" />
 
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="5dp"
-            android:background="@color/gris" />
+            <Spinner
+                android:id="@+id/spseccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/negro" />
 
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Seleccione su sección"
-            android:textColor="#000"
-            android:layout_marginBottom="5dp"/>
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="5dp"
+                android:background="@color/gris" />
 
-        <Spinner
-            android:id="@+id/spseccion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/negro"/>
+            <CheckBox
+                android:id="@+id/cbvermapa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="3dp"
+                android:buttonTint="@color/azulmboscuro"
+                android:text="Mostrar Mapa Asientos"
+                android:textColor="#000" />
 
-        <CheckBox
-            android:id="@+id/cbvermapa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mostrar Mapa Asientos"
-            android:textColor="#000"
-            android:buttonTint="@color/azulmboscuro"
-            android:layout_marginVertical="3dp"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btContinuar2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginVertical="7dp"
-            android:background="@color/verdemb"
-            android:text="Continuar"
-            android:textAllCaps="false"
-            android:textColor="#fff"
-            android:textSize="18sp" />
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/IMVMapa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:src="@color/azulmb" />
+            </RelativeLayout>
 
-</android.support.v4.widget.NestedScrollView>
+            <Button
+                android:id="@+id/btContinuar2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginVertical="7dp"
+                android:layout_weight="1"
+                android:background="@color/verdemb"
+                android:text="Continuar"
+                android:textAllCaps="false"
+                android:textColor="#fff"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

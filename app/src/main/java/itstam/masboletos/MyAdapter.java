@@ -65,7 +65,7 @@ public class MyAdapter extends PagerAdapter {
 
             }
         });
-        //Log.d("URLIMAGEN Adaptador",URLimagenes[position]);
+        ////Log.e("URLIMAGEN Adaptador",URLimagenes[position]);
         return myImageLayout;
     }
 

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/blanco">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/tblverdetrep"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/verdemb">
+
+                    <TextView
+                        android:id="@+id/textView70"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7" />
+
+                    <TextView
+                        android:id="@+id/textView71"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="Venta Total"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView72"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Cortesías"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView73"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Apartados"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView74"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Consignados"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/verdemb">
+
+
+                    <TextView
+                        android:id="@+id/textView63"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Grupo"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView62"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="Zona"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView61"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Precio"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView44"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Paquete"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco"/>
+
+                    <TextView
+                        android:id="@+id/textView60"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Descuento"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView59"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Aforo"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView42"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cantidad"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView55"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Venta"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView56"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="%"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView58"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cnt"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView64"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="%"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView65"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cnt"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView66"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="%"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView67"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cnt"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                    <TextView
+                        android:id="@+id/textView68"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="%"
+                        android:textAlignment="center"
+                        android:textColor="@color/blanco" />
+
+                </TableRow>
+
+            </TableLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+</ScrollView>

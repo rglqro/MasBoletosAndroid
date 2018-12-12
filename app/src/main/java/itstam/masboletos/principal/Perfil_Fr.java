@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,30 +22,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.zxing.Result;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import itstam.masboletos.R;
 import itstam.masboletos.acciones_perfil.*;
+import itstam.masboletos.carruselcompra.DetallesEventos;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Perfil_Fr extends Fragment {
     View vista;
     RelativeLayout RLDatosPerfil; TextView TXVMsj,txvtengocta,btcrearcta;
     LinearLayout LLPrincipal,LLDatosPerfil;
-    LinearLayout llinisesion,llbotonesuser1,llbotonesuser2;
-    String nuser,tipousuario,urlimgorg;
+    LinearLayout llinisesion,llbotonesuser1,llbotonesuser2,llimag_organizadores;
+    String nuser,tipousuario,urlimgorg,acc_org,idparareporte="";
     TextView txvnuser,txvtituloperfil;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
     Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade, btvalidaboleto,btreportevta;
     ImageView imvfondoorg;
+    HorizontalScrollView hscvorganizadores;
+    ArrayList<ImageButton> imborglist; ArrayList<View> sep_list;
+    TextView txvtitu_org;
+    JSONArray Elementos;
 
     public Perfil_Fr() {
         // Required empty public constructor
@@ -61,6 +81,7 @@ public class Perfil_Fr extends Fragment {
         RLDatosPerfil=(RelativeLayout) vista.findViewById(R.id.RLDatosPerfil);
         LLPrincipal =(LinearLayout) vista.findViewById(R.id.LLPrincipal);
         LLDatosPerfil=(LinearLayout)vista.findViewById(R.id.LLDatosPerfil);
+        txvtitu_org=vista.findViewById(R.id.txvtitu_org);
         btcerrarsesion=(Button)vista.findViewById(R.id.btcerrarsesion);
         btmeventos=(Button)vista.findViewById(R.id.BtMEventos);
         txvnuser=(TextView)vista.findViewById(R.id.txvnuser);
@@ -90,12 +111,16 @@ public class Perfil_Fr extends Fragment {
         tipousuario=prefe_sesion.getString("tipousuario","0");
         valida_sesion=prefe_sesion.getBoolean("validasesion",false);
         urlimgorg=prefe_sesion.getString("urlimgorg","surl");
+        acc_org=prefe_sesion.getString("acc_org","0");
         if(valida_sesion){
             txvnuser.setText(nuser);
             if(tipousuario.equals("2")){
                 txvtituloperfil.setText(nuser);
-                Picasso.get().load(urlimgorg).error(R.mipmap.logo_masboletos).into(imvfondoorg); Log.e("fondo org",urlimgorg);
                 llbotonesuser1.setVisibility(View.GONE);
+                consulta_info_org();
+            }else if(acc_org.equals("")){
+                cierra_sesion();
+                vista_no_sesion();
             }else {
                 if(imvfondoorg!=null)
                     imvfondoorg.setBackgroundColor(Color.TRANSPARENT);
@@ -162,8 +187,13 @@ public class Perfil_Fr extends Fragment {
         btreportevta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mainIntent = new Intent().setClass(getActivity(), EventosxOrganizador.class);
-                startActivity(mainIntent);
+                if(idparareporte.equals("")||idparareporte.equals(null))
+                    Toast.makeText(getActivity(),"Debe seleccionar un organizador primero",Toast.LENGTH_LONG).show();
+                else {
+                    Intent mainIntent = new Intent().setClass(getActivity(), EventosxOrganizador.class);
+                    mainIntent.putExtra("idparareporte",idparareporte);
+                    startActivity(mainIntent);
+                }
             }
         });
     }
@@ -252,6 +282,7 @@ public class Perfil_Fr extends Fragment {
                 nuser = data.getStringExtra("validasesion");
                 tipousuario=data.getStringExtra("tipousuario");
                 urlimgorg=data.getStringExtra("urlimgorg");
+                acc_org=data.getStringExtra("acc_org");
                 sesion_iniciada();
             }else {
                 Toast.makeText(getActivity(),"Aun no ha iniciado sesión",Toast.LENGTH_SHORT).show();
@@ -264,8 +295,8 @@ public class Perfil_Fr extends Fragment {
         if(tipousuario.equals("2")){
             llbotonesuser1.setVisibility(View.GONE);
             llbotonesuser2.setVisibility(View.VISIBLE);
-            Picasso.get().load(urlimgorg).error(R.mipmap.logo_masboletos).into(imvfondoorg); Log.e("fondo org",urlimgorg);
             txvtituloperfil.setText(nuser);
+            consulta_info_org();
         }else{
             imvfondoorg.setImageResource(Color.TRANSPARENT);
         }
@@ -282,6 +313,90 @@ public class Perfil_Fr extends Fragment {
         });
     }
 
+    void consulta_info_org(){
+        txvtitu_org.setVisibility(View.VISIBLE);
+        ((MainActivity)getActivity()).iniciar_cargando();
+        hscvorganizadores= new HorizontalScrollView(getActivity());
+        hscvorganizadores.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+        hscvorganizadores.setFillViewport(true);
+        llimag_organizadores= new LinearLayout(getActivity());
+        llimag_organizadores.setLayoutParams(new HorizontalScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+        llimag_organizadores.setOrientation(LinearLayout.HORIZONTAL);
+        llimag_organizadores.setGravity(Gravity.CENTER);
+        imborglist= new ArrayList<>();
+        sep_list= new ArrayList<>();
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url="https://www.masboletos.mx/appMasboletos/getImagenesOrganizadores.php?idorganizador="+acc_org; //Log.e("URL",url);
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Log.e("Resultado actualizacion",response);
+                        try {
+                            Elementos= new JSONArray(response);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(((MainActivity)getActivity()).ancho/3,((MainActivity)getActivity()).alto/8);
+                            sep_list.add(new View(getActivity()));
+                            sep_list.get(0).setBackgroundColor(Color.WHITE);
+                            sep_list.get(0).setLayoutParams(new LinearLayout.LayoutParams(3,((MainActivity)getActivity()).alto/8));
+                            llimag_organizadores.addView(sep_list.get(0));
+                            for (int k=0;k<Elementos.length();k++){
+                                JSONObject datos = Elementos.getJSONObject(k);
+                                imborglist.add(new ImageButton(getActivity()));
+                                imborglist.get(k).setLayoutParams(lp);
+                                Picasso.get().load("https://www.masboletos.mx/sica/imgEventos/"+datos.getString("banner"))
+                                        .error(R.mipmap.logo_masboletos)
+                                        .into(imborglist.get(k));
+                                //imborglist.get(k).setBackgroundResource(R.color.grismasclaro);
+                                imborglist.get(k).setBackgroundColor(Color.TRANSPARENT);
+                                imborglist.get(k).setScaleType(ImageView.ScaleType.CENTER);
+                                imborglist.get(k).setId(datos.getInt("idorganizador"));
+                                imborglist.get(k).setTag(k);
+                                imborglist.get(k).setPadding(5,5,15,5);
+                                imborglist.get(k).setAdjustViewBounds(true);
+                                imborglist.get(k).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        idparareporte= String.valueOf(view.getId());
+                                        for(int i=0;i<imborglist.size();i++){
+                                            if(!view.getTag().equals(i)){
+                                                //imborglist.get(i).setBackgroundResource(R.color.grismasclaro);
+                                                imborglist.get(i).setBackgroundColor(Color.TRANSPARENT);
+                                            }else
+                                                imborglist.get(i).setBackgroundResource(R.color.verdemb);
+                                        }
+                                    }
+                                });
+                                llimag_organizadores.addView(imborglist.get(k));
+
+                                sep_list.add(new View(getActivity()));
+                                sep_list.get(k+1).setBackgroundColor(Color.WHITE);
+                                sep_list.get(k+1).setLayoutParams(new LinearLayout.LayoutParams(3,((MainActivity)getActivity()).alto/8));
+                                llimag_organizadores.addView(sep_list.get(k+1));
+                            }
+                            hscvorganizadores.addView(llimag_organizadores);
+                            RLDatosPerfil.setVisibility(View.GONE);
+                            LLDatosPerfil.addView(hscvorganizadores);
+                            ((MainActivity)getActivity()).cerrar_cargando();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(),"Ha ocurrido en la consulta, reinicie la aplicación o actualice",Toast.LENGTH_SHORT).show();
+                            ((MainActivity)getActivity()).cerrar_cargando();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Snackbar.make(vista,"Error...",Snackbar.LENGTH_LONG).show();
+                ((DetallesEventos)getActivity()).cerrar_cargando();
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
     void cierra_sesion() {
         SharedPreferences preferencias=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=preferencias.edit();
@@ -290,7 +405,9 @@ public class Perfil_Fr extends Fragment {
         editor.putBoolean("validasesion",false);
         editor.putString("id_cliente","");
         editor.putString("tipousuario","0");
+        editor.putString("acc_org","");
         editor.commit();
+        idparareporte="";
         txvtituloperfil.setText("Perfil");
         RLDatosPerfil.setVisibility(View.GONE);
         btcerrarsesion.setVisibility(View.GONE);
@@ -299,6 +416,10 @@ public class Perfil_Fr extends Fragment {
         }
         if(llbotonesuser1.getVisibility() == View.GONE){
             llbotonesuser1.setVisibility(View.VISIBLE);
+        }
+        if(hscvorganizadores!=null) {
+            hscvorganizadores.removeAllViews();
+            txvtitu_org.setVisibility(View.GONE);
         }
     }
 

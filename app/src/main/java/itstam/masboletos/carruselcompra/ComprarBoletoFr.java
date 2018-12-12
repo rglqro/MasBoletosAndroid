@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -38,7 +39,6 @@ import itstam.masboletos.R;
 
 public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
-
     // TODO: Rename and change types of parameters
     TextView txvCantidad;
     ImageButton BtMas,BtMenos;
@@ -54,10 +54,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     public ComprarBoletoFr() {
         // Required empty public constructor
     }
-
-
-    private static final String TAG = ComprarBoletoFr.class.getSimpleName();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -106,14 +102,14 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         ((DetallesEventos)getActivity()).iniciar_cargando();
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; Log.e("URL",URL);
+        String URL="https://www.masboletos.mx/appMasboletos/getFuncionesxEvento.php?eventogrupo="+eventogrupo; //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.e("Respuesta Json",response.toString());
+                        //Log.e("Respuesta Json",response.toString());
                         try {
                             Elementos = response;
                             funciones= new String[Elementos.length()+1];
@@ -184,38 +180,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
 
             }
         });
-
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-
-        }catch (Exception e){}
-    }
-
-    @Override
-    public void onDetach() {
-        Log.d("detachCB","detach");
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d("onDestroyViewCB","onDestroyView");
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d("onDestroyCB","onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        ((DetallesEventos)getActivity()).mover_alfondo();
     }
 
     @Override
@@ -252,7 +217,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         if(v==btmDisponible){/*al dar click se transfiere la inforacion para seguir con el proceso*/
             cantidadBoletos=Integer.parseInt((String) txvCantidad.getText());
             if(cantidadBoletos>0) {
-                Log.e("BTMD", "pulsado");
+                //Log.e("BTMD", "pulsado");
                 ((DetallesEventos) getActivity()).replaceFragment(new SeleccionZonaFR());
                 set_DatosCompra("idevento", idevento);
                 set_DatosCompra("Cant_boletos", txvCantidad.getText().toString());
@@ -269,10 +234,5 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
         SharedPreferences.Editor editor=preferencias.edit();
         editor.putString(ndato, dato);
         editor.commit();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 }
