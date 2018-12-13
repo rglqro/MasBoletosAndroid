@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/blanco"
+    tools:context=".acciones_perfil.EventosXConfirmar">
+
+    <LinearLayout
+        android:id="@+id/llevtoXconf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/LYBarraEventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/azulmboscuro"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imBtRegresareventos"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@color/azulmboscuro"
+                android:cropToPadding="false"
+                android:onClick="regresar"
+                android:tint="@android:color/background_light"
+                app:srcCompat="@drawable/ic_regresar" />
+
+            <TextView
+                android:id="@+id/txvtituloeventos"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Eventos por Confirmar"
+                android:textColor="@android:color/background_light"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true"
+                    android:scrollbarStyle="insideOverlay"
+                    android:scrollbars="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TableLayout
+                            android:id="@+id/tblevtoXconfEnc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/grisoscuro">
+
+                                <TextView
+                                    android:id="@+id/textView33"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="10dp"
+                                    android:text="Mis ventas por confirmar"
+                                    android:textColor="@color/blanco"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:id="@+id/textView76"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Confirmar"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView34"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:paddingHorizontal="3dp"
+                                    android:text="Transacción"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView79"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Cantidad"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView35"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Evento"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView36"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Fecha\nEvento"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView37"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Hora\nEvento"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView50"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Fecha\nVenta"
+                                    android:textAlignment="center"
+                                    android:textColor="#000"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView81"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Estatus"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView82"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Tipo\nPago"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/textView84"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Forma\nEntrega"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/negro"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <View
+                                    android:id="@+id/view11"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:layout_weight="1"
+                                    android:background="@color/gris" />
+                            </TableRow>
+                        </TableLayout>
+
+                        <TableLayout
+                            android:id="@+id/tblevtoXconf"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content">
+
+                        </TableLayout>
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</LinearLayout>

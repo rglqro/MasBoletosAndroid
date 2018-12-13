@@ -2,15 +2,20 @@ package itstam.masboletos.carruselcompra;
 
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,6 +45,14 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import itstam.masboletos.R;
 import itstam.masboletos.UbicacionAct;
 import itstam.masboletos.acciones_perfil.MisEventos;
@@ -51,13 +65,14 @@ public class FRFinalizarCompra extends Fragment {
 
     TextView txvtitulofc,txvntran,txvfolios,txvpuntosventa,txvidoper,txv_codbarra,txvmonto,txvcantbol,txvnevento;
     View vista;
-    String titulo,ntransac,folios,fpago,idevento,idfpago,nevento;
+    String titulo,ntransac,folios,fpago,idevento,idfpago,nevento,idoper,num_cod;
     SharedPreferences prefe;
-    Button btseguir,btmiseventos;
+    Button btseguir,btmiseventos,btcaptura;
     WebView myWebView;
     ImageView imvqrcode,imvcod_barra,imv_logooxxo;
     LinearLayout llqr,llinfofinal,lloxxo;
     int alto,ancho;
+    NestedScrollView nscfrfin_compra;
 
 
     public FRFinalizarCompra() {
@@ -90,6 +105,8 @@ public class FRFinalizarCompra extends Fragment {
         txvmonto=vista.findViewById(R.id.txvmontot);
         txvcantbol=vista.findViewById(R.id.txvCantBolFC);
         txvnevento=vista.findViewById(R.id.txvneventoFC);
+        btcaptura=vista.findViewById(R.id.btcaptura);
+        nscfrfin_compra=vista.findViewById(R.id.nscFRFinalizarCompra);
         recibir_datos();
         return vista;
     }
@@ -139,7 +156,6 @@ public class FRFinalizarCompra extends Fragment {
         }else if(fpago.equals("4")){
             llinfofinal.setVisibility(View.GONE);
             String[] parts =prefe.getString("URLTC","").replace(" ","").replace("\n","").replaceAll("\\s+","").split(",");
-            String idoper,num_cod;
             idoper=parts[0];
             num_cod=parts[1];
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
@@ -181,6 +197,71 @@ public class FRFinalizarCompra extends Fragment {
                 getActivity().finish();
             }
         });
+
+        btcaptura.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap bitmap = getBitmapFromView(nscfrfin_compra, nscfrfin_compra.getChildAt(0).getHeight(), nscfrfin_compra.getChildAt(0).getWidth());
+                storeImage(bitmap);
+                ((DetallesEventos)getActivity()).AlertaBoton("Captura de Pantalla","Tu Captura de Pantalla ha sido guardada, busca la carpeta de 'MasBoletos' en tu galería o en la carpeta de 'Descargas'").show();
+            }
+        });
+    }
+
+    private Bitmap getBitmapFromView(View view, int height, int width) {
+        btcaptura.setEnabled(false);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
+            bgDrawable.draw(canvas);
+        else
+            canvas.drawColor(Color.WHITE);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    private void storeImage(Bitmap image) {
+        File pictureFile = getOutputMediaFile();
+        if (pictureFile == null) {
+            Log.d("error",
+                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            return;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+            btcaptura.setEnabled(true);
+        } catch (FileNotFoundException e) {
+            Log.d("Error", "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d("Error", "Error accessing file: " + e.getMessage());
+        }
+    }
+
+    private File getOutputMediaFile(){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/"
+                + Environment.DIRECTORY_DOWNLOADS
+                + "/MasBoletos");
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+        // Create a media file name
+        /*String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());*/
+        File mediaFile;
+        String mImageName="OXXO_REF_"+ num_cod +".png";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        return mediaFile;
     }
 
     void consulta_folios(){/*Este metodo consulta los folios de los boletos que fueron comprados con el folio de transaccion*/
@@ -211,6 +292,5 @@ public class FRFinalizarCompra extends Fragment {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-
 
 }

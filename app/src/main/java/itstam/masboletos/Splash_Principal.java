@@ -27,7 +27,7 @@ public class Splash_Principal extends AppCompatActivity {
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE,
-            Manifest.permission.CAMERA
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     @Override
