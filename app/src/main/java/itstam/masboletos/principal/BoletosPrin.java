@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
@@ -83,6 +84,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
     String nombreuser; Boolean validasesion=false;
     ImageView imvlogoarriba;
     ImageButton imbtcompartirapp;
+    CountDownTimer cdtcerrarcarg;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,6 +137,20 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         imvlogoarriba.getLayoutParams().height=alto/10;
 
         Consulta_Imagen_Botones();
+
+        if (cdtcerrarcarg!=null)
+            cdtcerrarcarg.cancel();
+        cdtcerrarcarg = new CountDownTimer(15000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.e("tiempo",String.valueOf(millisUntilFinished/1000));
+            }
+
+            @Override
+            public void onFinish() {
+                ((MainActivity)getActivity()).cerrar_cargando();
+            }
+        }.start();
     }
 
     void Consulta_Imagen_Botones(){

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import itstam.masboletos.R;
+import itstam.masboletos.principal.MainActivity;
 
 
 public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
@@ -49,7 +51,6 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
     String [] funciones,idevento_funcion,fechaevento,horaevento;
     Button btmDisponible;
     SharedPreferences prefe;
-
 
     public ComprarBoletoFr() {
         // Required empty public constructor
@@ -96,6 +97,7 @@ public class ComprarBoletoFr extends Fragment implements View.OnClickListener {
             BtMenos.setClickable(false);
             Consulta_Funciones_Evento();
         }
+
     }
 
     void Consulta_Funciones_Evento(){

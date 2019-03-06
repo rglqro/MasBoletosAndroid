@@ -11,16 +11,20 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import itstam.masboletos.R;
 
 public class acercade extends AppCompatActivity {
     Dialog customDialog;
+    TextView txvversion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acercade);
+        txvversion=findViewById(R.id.txvversionad);
+        txvversion.setText("Versión: "+getString(R.string.version));
     }
 
     public void regresar(View view){

@@ -6,12 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.support.annotation.RequiresApi;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -30,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ProgressDialog dialogcarg;
     int ancho,alto;
 
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (NetworkUtils.isNetworkConnected(this)) {
             Menu_Navegacion();
             frboletos = new BoletosPrin();
-            getSupportFragmentManager().beginTransaction().add(R.id.contenedor, frboletos).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, frboletos,"boletos").addToBackStack(null).commit();
         } else {
             alertanointernet();
         }
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ancho = displayMetrics.widthPixels;
     }
 
-    FragmentManager fm;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     void Menu_Navegacion(){
         BTInicio.setOnClickListener(this);
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         BTInicio.setBackgroundResource(R.color.azulmb);
         BTInicio.setClickable(false);
+
     }
 
 
@@ -79,10 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BTUbic.setBackgroundResource(R.color.azulmboscuro);
             BTInicio.setClickable(false); BTUbic.setClickable(true); BTPerfil.setClickable(true);
             frboletos = new BoletosPrin();
-            android.support.v4.app.FragmentTransaction trans1= getSupportFragmentManager().beginTransaction();
-            trans1.replace(R.id.contenedor,frboletos);
-            trans1.addToBackStack(null);
-            trans1.commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,frboletos,"boletos").addToBackStack(null).commit();
         }
         if(v==BTUbic){
             BTPerfil.setBackgroundResource(R.color.azulmboscuro);
@@ -97,17 +95,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BTInicio.setBackgroundResource(R.color.azulmboscuro);
             BTPerfil.setClickable(false); BTInicio.setClickable(true); BTUbic.setClickable(true);
             frperfil = new Perfil_Fr();
-            android.support.v4.app.FragmentTransaction trans2= getSupportFragmentManager().beginTransaction();
-            trans2.replace(R.id.contenedor,frperfil);
-            trans2.addToBackStack(null);
-            trans2.commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,frperfil,"perfil").addToBackStack(null).commit();
         }
     }
 
-    public boolean conectadoAInternet() throws InterruptedException, IOException
+    public boolean conectadoAInternet()
     { // metodo que verifica que haya conexion a internet con un ping
         String comando = "ping -c 1 www.masboletos.mx";
-        return (Runtime.getRuntime().exec (comando).waitFor() == 0);
+        boolean resp=false;
+        try {
+            resp= (Runtime.getRuntime().exec (comando).waitFor() == 0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
 
     void alertanointernet(){
@@ -120,16 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(DialogInterface dialog, int i) {
-                try {
-                    if(conectadoAInternet()){
-                        Menu_Navegacion();
-                    }else {
-                        alertanointernet();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(conectadoAInternet()){
+                    Menu_Navegacion();
+                }else {
+                    alertanointernet();
                 }
             }
         });

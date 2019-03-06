@@ -130,10 +130,8 @@ public class DetallesEventos extends AppCompatActivity {
 
     void consulta_info(String URL){
         iniciar_cargando();
-        // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        //Log.e("URL",URL);
-        // Initialize a new JsonArrayRequest instance
+        Log.e("URL",URL);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @TargetApi(Build.VERSION_CODES.O)

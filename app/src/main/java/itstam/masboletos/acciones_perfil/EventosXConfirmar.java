@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -46,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +55,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import itstam.masboletos.R;
+import uk.co.senab.photoview.PhotoView;
 
 public class EventosXConfirmar extends AppCompatActivity {
     SharedPreferences prefeuser;
@@ -66,12 +69,14 @@ public class EventosXConfirmar extends AppCompatActivity {
     TableLayout tblevtoXconf,tblevtoXconfEnc;
     TextView[][]txvinfopaq;
     Dialog customDialog;
-    String hora="",fecha="",fechahora="",transaccion_oxxo="0",nticket="",foliocontrol="",sucursal="",montopago="",datomal="";
+    String hora="",fecha="",fechahora="",transaccion_oxxo="0",nticket="",foliocontrol="",sucursal="",montopago="",datomal="",msj="";
+    Boolean resp=false;
     /*Elementos del Dialog*/
     Button btcerrardialog,btconfirmar;
     ImageButton imbfecha,imbhora;
     EditText edtnticket,edtfolioc,edtfechap,edthorap,edtsucursal,edtmontop;
     TextView txvconf_compra;
+    Dialog cdticket;
 
     DecimalFormat dfrel = new DecimalFormat("#00");
 
@@ -101,7 +106,7 @@ public class EventosXConfirmar extends AppCompatActivity {
     void consulta_miseventos(String URL){
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
@@ -284,7 +289,7 @@ public class EventosXConfirmar extends AppCompatActivity {
                 if(validacion_campo())
                     mandar_confirmacion("https://www.masboletos.mx/appMasboletos/getActualizaventasOxxo.php?" +
                             "transaccion="+transaccion_oxxo+"&numticket="+nticket+"&folio="+foliocontrol+
-                            "&fechahorapago="+fechahora+"&sucursal="+sucursal+"&montopago="+montopago);
+                            "&fechahorapago="+fechahora+"&sucursal="+sucursal+"&montopago="+montopago+"&idcliente="+idcliente);
                 else
                     Toast.makeText(getApplicationContext(),datomal,Toast.LENGTH_LONG).show();
             }
@@ -312,6 +317,7 @@ public class EventosXConfirmar extends AppCompatActivity {
             datomal="Verifique su monto de pago";
             val=false;
         }
+
         return val;
     }
 
@@ -319,23 +325,40 @@ public class EventosXConfirmar extends AppCompatActivity {
         iniciar_cargando();
         // Instantiate the RequestQueue.
         url.replace(" ","%20");
-        Log.e("url",url);
+        //Log.e("url",url);
         RequestQueue queue = Volley.newRequestQueue(this);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("Resultado actualizacion",response);
-                        Toast.makeText(getApplicationContext(),"Su confirmación ha sido enviada",Toast.LENGTH_LONG).show();
-                        consulta_miseventos("https://www.masboletos.mx/appMasboletos/getVentaConfirmar.php?idcliente="+idcliente);
-                        customDialog.cancel();
+                        //Log.e("Resultado actualizacion",response);
+                        try {
+                            Elementos = new JSONArray(response);
+                            for (int i=0;i<Elementos.length();i++){
+                                JSONObject datos = Elementos.getJSONObject(i);
+                                resp=datos.getBoolean("respuesta");
+                                msj=datos.getString("mensaje");
+                            }
+                            if(resp){
+                                AlertaBoton("Confirmación","Tu movimiento ha sido aceptado ya puedes pasar a nuestros puntos de venta para recoger el boleto con el número de transacción "+transaccion_oxxo+", de igual forma se te hizo llegar un correo a tu cuenta, indicando el número de transacción.");
+                                consulta_miseventos("https://www.masboletos.mx/appMasboletos/getVentaConfirmar.php?idcliente="+idcliente);
+                                customDialog.cancel();
+                            }else{
+                                Toast.makeText(getApplicationContext(),msj+"\nVerifica tus datos",Toast.LENGTH_LONG).show();
+                            }
+                            cerrar_cargando();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            cerrar_cargando();
+                        }
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Snackbar.make(findViewById(R.id.llconfform),"Error...",Snackbar.LENGTH_LONG).show();
+                cerrar_cargando();
+                Toast.makeText(getApplicationContext(),"Ha ocurrido un error al enviar la información, intente de nuevo o favor de comunicarse a MasBoletos",Toast.LENGTH_LONG).show();
             }
         });
         // Add the request to the RequestQueue.
@@ -352,13 +375,39 @@ public class EventosXConfirmar extends AppCompatActivity {
         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
+                if(validasesion)
+                    dialogInterface.dismiss();
+                else
+                    finish();
             }
         });
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    public void abrir_ticket_ej(View v){
+        cdticket = new Dialog(this);
+        //deshabilitamos el título por defecto
+        cdticket.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //obligamos al usuario a pulsar los botones para cerrarlo
+        //establecemos el contenido de nuestro dialog
+        cdticket.setContentView(R.layout.dialogo_ticket_oxxo);
+        ImageButton imbcerrar_to=cdticket.findViewById(R.id.imbcerrar_to);
+        PhotoView photoView = cdticket.findViewById(R.id.phvtoxxo);
+        photoView.setAdjustViewBounds(true);
+        photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        cdticket.show();
+        Window window = cdticket.getWindow();
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        imbcerrar_to.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cdticket.cancel();
+            }
+        });
+        Toast.makeText(getApplicationContext(),"Puedas hacer zoom en la imagen",Toast.LENGTH_SHORT).show();
     }
 
     public void iniciar_cargando(){

@@ -76,6 +76,16 @@
                                 android:layout_height="match_parent"
                                 android:background="@color/grisoscuro">
 
+                                <Button
+                                    android:id="@+id/button3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="3dp"
+                                    android:background="@color/azulmb"
+                                    android:onClick="abrir_ticket_ej"
+                                    android:paddingHorizontal="5dp"
+                                    android:text="Ver Ticket de Ejemplo" />
+
                                 <TextView
                                     android:id="@+id/textView33"
                                     android:layout_width="0dp"

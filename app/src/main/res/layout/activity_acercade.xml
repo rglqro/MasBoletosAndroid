@@ -57,11 +57,11 @@
                 android:layout_marginTop="30dp"/>
 
             <TextView
-                android:id="@+id/textView38"
+                android:id="@+id/txvversionad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingVertical="10dp"
-                android:text="Versión 1.0.8"
+                android:text="Versión 1.0.11"
                 android:textAlignment="center"
                 android:textColor="@color/grisoscuro" />
 

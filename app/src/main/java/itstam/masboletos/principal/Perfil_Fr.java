@@ -189,7 +189,7 @@ public class Perfil_Fr extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mainIntent = new Intent().setClass(getActivity(), ScannerQR.class);
-                startActivity(mainIntent);
+                //startActivity(mainIntent);
             }
         });
         btreportevta.setOnClickListener(new View.OnClickListener() {
