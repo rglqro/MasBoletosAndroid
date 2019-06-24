@@ -104,7 +104,7 @@ public class FRMejDisp extends Fragment {
     void RecibirDatos(){
         ((DetallesEventos)getActivity()).cerrar_cargando();
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
-        precio=Double.parseDouble(prefe.getString("precio","0.00"));
+        precio=Double.parseDouble(prefe.getString("precio","0.00"))+Double.parseDouble(prefe.getString("comision","0.00"));
         Cant_Boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
         asientos=prefe.getString("asientos","");
         numerado=prefe.getString("valornumerado", "");

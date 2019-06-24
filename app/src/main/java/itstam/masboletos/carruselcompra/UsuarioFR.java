@@ -278,7 +278,10 @@ public class UsuarioFR extends Fragment {
     }
 
     void checar_tipo_pago(){/*en este metodo se valida con el id de fpago con que proceso se va a realizar */
-        if (fpago.equals("2")||fpago.equals("3")){
+        if (fpago.equals("1")||fpago.equals("6")){
+            ((DetallesEventos)getActivity()).AlertaBoton("Método de Pago","Estamos trabajando para ofrecerte el servicio de pago en punto de venta y conekta" +
+                    "\nRegresa y elige otra opción disponible").show();
+        }else if (fpago.equals("2")||fpago.equals("3")){
             if(idevento.equals("0")){
                 pre_registro_packs("https://www.masboletos.mx/masBoletosEnviaDatosPaqueteMovil.php");
             }else {

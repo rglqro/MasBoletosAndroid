@@ -1,6 +1,7 @@
 package itstam.masboletos.principal;
 
 
+import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import java.io.IOException;
@@ -26,7 +29,7 @@ import itstam.masboletos.UbicacionAct;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    BoletosPrin frboletos;
+    BoletosPrin frboletos= new BoletosPrin();
     Perfil_Fr frperfil = new Perfil_Fr();
     ImageButton BTInicio,BTUbic,BTPerfil;
     ProgressDialog dialogcarg;
@@ -43,8 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (NetworkUtils.isNetworkConnected(this)) {
             Menu_Navegacion();
-            frboletos = new BoletosPrin();
-            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, frboletos,"boletos").addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.contenedor, frboletos,"boletos").addToBackStack(null).commit();
         } else {
             alertanointernet();
         }
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         alto = displayMetrics.heightPixels;
         ancho = displayMetrics.widthPixels;
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -79,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BTPerfil.setBackgroundResource(R.color.azulmboscuro);
             BTUbic.setBackgroundResource(R.color.azulmboscuro);
             BTInicio.setClickable(false); BTUbic.setClickable(true); BTPerfil.setClickable(true);
-            frboletos = new BoletosPrin();
             getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,frboletos,"boletos").addToBackStack(null).commit();
         }
         if(v==BTUbic){
@@ -94,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BTUbic.setBackgroundResource(R.color.azulmboscuro);
             BTInicio.setBackgroundResource(R.color.azulmboscuro);
             BTPerfil.setClickable(false); BTInicio.setClickable(true); BTUbic.setClickable(true);
-            frperfil = new Perfil_Fr();
             getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,frperfil,"perfil").addToBackStack(null).commit();
         }
     }
@@ -151,8 +152,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void cerrar_cargando(){
         if(dialogcarg!=null)
-            dialogcarg.dismiss();
+            dialogcarg.cancel();
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }
 

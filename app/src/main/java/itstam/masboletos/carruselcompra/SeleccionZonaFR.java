@@ -122,14 +122,14 @@ public class SeleccionZonaFR extends Fragment {
                                 JSONObject datos = Elementos.getJSONObject(i);
                                 if(idevento.equals("0")){
                                     zonas[i] = datos.getString("zona");
-                                    zona_precio[i] = datos.getString("zona") + " $" + datos.getString("precio") + " c/u";
+                                    zona_precio[i] = datos.getString("zona") + " $" + datos.getInt("precio")+" + $"+datos.getInt("comision") + " cps c/u";
                                     colores[i] = datos.getString("color");
                                     precios[i] = datos.getString("precio");
                                     numerado[i] = datos.getString("numerado");
                                     comision[i] = datos.getString("comision");
                                 }else {
                                     zonas[i] = datos.getString("grupo");
-                                    zona_precio[i] = datos.getString("grupo") + " $" + datos.getString("precio") + " c/u" +
+                                    zona_precio[i] = datos.getString("grupo") + " $" +  datos.getInt("precio")+" + $" +datos.getInt("comision") + " cps c/u" +
                                             "\nDisponibles: " + datos.getString("disponibilidad");
                                     colores[i] = datos.getString("color");
                                     precios[i] = datos.getString("precio");

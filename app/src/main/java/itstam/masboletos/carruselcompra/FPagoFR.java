@@ -64,7 +64,7 @@ public class FPagoFR extends Fragment {
         prefe=getActivity().getSharedPreferences("DatosCompra", Context.MODE_PRIVATE);
         idevento=prefe.getString("idevento","");
         spImagesFP= new ArrayList<Integer>();
-        spImagesFP.add(R.drawable.puntoventa); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.drawable.oxxopago); spImagesFP.add(R.mipmap.paypal);
+        spImagesFP.add(R.drawable.puntoventa); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.mipmap.visamc_logo); spImagesFP.add(R.drawable.oxxopago); spImagesFP.add(R.mipmap.paypal); spImagesFP.add(R.drawable.conekta);
         spDescFP= new ArrayList<String>();
 
         if(idevento.equals("0")){

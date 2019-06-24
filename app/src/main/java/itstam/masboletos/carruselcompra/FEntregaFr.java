@@ -103,7 +103,7 @@ public class FEntregaFr extends Fragment {
         fila=prefe.getString("fila","");
         cant_boletos=Integer.parseInt(prefe.getString("Cant_boletos","0"));
         asiento=(prefe.getString("asientos","0"));
-        precio=Double.parseDouble(prefe.getString("precio","0.00"));
+        precio=Double.parseDouble(prefe.getString("precio","0.00"))+Double.parseDouble(prefe.getString("comision","0.00"));
         numerado=prefe.getString("valornumerado","0");
         txvseccion2.setText(zona+"/"+seccion+" x "+cant_boletos);
 

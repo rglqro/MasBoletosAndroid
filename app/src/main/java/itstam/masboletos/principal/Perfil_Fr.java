@@ -323,7 +323,7 @@ public class Perfil_Fr extends Fragment {
 
     void consulta_info_org(){
         txvtitu_org.setVisibility(View.VISIBLE);
-        ((MainActivity)getActivity()).iniciar_cargando();
+        ((MainActivity)getActivity()).cerrar_cargando();
         hscvorganizadores= new HorizontalScrollView(getActivity());
         hscvorganizadores.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
         hscvorganizadores.setFillViewport(true);

@@ -131,7 +131,7 @@ public class DetallesEventos extends AppCompatActivity {
     void consulta_info(String URL){
         iniciar_cargando();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        Log.e("URL",URL);
+        //Log.e("URL",URL);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @TargetApi(Build.VERSION_CODES.O)
@@ -188,6 +188,7 @@ public class DetallesEventos extends AppCompatActivity {
         set_DatosCompra("fechaevento",fechaevento);
         set_DatosCompra("horaevento",horaevento);
         set_DatosCompra("NombreEvento",nomevento);
+        IMVEvento.setMaxWidth(ancho/2);
         difuminar_imagen();
     }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

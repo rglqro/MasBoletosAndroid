@@ -71,7 +71,7 @@ public class RevisionFR extends Fragment {
         seccion=prefe.getString("subzona","");
         fila=prefe.getString("fila","");
         asiento=prefe.getString("asientos","0");
-        precio=Double.parseDouble(prefe.getString("precio","0.00"));
+        precio=Double.parseDouble(prefe.getString("precio","0.00"))+Double.parseDouble(prefe.getString("comision","0.00"));
         total=Double.parseDouble(prefe.getString("total",""));
         datoscargos=prefe.getString("datoscargos","");
         String[] datocargo = datoscargos.split(",");
