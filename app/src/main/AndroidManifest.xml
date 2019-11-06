@@ -106,7 +106,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".acciones_perfil.EventosxOrganizador"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape"/>
         <activity android:name=".acciones_perfil.EventosXConfirmar"
             android:screenOrientation="landscape">
         </activity>

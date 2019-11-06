@@ -157,7 +157,7 @@ public class BoletosPrin extends Fragment implements  SwipeRefreshLayout.OnRefre
         if(consulta.equalsIgnoreCase("eventos"))
             ((MainActivity)getActivity()).iniciar_cargando();
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String URL=liga; //Log.e("Enlace", URL);
+        String URL=liga;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONArray>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

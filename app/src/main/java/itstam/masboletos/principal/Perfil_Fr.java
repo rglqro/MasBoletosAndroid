@@ -59,7 +59,7 @@ public class Perfil_Fr extends Fragment {
     TextView txvnuser,txvtituloperfil;
     SharedPreferences prefe_sesion;
     Boolean valida_sesion=false;
-    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade, btvalidaboleto,btreportevta,btevtoXconf;
+    Button btcerrarsesion,btmeventos,btavisopriv,btayuda,btbuzon,btacercade, btvalidaboleto,btreportevta,btevtoXconf,btreportesvl;
     ImageView imvfondoorg;
     HorizontalScrollView hscvorganizadores;
     ArrayList<ImageButton> imborglist; ArrayList<View> sep_list;
@@ -96,6 +96,7 @@ public class Perfil_Fr extends Fragment {
         btreportevta=vista.findViewById(R.id.btreporteventa);
         imvfondoorg=vista.findViewById(R.id.imvfondoorg);
         btevtoXconf=vista.findViewById(R.id.btevtoXconf);
+        btreportesvl=vista.findViewById(R.id.btreportesvl);
 
         prefe_sesion=getActivity().getSharedPreferences("datos_sesion", Context.MODE_PRIVATE);
 
@@ -202,6 +203,15 @@ public class Perfil_Fr extends Fragment {
                     mainIntent.putExtra("idparareporte",idparareporte);
                     startActivity(mainIntent);
                 }
+            }
+        });
+        btreportesvl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://www.masboletos.mx/vl_login.php";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
     }

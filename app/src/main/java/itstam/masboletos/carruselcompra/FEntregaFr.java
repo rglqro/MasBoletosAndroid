@@ -193,13 +193,19 @@ public class FEntregaFr extends Fragment {
         RadioGroup.LayoutParams lprg2= new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         rgentregas.setLayoutParams(lp);
         rgentregas.setGravity(Gravity.RIGHT);
+        rgentregas.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                btcontinuar5.setBackgroundResource(R.color.verdemb);
+            }
+        });
         for (int i = 0; i < cant_datos; i++) {
             //Log.e("Tipoentreg2",tipoentre.get(i));
             lineasep[i]= new View(getActivity());
             lineasep[i].setBackgroundResource(R.color.grismasclaro);
             lineasep[i].setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,3));
             lineasep[i].setId(i);
-            if(tipoentre.get(i).equalsIgnoreCase("Will Call")||tipoentre.get(i).equalsIgnoreCase("Boleto Electronico")||tipoentre.get(i).equalsIgnoreCase("Recibe tu boleto en Casa")) {
+            if(idtipoentrega.get(i)!=1) {
                 rbentregas[i] = new RadioButton(getActivity());
                 rbentregas[i].setLayoutParams(lprg);
                 rbentregas[i].setButtonTintList(ColorStateList.valueOf(Color.parseColor("#000A3D")));
@@ -270,7 +276,7 @@ public class FEntregaFr extends Fragment {
 
     void suma_cargo_entrega(int j){
         total2=total-CargoFEntr-cargoseg;
-        if (tipoentre.get(j).equalsIgnoreCase("Will Call")||tipoentre.get(j).equalsIgnoreCase("Boleto Electronico")||tipoentre.get(j).equalsIgnoreCase("Recibe tu boleto en Casa")) {
+        if (idtipoentrega.get(j)!=1) {
             Sumafentr=costoentrega.get(j)+(total2*(ptecentr.get(j)/100));
             btcontinuar5.setBackgroundResource(R.color.verdemb);
             txvfentr.setText("MX $"+df.format(Sumafentr+sumaseg)+" x "+cant_boletos);
@@ -284,7 +290,7 @@ public class FEntregaFr extends Fragment {
 
     void suma_seguro_entrega(int j){
         total2=total;
-        if(tipoentre.get(j).equalsIgnoreCase("Seguro Boleto")){
+        if(idtipoentrega.get(j)==1){
             sumaseg=costoentrega.get(j)+(total2*(ptecentr.get(j)/100));
             cargoseg=sumaseg*cant_boletos;
             total=total2+cargoseg;
@@ -295,7 +301,7 @@ public class FEntregaFr extends Fragment {
 
     void resta_seguro_entrega(int j){
         Double total3=total;
-        if(tipoentre.get(j).equalsIgnoreCase("Seguro Boleto")){
+        if(idtipoentrega.get(j)==1){
             sumaseg=costoentrega.get(j)+(total3*(ptecentr.get(j)/100));
             cargoseg=sumaseg*cant_boletos;
             total=total3-cargoseg;

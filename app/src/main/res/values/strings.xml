@@ -52,8 +52,8 @@
     <string name="my_site_key">6LfzrWIUAAAAAGBX81k1sL9ey6ljze3NcuLJV7iM</string>
     <string name="title_activity_login">Sign in</string>
 
-    <string name="version">1.0.13</string>
-    <string name="versiontxt">Versión: 1.0.13</string>
+    <string name="version">1.0.15</string>
+    <string name="versiontxt">Versión: 1.0.15</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
